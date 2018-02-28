@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{.title}}</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="shortcut icon" type="image/png" href="/static/image/sushi.png" />
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/css/ionicon/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="/static/css/AdminLTE.min.css">
+
+    <link rel="stylesheet" href="/static/css/skins/_all-skins.min.css"> {{.html_head}}
+
+    <link rel="stylesheet" href="/static/css/txpos.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+
+<body class="sidebar-collapse sidebar-mini skin-purple-light">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="/" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">TX</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg" style="margin-left:-20px">TXPOS</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="/static/image/avatar5.png" class="user-image" alt="User Image">
+                                <span id="name-r" class="hidden-xs">{{.base_user_display}}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="rigth-menu">
+                                    <a href="/change-pass">เปลี่ยนรหัสผ่าน</a>
+                                </li>
+                                <li class="rigth-menu">
+                                    <a href="/logout">ออกจากระบบ</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- =============================================== -->
+
+        <!-- Left side column. contains the sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-dollar"></i>
+                            <span>ขาย</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="/sale/pos">
+                                    <i class="fa fa-circle-o"></i>ขายหน้าร้าน</a>
+                            </li>
+                            <li>
+                                <a href="/sale">
+                                    <i class="fa fa-circle-o"></i>ขาย</a>
+                            </li>
+                            <li>
+                                <a href="/sale/list">
+                                    <i class="fa fa-circle-o"></i>รายการขาย</a>
+                            </li>
+                            <li>
+                                <a href="/quotation">
+                                    <i class="fa fa-circle-o"></i>เปิด Order</a>
+                            </li>
+                            <li>
+                                <a href="/quotation/list">
+                                    <i class="fa fa-circle-o"></i>รายการ Order</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-rub"></i>
+                            <span>โปรโมชั่น</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="/promotion">
+                                    <i class="fa fa-circle-o"></i> โปรโมชั่น</a>
+                            </li>
+                            <li>
+                                <a href="/coupon">
+                                    <i class="fa fa-circle-o"></i> บัตรส่วนลด</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa  fa-cubes"></i>
+                            <span>สต๊อค</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="/product/list">
+                                    <i class="fa fa-circle-o"></i>สินค้า/วัตถุดิบ</a>
+                            </li>
+                            <li>
+                                <a href="/receive/list">
+                                    <i class="fa fa-circle-o"></i> รับสินค้า/วัตถุดิบ
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/pickup/list">
+                                    <i class="fa fa-circle-o"></i> เบิกสินค้า/วัตถุดิบ
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/stock/list">
+                                    <i class="fa fa-circle-o"></i> ตรวจนับ</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-line-chart"></i>
+                            <span>รายงาน</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-circle-o"></i> รายงานการขาย</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-smile-o"></i>
+                            <span>สมาชิก</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="/member/list">
+                                    <i class="fa fa-circle-o"></i>สมาชิก</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-users"></i>
+                            <span>ผู้ใช้งาน</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="../forms/general.html">
+                                    <i class="fa fa-circle-o"></i> สร้างผู้ใช้งาน</a>
+                            </li>
+                            <li class="{{.m_role_list}}">
+                                <a href="/normal/?entity=roles">
+                                    <i class="fa fa-circle-o"></i>สิทธิ์</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview {{.m_setting}}">
+                        <a href="#">
+                            <i class="fa fa-gear"></i>
+                            <span>ตั้งค่า</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="/company">
+                                    <i class="fa fa-circle-o"></i> รายละเอียดร้าน</a>
+                            </li>
+                            <li>
+                                <a href="/product-category/list">
+                                    <i class="fa fa-circle-o"></i>หมวดหมู่สินค้า</a>
+                            </li>
+                            <li>
+                                <a href="/product-unit/list">
+                                    <i class="fa fa-circle-o"></i>หน่วย</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- =============================================== -->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            {{.LayoutContent}}
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.0
+            </div>
+            <strong>Copyright &copy; 2018
+                <a href="#">txPOS</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.slimscroll.min.js"></script>
+    <script src="/static/js/fastclick.js"></script>
+    <script src="/static/js/timepicker/js/bootstrap-timepicker.js"></script>
+    <script src="/static/js/adminlte.min.js"></script>
+    <script src="/static/js/txpos.js"></script> {{.scripts}}
+    <script>
+        $(document).ready(function () {
+            $('.sidebar-menu').tree();
+            $("#btn-search-clear").click(function () {
+                $("#txt-search").val('');
+            });
+        })
+    </script>
+</body>
+</html>
