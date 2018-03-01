@@ -25,6 +25,11 @@ func ParseDateTime(dateStr string, timeStr string) (time.Time, error) {
 	return retDate, errDate
 }
 
+//HTMLRowOrder HTMLRowOrder
+func HTMLRowOrder(in int) int {
+	return in + 1
+}
+
 //ThCommaSeperate _
 func ThCommaSeperate(in float64) (out string) {
 	out = fmt.Sprintf("%s", RenderFloat("#,###.##", in))

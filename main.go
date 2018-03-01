@@ -4,7 +4,7 @@ import (
 	"fmt"
 	c "txpos/controllers"
 	h "txpos/helpers"
-	_ "umami/models"
+	_ "txpos/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -30,6 +30,6 @@ func main() {
 	beego.Router("/", &c.AppController{})
 	beego.Router("/product/list", &c.ProductController{}, "get:ProductList;post:GetProductList")
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
-
+	beego.AddFuncMap("HTMLRowOrder", h.HTMLRowOrder)
 	beego.Run()
 }

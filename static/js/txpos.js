@@ -114,16 +114,13 @@ function hideTopAlert()
     });
 }
 
+
+
 $(function () {
       $("#name-l").html($("#name-r").html().substring(0,20));
       $('#btn-search-submit').click(function(){
         loadNormalTable()
-      })
-      $('.change-top').click(function(){
-           $('#top').val($(this).attr("top"));
-           $('#top-search-label').html($(this).html());
-           loadNormalTable()
-      })
+      })     
       $('#search-form').keyup(function(e){
         if (e.keyCode == 13) {
             e.preventDefault();

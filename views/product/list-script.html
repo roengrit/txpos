@@ -1,0 +1,11 @@
+<script>
+    function Paging(page){
+    $('#Page').val(page);
+    $('#btnSubmit').trigger("click");
+    }
+    $('.change-perpage').click(function(){
+           $('#PerPage').val($(this).attr("top"));
+           $('#PerPageLabel').html($(this).html());
+           $('#btnSubmit').trigger("click");
+    });
+</script>

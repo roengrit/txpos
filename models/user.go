@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//User _
+//User User
 type User struct {
 	ID        int
 	Lock      bool

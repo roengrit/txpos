@@ -21,3 +21,11 @@ type Category struct {
 func init() {
 	orm.RegisterModel(new(Category))
 }
+
+//GetAllProductCategory GetAllProductCategory
+func GetAllProductCategory() *[]Category {
+	ProductCategory := &[]Category{}
+	o := orm.NewOrm()
+	o.QueryTable("category").RelatedSel().All(ProductCategory)
+	return ProductCategory
+}

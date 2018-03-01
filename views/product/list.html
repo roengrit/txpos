@@ -1,103 +1,133 @@
 <section class="content">
+  <form action="/product/list" id="list-form" method="post">
+    {{ .xsrfdata }}
+  <input type="hidden" id="PerPage" name="PerPage" value="{{.PerPage}}" >
+  <input type="hidden" id="Page" name="Page" value="{{.Page}}" >
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">กล่องค้นหา</h3>
-          <form action="/product/list" id="search-form" style="margin-top:20px;margin-bottom:20px;" onsubmit="return false;" method="post">
-            <input type="hidden" name="_xsrf" value="ZM2ldeNUY8bXxRS9L2oQuswvMO61Dr9R">
-            <div class="input-group input-group-sm col-xs-6 search-top">
-              <input type="text" id="txt-search" name="txt-search" placeholder="ค้นหา" class="form-control">
-              <input type="hidden" id="top" value="10" name="top">
-              <div class="input-group-btn">
-                <button type="button" id="btn-search-clear" class="btn btn-default">
-                      <i class="glyphicon glyphicon-remove-circle"></i>
-                </button>
-                <button type="button" id="btn-search-submit" class="btn btn-default">
-                  <i class="fa fa-search"></i>
-                </button>
-                <button type="button" id="top-search-label" class="btn btn-default">
-                  10 รายการ
-                </button>
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  <span class="caret"></span>
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-
-                <ul class="dropdown-menu" role="menu">
-                  <li>
-                    <a class="change-top" href="#" top="5">5 รายการ</a>
-                  </li>
-                  <li>
-                    <a class="change-top" href="#" top="10">10 รายการ</a>
-                  </li>
-                  <li>
-                    <a class="change-top" href="#" top="50">50 รายการ</a>
-                  </li>
-                  <li>
-                    <a class="change-top" href="#" top="100">100 รายการ</a>
-                  </li>
-                  <li>
-                    <a class="change-top" href="#" top="0"> ทั้งหมด</a>
-                  </li>
-                </ul>
+          <h3 class="box-title">กล่องค้นหา</h3>   
+          <hr class="hr-mini">
+        </div>
+        <div class="box-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SearchTxt">คำค้นหา</label>
+                        <input type="text" id="SearchTxt" name="SearchTxt" class="form-control" placeholder="ระบุคำค้นหาเพื่อกรองข้อมูลด้วย ชื่อสินค้า บาร์โค้ด ...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>หมวดสินค้า</label>
+                        <select id="Category" name="Category" class="form-control" style="width: 100%;">
+                            <option selected="selected" value="">ทั้งหมด</option>
+                            {{range $key, $val := .ProductCategory}}
+                              <option value="{{$val.ID}}" > {{$val.Name}} </option>
+                          {{end}}   
+                        </select>
+                      </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>สถานะ</label>
+                        <select id="Status" name="Status" class="form-control" style="width: 100%;">
+                          <option selected="selected" value="">ทั้งหมด</option>
+                          <option value="0">ปิดใช้งาน</option>
+                          <option value="1">เปิดใช้งาน</option>
+                        </select>
+                      </div>
+                </div>
+            </div>            
+        </div>
+        <div class="box-header">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary"><i class="fa fa-filter"></i> ค้นหา</button>
+                    <button type="reset" id="btnReset" class="btn btn-default"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
+                </div>
+            </div>
+            <hr class="hr-mini">
+        </div>
+        <div class="box-header">
+          <h3 class="box-title">ค้นเจอทั้งหมด 2 รายการ</h3>
+            <div class="box-tools">
+              <div class="input-group input-group-sm" style="width: 150px;">
+                <div class="input-group-btn" >                  
+                  <button type="button" class="btn btn-wh-default dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <button type="button" id="PerPageLabel" class="btn btn-wh-default pull-right">
+                      {{.PerPage}} รายการ
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li> <a class="change-perpage" href="#" top="5">5 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="#" top="10">10 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="#" top="50">50 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="#" top="100">100 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="#" top="0"> ทั้งหมด</a> </li>
+                  </ul>
+                </div>
+                
               </div>
             </div>
-          </form>
-          <h3 class="box-title">ค้นเจอทั้งหมด 2 รายการ</h3>
-        </div>
+          </div>
           <div class="box-body table-responsive no-padding">
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
               <tbody>
                 <tr>
                   <th>ชื่อ</th>
-                  <th>จำนวน</th>
+                  <th style="width:200px;text-align:right;">จำนวนคงเหลือ</th>
                   <th>หมวด</th>
-                  <th>สถานะ</th>
-                  <th></th>
+                  <th style="width:50px;text-align:center;">สถานะ</th>
+                  <th style="width:60px;text-align:center;"></th>
                 </tr>
-                <tr>
-                  <td>183</td>
-                  <td>John Doe</td>
-                  <td>11-7-2014</td>
-                  <td>
-                    <span class="label label-success">Approved</span>
-                  </td>
-                  <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                </tr>
-                <tr>
-                  <td>219</td>
-                  <td>Alexander Pierce</td>
-                  <td>11-7-2014</td>
-                  <td>
-                    <span class="label label-warning">Pending</span>
-                  </td>
-                  <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                </tr>
-                <tr>
-                  <td>657</td>
-                  <td>Bob Doe</td>
-                  <td>11-7-2014</td>
-                  <td>
-                    <span class="label label-primary">Approved</span>
-                  </td>
-                  <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                </tr>
-                <tr>
-                  <td>175</td>
-                  <td>Mike Doe</td>
-                  <td>11-7-2014</td>
-                  <td>
-                    <span class="label label-danger">Denied</span>
-                  </td>
-                  <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                </tr>
+                {{range $key, $val := .Products}}
+                  <tr>
+                      <td>{{$val.Name}}</td>
+                      <td style="text-align:right;">{{$val.BalanceQty}}</td>
+                      <td >{{$val.CategoryName}}</td>
+                      <td>
+                        {{if $val.Active}}
+                        <span class="label label-success">เปิดใช้งาน</span>
+                        {{else}}
+                        <span class="label label-danger">ปิดใช้งาน</span>
+                        {{end}}
+                      </td>
+                      <td style="text-align:center;">
+                            <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id={{$val.ID}}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                      </td>
+                    </tr>
+                {{end}}   
+                
               </tbody>
             </table>
+          </div>
+          <div class="box-footer clearfix">
+            <ul class="pagination pagination-sm no-margin pull-right">
+                <li><a onclick="Paging('1')" href="javascript:void(0)">First</a></li>
+                <li><a onclick="Paging('{{.Pages.Prev}}')"  href="javascript:void(0)">Prev</a></li>
+                {{range .Pages.Pages 2 2}}
+                    {{if eq . 0}}
+                    <li><a class="disabled">...</a></li>
+                    {{else if eq $.Pages.Page .}}
+                    <li class="active">  <a class="active">{{.}}</a>		</li>		 
+                    {{else}}
+                      <li > <a onclick="Paging('{{.}}')" href="javascript:void(0)">{{.}}</a></li>
+                    {{end}}                    
+                {{end}}
+                <li><a onclick="Paging('{{.Pages.Next}}')" href="javascript:void(0)" >Next</a></li>
+                <li> <a onclick="Paging('{{.Pages.MaxPage}}')" href="javascript:void(0)" >Last</a></li>
+            </ul>
           </div>
           <!-- /.box-body -->
         </div>
         <!-- /.box -->
       </div>
     </div>
+  </form>
 </section>
