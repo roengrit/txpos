@@ -7,8 +7,24 @@ type Paginate struct {
 	items   int64
 }
 
+//PrePaging PrePaging
+func PrePaging(page int64) int64 {
+	if page <= 1 {
+		page = 0
+	} else {
+		page = page - 1
+	}
+	return page
+}
+
+//CalOffsetPaging CalOffsetPaging
+func CalOffsetPaging(page, perPage int64) int64 {
+	return page * perPage
+}
+
 // NewPaging creates paginate from page, per page, and items
 func NewPaging(page, perPage, items int64) Paginate {
+	page = page + 1
 	if items < 0 {
 		items = 0
 	}

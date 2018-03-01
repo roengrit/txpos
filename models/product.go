@@ -64,6 +64,7 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 					T0.lock,
 					T0.active,
 					T0.balance_qty,
+					T0.average_cost,
 					T0.barcode,
 					T1.i_d as category_id,
 					T1.name as category_name
@@ -86,4 +87,13 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&productList)
 
 	return num, productList, err
+}
+
+//CreateProduct _
+func CreateProduct(Product Product) (ID int64, err error) {
+	o := orm.NewOrm()
+	o.Begin()
+	ID, err = o.Insert(&Product)
+	o.Commit()
+	return ID, err
 }

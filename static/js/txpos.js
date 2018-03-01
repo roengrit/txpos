@@ -18,7 +18,10 @@ function addCommas(nStr)
 	var rgx = /(\d+)(\d{3})/;
 	while (rgx.test(x1)) {
 		x1 = x1.replace(rgx, '$1' + ',' + '$2');
-	}
+    }
+    if(x2==''){
+        x2 = ".00";
+    }
 	return x1 + x2;
 }
 
