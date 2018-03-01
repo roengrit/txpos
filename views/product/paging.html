@@ -1,0 +1,13 @@
+<li><a onclick="Paging('1')" href="javascript:void(0)">First</a></li>
+<li><a onclick="Paging('{{.Prev}}')"  href="javascript:void(0)">Prev</a></li>
+                {{range .Pages  2 2}}
+                    {{if eq . 0}}
+                    <li><a class="disabled">...</a></li>
+                    {{else if eq $.Page .}}
+                    <li class="active">  <a class="active">{{.}}</a>		</li>		 
+                    {{else}}
+                      <li > <a onclick="Paging('{{.}}')" href="javascript:void(0)">{{.}}</a></li>
+                    {{end}}                    
+                {{end}}
+<li><a onclick="Paging('{{.Next}}')" href="javascript:void(0)" >Next</a></li>
+<li><a onclick="Paging('{{.MaxPage}}')" href="javascript:void(0)" >Last</a></li>

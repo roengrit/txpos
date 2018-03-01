@@ -43,6 +43,14 @@ type ProductList struct {
 	Active       bool
 }
 
+//ProductListJSON ProductListJSON
+type ProductListJSON struct {
+	ProductList *[]ProductList
+	Paging      string
+	Page        uint
+	PerPage     uint
+}
+
 func init() {
 	orm.RegisterModel(new(Product))
 }
@@ -56,6 +64,7 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 					T0.lock,
 					T0.active,
 					T0.balance_qty,
+					T0.barcode,
 					T1.i_d as category_id,
 					T1.name as category_name
 			   FROM product T0	
@@ -69,24 +78,12 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 		sql += " and T0.Active"
 	}
 	if categoryTerm != "" {
-		sql += " and T2.i_d = ('" + categoryTerm + "')"
+		sql += " and T1.i_d = (" + categoryTerm + ")"
 	}
 
-	num, _ = o.Raw(
-		sql,
-		"%"+term+"%",
-		"%"+term+"%",
-	).QueryRows(&productList)
-
+	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%").QueryRows(&productList)
 	sql += " order by T0.name  offset ? limit ?"
-
-	_, err = o.Raw(
-		sql,
-		"%"+term+"%",
-		"%"+term+"%",
-		currentPage,
-		lineSize,
-	).QueryRows(&productList)
+	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&productList)
 
 	return num, productList, err
 }

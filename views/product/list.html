@@ -1,5 +1,5 @@
 <section class="content">
-  <form action="/product/list" id="list-form" method="post">
+  <form action="/product/list"  onsubmit="LoadData();return false;" id="ListForm" method="post">
     {{ .xsrfdata }}
   <input type="hidden" id="PerPage" name="PerPage" value="{{.PerPage}}" >
   <input type="hidden" id="Page" name="Page" value="{{.Page}}" >
@@ -44,85 +44,65 @@
         <div class="box-header">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <button type="submit" id="btnSubmit" class="btn btn-primary"><i class="fa fa-filter"></i> ค้นหา</button>
-                    <button type="reset" id="btnReset" class="btn btn-default"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
+                    <button type="button" id="BtnSubmit" onclick="LoadData()" class="btn btn-primary"><i class="fa fa-filter"></i> ค้นหา</button>
+                    <button type="reset"  id="BtnClear"  class="btn btn-default" style="display:none;"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
+                    <button type="button" id="BtnReset"  onclick="ReSetForm()" class="btn btn-default"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
+                    <a type="button" href="/product"  class="btn btn-success"><i class="fa fa-plus"></i> เพิ่ม</a>
                 </div>
-            </div>
+            </div> 
             <hr class="hr-mini">
-        </div>
+        </div>      
         <div class="box-header">
-          <h3 class="box-title">ค้นเจอทั้งหมด 2 รายการ</h3>
+          <h3 id="RetCount" class="box-title">ค้นเจอทั้งหมด 2 รายการ</h3>
             <div class="box-tools">
-              <div class="input-group input-group-sm" style="width: 150px;">
+              <div class="input-group input-group-sm">
                 <div class="input-group-btn" >                  
                   <button type="button" class="btn btn-wh-default dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="false">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                   </button>
                   <button type="button" id="PerPageLabel" class="btn btn-wh-default pull-right">
+                    {{if .PerPage}}
                       {{.PerPage}} รายการ
+                  {{else}}
+                      ทั้งหมด
+                  {{end}}
                   </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li> <a class="change-perpage" href="#" top="5">5 รายการ</a> </li>
-                    <li> <a class="change-perpage" href="#" top="10">10 รายการ</a> </li>
-                    <li> <a class="change-perpage" href="#" top="50">50 รายการ</a> </li>
-                    <li> <a class="change-perpage" href="#" top="100">100 รายการ</a> </li>
-                    <li> <a class="change-perpage" href="#" top="0"> ทั้งหมด</a> </li>
-                  </ul>
+                  <ul class="dropdown-menu  pull-right"  role="menu">
+                    <li> <a class="change-perpage" href="javascript:void(0)" top="5">5 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="javascript:void(0)" top="10">10 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="javascript:void(0)" top="50">50 รายการ</a> </li>
+                    <li> <a class="change-perpage" href="javascript:void(0)" top="100">100 รายการ</a> </li>
+                  </ul>                
                 </div>
-                
               </div>
             </div>
           </div>
-          <div class="box-body table-responsive no-padding">
-            <table class="table table-hover table-bordered">
-              <tbody>
-                <tr>
-                  <th>ชื่อ</th>
-                  <th style="width:200px;text-align:right;">จำนวนคงเหลือ</th>
-                  <th>หมวด</th>
-                  <th style="width:50px;text-align:center;">สถานะ</th>
-                  <th style="width:60px;text-align:center;"></th>
-                </tr>
-                {{range $key, $val := .Products}}
-                  <tr>
-                      <td>{{$val.Name}}</td>
-                      <td style="text-align:right;">{{$val.BalanceQty}}</td>
-                      <td >{{$val.CategoryName}}</td>
-                      <td>
-                        {{if $val.Active}}
-                        <span class="label label-success">เปิดใช้งาน</span>
-                        {{else}}
-                        <span class="label label-danger">ปิดใช้งาน</span>
-                        {{end}}
-                      </td>
-                      <td style="text-align:center;">
-                            <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id={{$val.ID}}">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                      </td>
-                    </tr>
-                {{end}}   
+          <div class="box-body table-responsive no-padding" style="overflow-y: scroll;max-height: 500px;"
+          >
+           <!-- style="overflow-y: scroll;height: 500px;" -->
+            <table class="table table-hover table-bordered"  >
+              <tbody id="RetData" >
                 
               </tbody>
             </table>
           </div>
           <div class="box-footer clearfix">
-            <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a onclick="Paging('1')" href="javascript:void(0)">First</a></li>
-                <li><a onclick="Paging('{{.Pages.Prev}}')"  href="javascript:void(0)">Prev</a></li>
-                {{range .Pages.Pages 2 2}}
-                    {{if eq . 0}}
-                    <li><a class="disabled">...</a></li>
-                    {{else if eq $.Pages.Page .}}
-                    <li class="active">  <a class="active">{{.}}</a>		</li>		 
-                    {{else}}
-                      <li > <a onclick="Paging('{{.}}')" href="javascript:void(0)">{{.}}</a></li>
-                    {{end}}                    
-                {{end}}
-                <li><a onclick="Paging('{{.Pages.Next}}')" href="javascript:void(0)" >Next</a></li>
-                <li> <a onclick="Paging('{{.Pages.MaxPage}}')" href="javascript:void(0)" >Last</a></li>
-            </ul>
+              <ul id="Pagination" class="pagination pagination-sm no-margin pull-right">
+                  <li><a onclick="Paging('1')" href="javascript:void(0)">First</a></li>
+                  <li><a onclick="Paging('{{.Pages.Prev}}')"  href="javascript:void(0)">Prev</a></li>
+                  {{range .Pages.Pages 2 2}}
+                      {{if eq . 0}}
+                      <li><a class="disabled">...</a></li>
+                      {{else if eq $.Pages.Page .}}
+                      <li class="active">  <a class="active">{{.}}</a>		</li>		 
+                      {{else}}
+                        <li > <a onclick="Paging('{{.}}')" href="javascript:void(0)">{{.}}</a></li>
+                      {{end}}                    
+                  {{end}}
+                  <li><a onclick="Paging('{{.Pages.Next}}')" href="javascript:void(0)" >Next</a></li>
+                  <li><a onclick="Paging('{{.Pages.MaxPage}}')" href="javascript:void(0)" >Last</a></li>
+              </ul>
           </div>
           <!-- /.box-body -->
         </div>

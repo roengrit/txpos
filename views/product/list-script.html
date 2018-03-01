@@ -1,11 +1,61 @@
 <script>
-    function Paging(page){
-    $('#Page').val(page);
-    $('#btnSubmit').trigger("click");
+    function Paging(page) {
+        $('#Page').val(page);
+        LoadData();
     }
-    $('.change-perpage').click(function(){
-           $('#PerPage').val($(this).attr("top"));
-           $('#PerPageLabel').html($(this).html());
-           $('#btnSubmit').trigger("click");
+    $('.change-perpage').click(function () {
+        $('#PerPage').val($(this).attr("top"));
+        if($(this).attr("top")=='0'){
+            $('#PerPageLabel').html('ทั้งหมด');
+        }else{
+            $('#PerPageLabel').html($(this).html());
+        }
+        LoadData();
     });
+    function ReSetForm()
+    {
+        $('#BtnClear').trigger("click");
+        LoadData();
+    }
+    function LoadData(){            
+            url = $('#ListForm').attr('action');           
+            $('#RetData').fadeOut( 100  );
+            $.post(url,$('#ListForm').serialize(), function( data ) {
+                $('#RetData').html('');
+                $('#RetData').append(`
+                <tr>
+                  <th>ชื่อ</th>
+                  <th>บาร์โค้ด</th>
+                  <th style="width:200px;text-align:right;">จำนวนคงเหลือ</th>
+                  <th>หมวด</th>
+                  <th style="width:50px;text-align:center;">สถานะ</th>
+                  <th style="width:60px;text-align:center;"></th>
+                </tr>
+                `);
+                if(data.ProductList == null){
+                    $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
+                    return;
+                }
+                data.ProductList.forEach(dat => {
+                    $('#RetData').append(`
+                        <tr>
+                        <td>`+ dat.Name + `</td>
+                        <td>`+ dat.Barcode + `</td>
+                        <td style="text-align:right;">`+ dat.BalanceQty + `</td>
+                        <td>`+ dat.CategoryName + `</td>
+                        <td>` + (dat.Active ? `<span class="label label-success">เปิดใช้งาน</span>` : `<span class="label label-danger">ปิดใช้งาน</span>`) + `</td>
+                        <td style="text-align:center;">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id=`+ dat.ID + `">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                        </td>
+                        </tr>
+                    `);
+                });
+                $('#RetCount').html('ค้นเจอทั้งหมด '+data.Page+' รายการ');
+                $('#Pagination').html(data.Paging)
+                $('#RetData').fadeIn( 100 );
+            });
+    }
+    LoadData();
 </script>
