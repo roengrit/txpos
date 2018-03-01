@@ -28,6 +28,7 @@ func main() {
 	}
 
 	beego.Router("/", &c.AppController{})
+	beego.Router("/product/?:id", &c.ProductController{}, "get:CreateProduct;post:UpdateProduct;delete:DeleteProduct")
 	beego.Router("/product/list", &c.ProductController{}, "get:ProductList;post:GetProductListJSON")
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("HTMLRowOrder", h.HTMLRowOrder)

@@ -29,3 +29,11 @@ func GetAllProductCategory() *[]Category {
 	o.QueryTable("category").RelatedSel().All(ProductCategory)
 	return ProductCategory
 }
+
+//GetProductCate _
+func GetProductCate(ID int) (cate *Category, errRet error) {
+	Category := &Category{}
+	o := orm.NewOrm()
+	o.QueryTable("category").Filter("ID", ID).RelatedSel().One(Category)
+	return Category, errRet
+}

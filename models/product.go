@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -89,6 +90,14 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 	return num, productList, err
 }
 
+//GetProduct _
+func GetProduct(ID int) (pro *Product, errRet error) {
+	Product := &Product{}
+	o := orm.NewOrm()
+	o.QueryTable("product").Filter("ID", ID).RelatedSel().One(Product)
+	return Product, errRet
+}
+
 //CreateProduct _
 func CreateProduct(Product Product) (ID int64, err error) {
 	o := orm.NewOrm()
@@ -96,4 +105,45 @@ func CreateProduct(Product Product) (ID int64, err error) {
 	ID, err = o.Insert(&Product)
 	o.Commit()
 	return ID, err
+}
+
+//UpdateProduct _
+func UpdateProduct(pro Product, isNewImage bool) (errRet error) {
+	o := orm.NewOrm()
+	getUpdate, _ := GetProduct(pro.ID)
+	if getUpdate.Lock {
+		errRet = errors.New("ข้อมูลถูก Lock ไม่สามารถแก้ไขได้")
+	}
+	if getUpdate == nil {
+		errRet = errors.New("ไม่พบข้อมูล")
+	} else if errRet == nil {
+		if !isNewImage {
+			pro.ImagePath1 = getUpdate.ImagePath1
+		}
+		pro.BalanceQty = getUpdate.BalanceQty
+		if !pro.FixCost {
+			pro.AverageCost = getUpdate.AverageCost
+		}
+		pro.CreatedAt = getUpdate.CreatedAt
+		pro.Creator = getUpdate.Creator
+		if num, errUpdate := o.Update(&pro); errUpdate != nil {
+			errRet = errUpdate
+			_ = num
+		}
+	}
+	return errRet
+}
+
+//DeleteProduct _
+func DeleteProduct(ID int) (errRet error) {
+	o := orm.NewOrm()
+	getUpdate, _ := GetProduct(ID)
+	if getUpdate.Lock {
+		errRet = errors.New("ข้อมูลถูก Lock ไม่สามารถแก้ไขได้")
+	}
+	if num, errDelete := o.Delete(&Product{ID: ID}); errDelete != nil && errRet == nil {
+		errRet = errDelete
+		_ = num
+	}
+	return errRet
 }
