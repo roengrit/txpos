@@ -9,6 +9,11 @@ var saveRet =  '{{.ret.RetOK}}';
     }
     $(document).ready(function () {
         
+        $('#BtnDeleteImage').click(function() {
+            $('#DeleteImage').val(1)
+            $('#img-upload').attr('src', '');
+        });
+
         $("#FixCost").click(function() {
             if($('#FixCost').is(':checked')){
                 $('#AverageCost').attr('name','AverageCost');
@@ -64,6 +69,7 @@ var saveRet =  '{{.ret.RetOK}}';
 		        
 		        reader.onload = function (e) {
 		            $('#img-upload').attr('src', e.target.result);
+                    $('#DeleteImage').val(0)
 		        }
 		        reader.readAsDataURL(input.files[0]);
 		    }

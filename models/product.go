@@ -23,6 +23,7 @@ type Product struct {
 	ImagePath2  string `orm:"size(300)"`
 	ImagePath3  string `orm:"size(300)"`
 	ImageBase64 string `orm:"-"`
+	DeleteImage int    `orm:"-"`
 	Remark      string `orm:"size(100)"`
 	FixCost     bool
 	Active      bool

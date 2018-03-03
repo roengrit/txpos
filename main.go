@@ -28,8 +28,17 @@ func main() {
 	}
 
 	beego.Router("/", &c.AppController{})
+	beego.Router("/service/secure/json/", &c.ServiceController{}, "get:GetXSRF")
+
 	beego.Router("/product/?:id", &c.ProductController{}, "get:CreateProduct;post:UpdateProduct;delete:DeleteProduct")
 	beego.Router("/product/list", &c.ProductController{}, "get:ProductList;post:GetProductListJSON")
+
+	beego.Router("/unit/?:id", &c.UnitController{}, "get:CreateUnit;post:UpdateUnit;delete:DeleteUnit")
+	beego.Router("/unit/list", &c.UnitController{}, "get:UnitList;post:GetUnitListJSON")
+
+	beego.Router("/category/?:id", &c.CategoryController{}, "get:CreateCategory;post:UpdateCategory;delete:DeleteCategory")
+	beego.Router("/category/list", &c.CategoryController{}, "get:CategoryList;post:GetCategoryListJSON")
+
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("HTMLRowOrder", h.HTMLRowOrder)
 	beego.Run()

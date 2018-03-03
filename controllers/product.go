@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 	"txpos/helpers"
 	"txpos/models"
@@ -44,15 +43,15 @@ func (c *ProductController) GetProductListJSON() {
 	perPage, _ := strconv.ParseInt(c.Ctx.Request.FormValue("PerPage"), 10, 64)
 	page = helpers.PrePaging(page)
 	offset := helpers.CalOffsetPaging(page, perPage)
+	ret := models.ProductListJSON{}
 
 	num, list, _ := models.GetProductList(uint(offset), uint(perPage), status, category, searchTxt)
 
 	pn := helpers.NewPaging(page, perPage, num)
-	ret := models.ProductListJSON{}
 	ret.ProductList = &list
 
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
-	t, _ := template.ParseFiles("views/product/paging.html")
+	t, _ := template.ParseFiles("views/paging.html")
 	var tpl bytes.Buffer
 	t.Execute(&tpl, pn)
 	ret.Paging = tpl.String()
@@ -63,20 +62,17 @@ func (c *ProductController) GetProductListJSON() {
 
 //CreateProduct CreateProduct
 func (c *ProductController) CreateProduct() {
-	proID, _ := strconv.ParseInt(c.Ctx.Request.URL.Query().Get("id"), 10, 32)
-	if strings.Contains(c.Ctx.Request.URL.RequestURI(), "read") {
-		c.Data["r"] = "readonly"
-	}
-	if proID == 0 {
+	productID, _ := strconv.ParseInt(c.Ctx.Request.URL.Query().Get("id"), 10, 32)
+	if productID == 0 {
 		c.Data["title"] = "สร้างสินค้า"
 	} else {
 		c.Data["title"] = "แก้ไขสินค้า"
-		pro, _ := models.GetProduct(int(proID))
-		if len(pro.ImagePath1) > 0 {
-			base64, _ := helpers.File64Encode(pro.ImagePath1)
-			pro.ImageBase64 = base64
+		product, _ := models.GetProduct(int(productID))
+		if len(product.ImagePath1) > 0 {
+			base64, _ := helpers.File64Encode(product.ImagePath1)
+			product.ImageBase64 = base64
 		}
-		c.Data["m"] = pro
+		c.Data["m"] = product
 	}
 	c.Data["ret"] = models.RetModel{}
 	c.Data["ProductCategory"] = models.GetAllProductCategory()
@@ -93,9 +89,9 @@ func (c *ProductController) CreateProduct() {
 //UpdateProduct _
 func (c *ProductController) UpdateProduct() {
 
-	var pro models.Product
+	var product models.Product
 	decoder := form.NewDecoder()
-	err := decoder.Decode(&pro, c.Ctx.Request.Form)
+	err := decoder.Decode(&product, c.Ctx.Request.Form)
 	ret := models.RetModel{}
 	actionUser, _ := models.GetUser(helpers.GetUser(c.Ctx.Request))
 	file, header, _ := c.GetFile("ImgProduct")
@@ -107,13 +103,18 @@ func (c *ProductController) UpdateProduct() {
 		err = c.SaveToFile("ImgProduct", filePathSave)
 		if err == nil {
 			isNewImage = true
-			pro.ImagePath1 = filePathSave
+			product.ImagePath1 = filePathSave
 			base64, errBase64 := helpers.File64Encode(filePathSave)
 			err = errBase64
-			pro.ImageBase64 = base64
+			product.ImageBase64 = base64
 		}
 	}
 	_ = file
+
+	if product.DeleteImage == 1 {
+		isNewImage = true
+		product.ImagePath1 = ""
+	}
 
 	ret.RetOK = true
 	if err != nil {
@@ -124,21 +125,21 @@ func (c *ProductController) UpdateProduct() {
 		ret.RetData = "กรุณาระบุชื่อ"
 	}
 
-	if ret.RetOK && pro.ID == 0 {
-		pro.CreatedAt = time.Now()
-		pro.Creator = &actionUser
-		ID, err := models.CreateProduct(pro)
+	if ret.RetOK && product.ID == 0 {
+		product.CreatedAt = time.Now()
+		product.Creator = &actionUser
+		ID, err := models.CreateProduct(product)
 		if err != nil {
 			ret.RetOK = false
 			ret.RetData = err.Error()
 		} else {
-			pro.ID = int(ID)
+			product.ID = int(ID)
 			ret.RetData = "บันทึกสำเร็จ"
 		}
-	} else if ret.RetOK && pro.ID > 0 {
-		pro.EditedAt = time.Now()
-		pro.Editor = &actionUser
-		err := models.UpdateProduct(pro, isNewImage)
+	} else if ret.RetOK && product.ID > 0 {
+		product.EditedAt = time.Now()
+		product.Editor = &actionUser
+		err := models.UpdateProduct(product, isNewImage)
 		if err != nil {
 			ret.RetOK = false
 			ret.RetData = err.Error()
@@ -146,17 +147,17 @@ func (c *ProductController) UpdateProduct() {
 			ret.RetData = "บันทึกสำเร็จ"
 		}
 	}
-	if pro.ID == 0 {
+	if product.ID == 0 {
 		c.Data["title"] = "สร้าง สินค้า"
-		c.Data["m"] = pro
+		c.Data["m"] = product
 	} else {
 		c.Data["title"] = "แก้ไข สินค้า"
-		pro, _ := models.GetProduct(int(pro.ID))
-		if len(pro.ImagePath1) > 0 {
-			base64, _ := helpers.File64Encode(pro.ImagePath1)
-			pro.ImageBase64 = base64
+		product, _ := models.GetProduct(int(product.ID))
+		if len(product.ImagePath1) > 0 {
+			base64, _ := helpers.File64Encode(product.ImagePath1)
+			product.ImageBase64 = base64
 		}
-		c.Data["m"] = pro
+		c.Data["m"] = product
 	}
 	c.Data["ret"] = ret
 	c.Data["ProductCategory"] = models.GetAllProductCategory()

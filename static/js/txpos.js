@@ -1,14 +1,3 @@
-function loadNormalTable()
-{
-    url = $('#search-form').attr('action');
-    $('#txt-search').addClass('load-text');
-    $.post(url,$('#search-form').serialize(), function( data ) {
-        $('#RetCount').html(data.RetCount);
-        $('#RetData').html(data.RetData);
-        $('#txt-search').removeClass('load-text');
-    });
-}
-
 function addCommas(nStr)
 {
 	nStr += '';
@@ -28,7 +17,8 @@ function addCommas(nStr)
 function editNormal(id) {
     hideTopAlert();
     $.get("/normal/add/?entity="+ $("#entity").val() + "&id=" + id , function (data) {
-        if (data.RetOK) {
+        if (data.RetOK) 
+        {
             showGlobalSmallModal();
             $('#small-global-modal-content').html(data.RetData);
 
@@ -38,20 +28,7 @@ function editNormal(id) {
         }
     });
 }
-
-function deleteNormal(id) {
-    hideTopAlert();
-    $.get("/normal/add/?entity="+ $("#entity").val() + "&del=1&id=" + id , function (data) {
-        if (data.RetOK) {
-            showGlobalSmallModal();
-            $('#small-global-modal-content').html(data.RetData);
-
-        } else {
-            showGlobalSmallModal();
-            $('#small-global-modal-content').html(data.RetData);
-        }
-    });
-}
+ 
 
 function confirmDeleteGlobal(id,url) {
     hideTopAlert();
@@ -61,7 +38,7 @@ function confirmDeleteGlobal(id,url) {
     });
     $("#global-delete-id").val(id)
     $("#global-delete-url").val(url)
-    $("#small-delete-global-modal").modal("show");
+    $("#delete-global-modal").modal("show");
 }
 function deleteGlobal() {
     hideTopAlert();
@@ -72,8 +49,8 @@ function deleteGlobal() {
         success: function (data) {
             if (data.RetOK) {
                 showTopAlert(data.RetData, "success");
-                $("#small-delete-global-modal").modal("hide");
-                loadNormalTable();
+                $("#delete-global-modal").modal("hide");
+                LoadData();
             } else {
                 showGlobalDelete(data.RetData);
             }
@@ -84,6 +61,7 @@ function deleteGlobal() {
 function hideGlobalDelete(){
     $("#global-delete-alert").hide();
 }
+
 function showGlobalDelete(msg){
     $("#global-delete-alert").html(msg);
     $("#global-delete-alert").show();
@@ -93,6 +71,7 @@ function hideGlobalSmalModal()
 {
     $('#small-global-modal').modal("hide");
 }
+
 function showGlobalSmallModal()
 {
     $('#small-global-modal').modal("show");
@@ -113,29 +92,9 @@ function showTopAlert(alert,type)
 function hideTopAlert()
 {
     $("#top-alert").fadeOut(500, function () {
-
     });
 }
 
-
-
 $(function () {
       $("#name-l").html($("#name-r").html().substring(0,20));
-      $('#btn-search-submit').click(function(){
-        loadNormalTable()
-      })     
-      $('#search-form').keyup(function(e){
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            loadNormalTable()
-            return false;
-        }
-      })
-      $('#normal-add').click(function(){
-        hideTopAlert();
-         $.get( "/normal/add/?entity="+ $(this).attr("entity") , function( data ) {
-            $('#small-global-modal-content').html(data.RetData);
-            showGlobalSmallModal();
-          });
-      });
 });

@@ -1,5 +1,5 @@
-<script>
-    function Paging(page) {
+<script >
+ function Paging(page) {
         $('#Page').val(page);
         LoadData();
     }
@@ -25,31 +25,26 @@
                 $('#RetData').append(`
                 <tr>
                   <th>ชื่อ</th>
-                  <th style="width:150px;">บาร์โค้ด</th>
-                  <th style="width:150px;text-align:right;">จำนวนคงเหลือ</th>
-                  <th style="width:150px;text-align:right;">ต้นทุน</th>
-                  <th>หมวด</th>
-                  <th style="width:50px;text-align:center;">สถานะ</th>
-                  <th style="width:60px;text-align:center;"></th>
+                  <th style="width:120px;text-align:center;"></th>
                 </tr>
                 `);
-                if(data.ProductList == null){
+                if(data.CategoryList == null){
                     $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
                     return;
                 }
-                data.ProductList.forEach(dat => {
+                data.CategoryList.forEach(dat => {
                     $('#RetData').append(`
                         <tr>
                         <td>`+ dat.Name + `</td>
-                        <td>`+ dat.Barcode + `</td>
-                        <td style="text-align:right;">`+ addCommas(dat.BalanceQty) + `</td>
-                        <td style="text-align:right;">`+ addCommas(dat.AverageCost) + `</td>
-                        <td>`+ dat.CategoryName + `</td>
-                        <td>` + (dat.Active ? `<span class="label label-success">เปิดใช้งาน</span>` : `<span class="label label-danger">ปิดใช้งาน</span>`) + `</td>
                         <td style="text-align:center;">
-                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id=`+ dat.ID + `">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/category/?id=`+ dat.ID + `">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                <a class="btn btn-sm btn-danger " title="ลบ" onclick='confirmDeleteGlobal(`+dat.ID+`,"/category")' href="javascript:void(0)">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                         </tr>
                     `);
