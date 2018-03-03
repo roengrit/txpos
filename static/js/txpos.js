@@ -14,22 +14,6 @@ function addCommas(nStr)
 	return x1 + x2;
 }
 
-function editNormal(id) {
-    hideTopAlert();
-    $.get("/normal/add/?entity="+ $("#entity").val() + "&id=" + id , function (data) {
-        if (data.RetOK) 
-        {
-            showGlobalSmallModal();
-            $('#small-global-modal-content').html(data.RetData);
-
-        } else {
-            showGlobalSmallModal();
-            $('#small-global-modal-content').html(data.RetData);
-        }
-    });
-}
- 
-
 function confirmDeleteGlobal(id,url) {
     hideTopAlert();
     hideGlobalDelete();
@@ -65,16 +49,6 @@ function hideGlobalDelete(){
 function showGlobalDelete(msg){
     $("#global-delete-alert").html(msg);
     $("#global-delete-alert").show();
-}
-
-function hideGlobalSmalModal()
-{
-    $('#small-global-modal').modal("hide");
-}
-
-function showGlobalSmallModal()
-{
-    $('#small-global-modal').modal("show");
 }
 
 function showTopAlert(alert,type)
