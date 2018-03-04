@@ -1,0 +1,105 @@
+
+<script src="/static/js/datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/static/js/datepicker/locales/bootstrap-datepicker.th.min.js" charset="UTF-8"></script>
+<script >
+String.prototype.lpad = function(padString, length) {
+	var str = this;
+    while (str.length < length)
+        str = padString + str;
+    return str;
+}
+ 
+//pads right
+String.prototype.rpad = function(padString, length) {
+	var str = this;
+    while (str.length < length)
+        str = str + padString;
+    return str;
+}
+ $(function () {
+    $('#txt-date-begin,#txt-date-end').datepicker({
+        autoclose: true,
+        language: 'th',
+        todayBtn: true,
+        orientation: "bottom auto",
+        todayHighlight: true  ,
+        format: 'dd-mm-yyyy',      
+    }); 
+});
+function cancelDoc(id){
+         hideTopAlert();
+         $.get( "/stock/cancel/?id=" + id , function( data ) {
+            $('#small-global-modal-content').html(data.RetData);
+            showGlobalSmallModal();
+          });
+    }
+
+ function Paging(page) {
+        $('#Page').val(page);
+        LoadData();
+    }
+    $('.change-perpage').click(function () {
+        $('#PerPage').val($(this).attr("top"));
+        if($(this).attr("top")=='0'){
+            $('#PerPageLabel').html('ทั้งหมด');
+        }else{
+            $('#PerPageLabel').html($(this).html());
+        }
+        LoadData();
+    });
+    function ReSetForm()
+    {
+        $('#BtnClear').trigger("click");
+        LoadData();
+    } 
+    function LoadData(){            
+            url = $('#ListForm').attr('action');           
+            $('#RetData').fadeOut( 100  );
+            $.post(url,$('#ListForm').serialize(), function( data ) {
+                $('#RetData').html('');
+                $('#RetData').append(`
+                <tr>
+                                <th style="width:100px!important;">วันที่</th>
+                                <th style="width:150px!important;">เลขที่</th>
+                                <th>หมายเหตุ</th>                            
+                                <th style="width:100px!important;">สถานะ</th>
+                                <th style="width:150px!important; text-align:right ">มูลค่า</th>
+                                <th style="width:120px!important;"></th>
+                            </tr>
+                `);
+                if(data.StockCountList == null){
+                    $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
+                    return;
+                }
+                data.StockCountList.forEach(dat => {
+         
+                    var todayTime = new Date(dat.DocDate );
+                    var month = (""+todayTime.getMonth()).lpad("0", 2);
+                    var day = (""+todayTime.getDate()).lpad("0", 2);
+                    var year = todayTime.getFullYear();
+         
+                    $('#RetData').append(`
+                        <tr> 
+                        <td>`+ day + "/" + month + "/" + year + `</td>
+                        <td>`+ dat.DocNo + `</td>
+                        <td>`+ dat.Remark + `</td>
+                        <td>` +
+                        (dat.FlagTemp ? `<span class="label label-warning">รอปรับปรุง</span>` : (dat.Active ? `<span class="label label-success">ปกติ</span>` : `<span class="label label-danger">ยกเลิก</span>`))
+                        + `</td>
+                         <td style="text-align:right;">`+ addCommas(dat.TotalAmount) + `</td>
+                        <td style="text-align:center;">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id=`+ dat.ID + `">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                        </td>
+                        </tr> 
+                    `);
+                });
+                $('#RetCount').html('ค้นเจอทั้งหมด '+data.Page+' รายการ');
+                $('#Pagination').html(data.Paging)
+                $('#RetData').fadeIn( 100 );
+            });
+    }
+    LoadData();
+
+</script>

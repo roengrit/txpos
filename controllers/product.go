@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 	"txpos/helpers"
 	"txpos/models"
@@ -183,6 +184,39 @@ func (c *ProductController) DeleteProduct() {
 		ret.RetData = "ลบข้อมูลสำเร็จ"
 	}
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
+	c.Data["json"] = ret
+	c.ServeJSON()
+}
+
+//ListProductJSON  _
+func (c *ProductController) ListProductJSON() {
+	term := strings.TrimSpace(c.GetString("query"))
+	ret := models.RetModel{}
+	_, list, _ := models.GetProductList(0, 20, "", "", term)
+	if len(list) > 0 {
+		ret.RetOK = true
+		ret.RetCount = int64(len(list))
+		ret.ListData = list
+	} else {
+		ret.RetOK = false
+		ret.RetData = "ไม่พบข้อมูล"
+	}
+	c.Data["json"] = ret
+	c.ServeJSON()
+}
+
+//GetProductJSON  GetProductJSON
+func (c *ProductController) GetProductJSON() {
+	ID, _ := strconv.ParseInt(c.GetString("id"), 10, 32)
+	ret := models.RetModel{}
+	product, err := models.GetProduct(int(ID))
+	if err == nil {
+		ret.RetOK = true
+		ret.Data1 = product
+	} else {
+		ret.RetOK = false
+		ret.RetData = "ไม่พบข้อมูล"
+	}
 	c.Data["json"] = ret
 	c.ServeJSON()
 }

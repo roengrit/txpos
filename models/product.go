@@ -42,6 +42,8 @@ type ProductList struct {
 	AverageCost  float64
 	BalanceQty   float64
 	CategoryName string
+	UnitID       int
+	UnitName     string
 	Active       bool
 }
 
@@ -68,10 +70,13 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 					T0.balance_qty,
 					T0.average_cost,
 					T0.barcode,
-					T1.i_d as category_id,
-					T1.name as category_name
+					T1.i_d as category_i_d,
+					T1.name as category_name,
+					T2.i_d as unit_i_d,
+					T2.name as unit_name
 			   FROM product T0	
-			   JOIN category T1 ON T0.category_id = T1.i_d	    
+			   JOIN category T1 ON T0.category_id = T1.i_d	
+			   JOIN unit T2 ON T0.unit_id = T2.i_d    
 			   WHERE (lower(T0.name) like lower(?) or lower(T0.barcode) like lower(?) ) `
 
 	if statusTerm == "0" {

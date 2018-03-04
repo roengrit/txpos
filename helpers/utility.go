@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego/orm"
 )
 
 //ParseDateTime ParseDateTime
@@ -239,4 +241,35 @@ func RemoveContentsExcludeFile(dir string, exFilename string) error {
 		}
 	}
 	return nil
+}
+
+//GetMaxDoc GetMaxDoc
+func GetMaxDoc(entity, format string) (docno string) {
+
+	var lists []orm.ParamsList
+	var sql = `SELECT 
+				 concat( '` + format + `' , 
+					  date_part( 'year', CURRENT_DATE :: timestamp ) :: text ,
+					  case WHEN length( date_part( 'month', CURRENT_DATE :: timestamp ) :: text )  = 1 then  
+								concat('0', date_part( 'month', CURRENT_DATE :: timestamp ) :: text ) else 
+										  date_part( 'month', CURRENT_DATE :: timestamp ) :: text 
+					  end  , 
+					  '-',
+					  LPAD((COALESCE( MAX ( SUBSTRING ( doc_no FROM '[0-9]{5,}$' )), '0' ) :: NUMERIC + 1)  :: text, 5, '0')
+					  ) AS  doc_no 
+				 FROM
+					 "` + entity + `"
+				 WHERE
+					 doc_no LIKE'` + format + `%' 	 
+					 AND doc_date BETWEEN date_trunc( 'month', CURRENT_DATE ) :: DATE  AND ( date_trunc( 'month', CURRENT_DATE ) + INTERVAL '1 month - 1 day' ) :: DATE`
+	o := orm.NewOrm()
+	num, err := o.Raw(sql).ValuesList(&lists)
+	if err == nil && num > 0 {
+		max := lists[0]
+		maxVal := max[0].(string)
+		docno = maxVal
+	} else {
+		docno = ""
+	}
+	return docno
 }
