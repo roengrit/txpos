@@ -28,6 +28,9 @@ func main() {
 	}
 
 	beego.Router("/", &c.AppController{})
+
+	beego.Router("/company", &c.CompanyController{}, "get:CreateCom;post:UpdateCom")
+
 	beego.Router("/service/secure/json/", &c.ServiceController{}, "get:GetXSRF")
 
 	beego.Router("/product/?:id", &c.ProductController{}, "get:CreateProduct;post:UpdateProduct;delete:DeleteProduct")

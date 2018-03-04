@@ -1,17 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
-//Provinces Provinces
-type Provinces struct {
-	ID        int
-	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
 //RetModel _
 type RetModel struct {
 	RetOK      bool
