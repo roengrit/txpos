@@ -19,9 +19,6 @@
         </div>
         {{end}}
     {{end}}
-    <h1 id="title-content">
-        {{.title}}
-    </h1>
 </section>
 <section class="content">
     <form 
@@ -33,6 +30,10 @@
         {{ .xsrfdata }}
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
         <div id="box-req" class="box box-primary">
+                <div class="box-header">
+                        <h3 class="box-title" >ข้อมูลร้านค้า</h3>   
+                        <hr class="hr-mini">
+                      </div>
             <div class="box-body">
                 <div class="form-group req-box-form">
                     <div class="col-xs-12">
