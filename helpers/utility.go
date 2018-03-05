@@ -44,6 +44,13 @@ func ThCommaSeperate(in float64) (out string) {
 	return
 }
 
+//TextThCommaSeperate _
+func TextThCommaSeperate(in string) (out string) {
+	val, _ := strconv.ParseFloat(in, 64)
+	out = fmt.Sprintf("%s", RenderFloat("#,###.##", val))
+	return
+}
+
 var renderFloatPrecisionMultipliers = [10]float64{
 	1,
 	10,

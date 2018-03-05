@@ -44,6 +44,10 @@ func main() {
 	beego.Router("/category/?:id", &c.CategoryController{}, "get:CreateCategory;post:UpdateCategory;delete:DeleteCategory")
 	beego.Router("/category/list", &c.CategoryController{}, "get:CategoryList;post:GetCategoryListJSON")
 
+	beego.Router("/member/?:id", &c.MemberController{}, "get:CreateMember;post:UpdateMember;delete:DeleteMember")
+	beego.Router("/member/read/?:id", &c.MemberController{}, "get:CreateMember")
+	beego.Router("/member/list", &c.MemberController{}, "get:MemberList;post:GetMemberListJSON")
+
 	beego.Router("/stock", &c.StockCountController{})
 	beego.Router("/stock/diff", &c.StockCountController{}, "get:StockDiff")
 	beego.Router("/stock/cancel", &c.StockCountController{}, "get:CancelStockCount;post:UpdateCancelStockCount")
@@ -56,6 +60,7 @@ func main() {
 	beego.Router("/pickup/list", &c.PickUpController{}, "get:PickUpList;post:GetPickUpListJSON")
 
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
+	beego.AddFuncMap("TextThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("HTMLRowOrder", h.HTMLRowOrder)
 	beego.Run()
 }

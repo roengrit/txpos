@@ -1,0 +1,73 @@
+<script>
+    function Paging(page) {
+        $('#Page').val(page);
+        LoadData();
+    }
+    $('.change-perpage').click(function () {
+        $('#PerPage').val($(this).attr("top"));
+        if($(this).attr("top")=='0'){
+            $('#PerPageLabel').html('ทั้งหมด');
+        }else{
+            $('#PerPageLabel').html($(this).html());
+        }
+        LoadData();
+    });
+    function ReSetForm()
+    {
+        $('#BtnClear').trigger("click");
+        LoadData();
+    } 
+    function LoadData(){            
+            url = $('#ListForm').attr('action');           
+            $('#RetData').fadeOut( 100  );
+            $.post(url,$('#ListForm').serialize(), function( data ) {
+                $('#RetData').html('');
+                $('#RetData').append(`
+                <tr>
+                  <th>ชื่อ</th>
+                  <th>ผู้ติดต่อ</th>
+                  <th>เบอร์โทร	</th> 
+                  <th>ประเภท</th>
+                  <th style="width:150px!important;text-align:center">จัดการข้อมูล</th>
+                </tr>
+                `);
+                if(data.MemberList == null){
+                    $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
+                    return;
+                }
+                data.MemberList.forEach(dat => {
+                    var MemberType = "";
+                    switch (dat.MemberType) {
+                        case 0:
+                        MemberType = "ลูกค้า/สมาชิก"
+                            break;
+                            case 1:
+                            MemberType = "ร้านค้า/Supplier"
+                            break;
+                            case 2:
+                            MemberType = "ภายใน"
+                            break;
+                        default:
+                            break;
+                    }
+                    $('#RetData').append(`
+                        <tr>
+                        <td>`+ dat.Name + `</td>
+                        <td>`+ dat.Contact + `</td>
+                        <td >`+dat.Tel+` </td>                         
+                        <td>`+ MemberType+ `</td>
+                        <td style="text-align:center;">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/member/?id=`+ dat.ID + `">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                        </td>
+                        </tr>
+                    `);
+                });
+                $('#RetCount').html('ค้นเจอทั้งหมด '+data.Page+' รายการ');
+                $('#Pagination').html(data.Paging)
+                $('#RetData').fadeIn( 100 );
+            });
+    }
+    LoadData();
+</script>
