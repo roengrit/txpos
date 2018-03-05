@@ -7,6 +7,7 @@ type RetModel struct {
 	RetData    string
 	ID         int64
 	Name       string
+	Remark       string
 	Del        string
 	Title      string
 	Alert      string

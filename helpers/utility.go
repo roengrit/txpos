@@ -17,14 +17,20 @@ import (
 //ParseDateTime ParseDateTime
 func ParseDateTime(dateStr string, timeStr string) (time.Time, error) {
 	sp := strings.Split(dateStr, "-")
-	retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[0]+"-"+sp[1]+"T"+timeStr+":00+00:00")
+	retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[1]+"-"+sp[0]+"T"+timeStr+":00+00:00")
 	if errDate != nil {
 		if strings.Contains(errDate.Error(), "month out of range") {
-			retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[1]+"-"+sp[0]+"T"+timeStr+":00+00:00")
+			retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[0]+"-"+sp[1]+"T"+timeStr+":00+00:00")
 			return retDate, errDate
 		}
 	}
 	return retDate, errDate
+}
+
+//ParseDateString ParseDateString
+func ParseDateString(dateStr string) string {
+	sp := strings.Split(dateStr, "-")
+	return sp[2] + "-" + sp[1] + "-" + sp[0]
 }
 
 //HTMLRowOrder HTMLRowOrder

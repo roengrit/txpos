@@ -55,8 +55,8 @@
             $.post(url,$('#cancel-form').serialize(), function( data ) {
                 $('#remark').removeClass('load-text');
                 if(data.RetOK){
-                   loadNormalTable();               
-                   hideGlobalSmalModal();                    
+                   LoadData();               
+                   hideGlobalModal();                    
                 }else{
                     $("#cancel-alert").html(data.RetData);
                     $("#cancel-alert").show(); 

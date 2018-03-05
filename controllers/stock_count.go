@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"strconv"
 	"strings"
@@ -109,7 +108,6 @@ func (c *StockCountController) Post() {
 	}
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
 	c.Data["json"] = retJSON
-	fmt.Println(retJSON)
 	c.ServeJSON()
 }
 
@@ -131,14 +129,15 @@ func (c *StockCountController) StockList() {
 //GetStockListJSON GetStockListJSON
 func (c *StockCountController) GetStockListJSON() {
 	searchTxt := c.Ctx.Request.FormValue("SearchTxt")
-
+	txtDateBegin := c.Ctx.Request.FormValue("TxtDateBegin")
+	txtDateEnd := c.Ctx.Request.FormValue("TxtDateEnd")
 	page, _ := strconv.ParseInt(c.Ctx.Request.FormValue("Page"), 10, 64)
 	perPage, _ := strconv.ParseInt(c.Ctx.Request.FormValue("PerPage"), 10, 64)
 	page = h.PrePaging(page)
 	offset := h.CalOffsetPaging(page, perPage)
 	ret := m.StockCountJSON{}
 
-	num, list, _ := m.GetStockCountList(uint(offset), uint(perPage), searchTxt)
+	num, list, _ := m.GetStockCountList(uint(offset), uint(perPage), txtDateBegin, txtDateEnd, searchTxt)
 
 	pn := h.NewPaging(page, perPage, num)
 	ret.StockCountList = &list

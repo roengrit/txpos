@@ -31,7 +31,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-calculator"></i>
                             </span>                          
-                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{.m.DocDate}}' readonly />                             
+                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{date .m.DocDate "d-m-Y"}}' readonly />                             
                         </div>
                     </div>
                     <div class="col-xs-4">
@@ -83,6 +83,7 @@
                             </span>
                             <select id="DocType" name="DocType" class="form-control" readonly  autocomplete="off">
                                 <option value="0"  >ทั่วไป</option>
+                                <option value="1"  >ยกมา</option>
                             </select>
                         </div>
                     </div>

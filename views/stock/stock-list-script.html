@@ -73,8 +73,9 @@ function cancelDoc(id){
                 }
                 data.StockCountList.forEach(dat => {
          
-                    var todayTime = new Date(dat.DocDate );
-                    var month = (""+todayTime.getMonth()).lpad("0", 2);
+                    var todayTime = new Date(dat.DocDate ); 
+                    
+                    var month = (""+(todayTime.getMonth() + 1)).lpad("0", 2);
                     var day = (""+todayTime.getDate()).lpad("0", 2);
                     var year = todayTime.getFullYear();
          
@@ -88,9 +89,14 @@ function cancelDoc(id){
                         + `</td>
                          <td style="text-align:right;">`+ addCommas(dat.TotalAmount) + `</td>
                         <td style="text-align:center;">
-                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id=`+ dat.ID + `">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/stock/?id=`+ dat.ID + `">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                <a class="btn btn-sm btn-danger `+(!dat.Active ? "disabled": "")+` " onclick="cancelDoc(`+ dat.ID + `)"  title="ยกเลิก" href=javascript:void(0)">
+                                    <i class="fa fa-ban"></i>
+                                </a>                                 
+                            </div>
                         </td>
                         </tr> 
                     `);
@@ -100,6 +106,14 @@ function cancelDoc(id){
                 $('#RetData').fadeIn( 100 );
             });
     }
+    function cancelDoc(id){
+         hideTopAlert();
+         $.get( "/stock/cancel/?id=" + id , function( data ) {
+            $('#global-modal-content').html(data.RetData);
+            showGlobalModal();
+          });
+    }
+
     LoadData();
 
 </script>

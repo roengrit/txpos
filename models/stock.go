@@ -103,7 +103,7 @@ func CreateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 	o := orm.NewOrm()
 	o.Begin()
 	id, err := o.Insert(&StockCount)
-	id, err = o.InsertMulti(len(fullDataSub), fullDataSub)
+	_, err = o.InsertMulti(len(fullDataSub), fullDataSub)
 	if err == nil {
 		retID = id
 		o.Commit()
@@ -180,7 +180,7 @@ func GetStockCount(ID int) (doc *StockCount, errRet error) {
 }
 
 //GetStockCountList GetStockCountList
-func GetStockCountList(currentPage, lineSize uint, term string) (num int64, stockCountList []StockCount, err error) {
+func GetStockCountList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, term string) (num int64, stockCountList []StockCount, err error) {
 	o := orm.NewOrm()
 	var sql = `SELECT 
 					T0.i_d,
@@ -191,8 +191,10 @@ func GetStockCountList(currentPage, lineSize uint, term string) (num int64, stoc
 					T0.active,
 					T0.total_amount
 			   FROM stock_count T0	   
-			   WHERE (lower(T0.doc_no) like lower(?) or lower(T0.remark) like lower(?) ) `
-
+			   WHERE (lower(T0.doc_no) like lower(?) or lower(T0.remark) like lower(?)) `
+	if txtDateBegin != "" && txtDateEnd != "" {
+		sql += " and date( T0.doc_date) between '" + helpers.ParseDateString(txtDateBegin) + "' and '" + helpers.ParseDateString(txtDateEnd) + "'"
+	}
 	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%").QueryRows(&stockCountList)
 	sql += " order by T0.doc_no  offset ? limit ?"
 	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&stockCountList)
@@ -215,7 +217,7 @@ func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errR
 	o.Begin()
 	_, err := o.Update(docCheck)
 	if err == nil {
-		_, err = o.Raw("update stock_count_sub set active = false where doc_no = ?", docCheck.DocNo).Exec()
+		_, err = o.Raw("update stock_count_sub set active = false,flag_temp = 0 where doc_no = ?", docCheck.DocNo).Exec()
 	}
 	if err != nil {
 		o.Rollback()

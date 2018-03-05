@@ -39,6 +39,13 @@
             $editOveray.show();
         });
 
+         $("#price,#qty,#average-cost").focus(function() { $(this).select(); } );
+
+           $("#DocType").val('{{.m.DocType}}'); 
+        if($("#DocType").val()=='' || $("#DocType").val() == null){
+            $("#DocType").val($("#DocType option:first").val());
+        }
+
         var templateRow = `<tr  style="cursor: pointer;" index-val="@">
                                 <input type="hidden" class="ProductId" name="StockCountSub[@].Product.ID" value="{0}" />
                                 <input type="hidden" class="ProductName" name="StockCountSub[@].Product.Name" value="{1}" />
@@ -97,7 +104,6 @@
             $('#RetData > tr').eq(index).find(".ProductPriceText").html(addCommas(price));
             $('#RetData > tr').eq(index).find(".ProductTotalPriceText").html(addCommas(totalPrice));
 
-
             sumFoorter();
             $editOveray.hide();
         });
@@ -137,21 +143,6 @@
             showMeridian:false,
             defaultTime: ''
          });
-
-         $('#MemberName').typeahead({
-            ajax: '/service/entity/list/json/?entity=member',
-            display: 'Name',
-            displayField: 'Name',
-            valueField: 'ID',
-            val: 'ID',
-            valid:'MemberID',
-            onSelect: function (data) {
-                if (data.value == 0) {
-                    return;
-                }
-                $('#MemberID').val(data.value);
-            }
-        });
 
         $('#item-name').typeahead({
             ajax: '/product/list/json',
@@ -245,9 +236,7 @@
 
             $('#TotalAmount').val(totalAmount.toFixed(2));
             $('#TotalAmountText').html(addCommas(totalAmount.toFixed(2)));
-            $('#TotalDiscount').val(totalDiscountAmount.toFixed(2));
-            $('#TotalDiscountText').html(addCommas(totalDiscountAmount.toFixed(2)));
-            $('#TotalNetAmount').val(totalNetAmount.toFixed(2));
+            $('#TotalNetAmount').val(totalAmount.toFixed(2));
             $('#TotalNetAmountText').html(addCommas(totalNetAmount.toFixed(2)));
         }
     });

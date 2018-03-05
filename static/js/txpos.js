@@ -13,7 +13,14 @@ function addCommas(nStr)
     }
 	return x1 + x2;
 }
-
+function hideGlobalModal()
+{
+    $('#global-modal').modal("hide");
+}
+function showGlobalModal()
+{
+    $('#global-modal').modal("show");
+}
 function confirmDeleteGlobal(id,url) {
     hideTopAlert();
     hideGlobalDelete();

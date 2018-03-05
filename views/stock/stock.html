@@ -29,8 +29,8 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-calculator"></i>
                             </span>
-                            {{if .DocTime}}
-                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{.m.DocDate}}' {{.r }} /> {{else}}
+                            {{if .DocDate}}
+                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{date .m.DocDate "d-m-Y"}}' {{.r }} /> {{else}}
                             <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{date .CurrentDate "d-m-Y"}}' {{.r }} /> {{end}}
                             
                         </div>
@@ -85,7 +85,8 @@
                                 <i class="fa  fa-file-text-o"></i>
                             </span>
                             <select id="DocType" name="DocType" class="form-control" {{.r }}  autocomplete="off">
-                                <option value="0"  >ทั่วไป</option>
+                                <option value="0" >ทั่วไป</option>
+                                <option value="1" >ยกมา</option>
                             </select>
                         </div>
                     </div>
@@ -198,7 +199,7 @@
                     <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path"  >  
                 </div>
                 <div class="col-md-2">
-                    <input type="number" id="qty" name="qty" step="0.01" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
+                    <input type="number" id="qty" name="qty" step="1" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
                 </div>
                 <div class="col-md-4">
                     <div class="input-group ">

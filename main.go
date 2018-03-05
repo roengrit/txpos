@@ -13,7 +13,7 @@ import (
 
 func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos sslmode=disable")
+	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos1 sslmode=disable")
 }
 
 func main() {
