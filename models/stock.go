@@ -211,6 +211,7 @@ func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errR
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
 	docCheck.Active = false
+	docCheck.FlagTemp = 0
 	docCheck.CancelRemark = remark
 	docCheck.CancelAt = time.Now()
 	docCheck.CancelUser = &user
