@@ -13,7 +13,7 @@
     </h1>
 </section>
 <section class="content">
-    <form action="/stock" autocomplete="off" id="pickup-form" onsubmit="return false;" method="post">
+    <form action="/pickup" autocomplete="off" id="pickup-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
         
         <input type="hidden" id="current-row" /> 
@@ -24,7 +24,7 @@
             <div class="box-body">
                 <div class="form-group req-box-form">
                     <div class="col-xs-6">
-                        <label for="req-sn">วันที่ตรวจนับ</label>
+                        <label for="req-sn">วันที่เบิก</label>
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="fa fa-calculator"></i>
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="col-xs-4">
-                            <label for="req-sn">เวลาที่ตรวจนับ</label>
+                            <label for="req-sn">เวลาที่เบิก</label>
                             <div class="input-group bootstrap-timepicker timepicker">
                                 <span class="input-group-addon">
                                     <i class="fa fa-clock-o"></i>
@@ -85,8 +85,9 @@
                                 <i class="fa  fa-file-text-o"></i>
                             </span>
                             <select id="DocType" name="DocType" class="form-control" {{.r }}  autocomplete="off">
-                                <option value="0" >ทั่วไป</option>
-                                <option value="1" >ยกมา</option>
+                                <option value="0"  >ทั่วไป/สินเปลือง</option>
+                                <option value="1"  >เพื่อผลิต</option>                                 
+                                <option value="2"  >เพื่อทำลาย</option>   
                             </select>
                         </div>
                     </div>
@@ -105,15 +106,15 @@
                             </thead>                           
                             <tbody class="table-bordered table-condensed" id="RetData">
                                     {{if .RetCount}}
-                                        {{range $key, $val := .m.StockCountSub}}
+                                        {{range $key, $val := .m.PickUpSub}}
                                             <tr  style="cursor: pointer;" index-val="{{$key}}">
-                                                    <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" /> 
-                                                    <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
-                                                    <input type="hidden" class="ProductUnitID" name="StockCountSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
-                                                    <input type="hidden" class="ProductQty" name="StockCountSub[{{$key}}].Qty" value="{{$val.Qty}}" />
-                                                    <input type="hidden" class="ProductPrice" name="StockCountSub[{{$key}}].Price" value="{{$val.AverageCost}}" />
-                                                    <input type="hidden" class="AverageCost" name="StockCountSub[{{$key}}].AverageCost" value="{{$val.AverageCost}}" />
-                                                    <input type="hidden" class="ProductTotalPrice" name="StockCountSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                                    <input type="hidden" class="ProductId" name="PickUpSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" /> 
+                                                    <input type="hidden" class="ProductName" name="PickUpSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
+                                                    <input type="hidden" class="ProductUnitID" name="PickUpSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
+                                                    <input type="hidden" class="ProductQty" name="PickUpSub[{{$key}}].Qty" value="{{$val.Qty}}" />
+                                                    <input type="hidden" class="ProductPrice" name="PickUpSub[{{$key}}].Price" value="{{$val.AverageCost}}" />
+                                                    <input type="hidden" class="AverageCost" name="PickUpSub[{{$key}}].AverageCost" value="{{$val.AverageCost}}" />
+                                                    <input type="hidden" class="ProductTotalPrice" name="PickUpSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
                     
                                                     <td class="col-md-5 table-td-mid ProductNameText">{{$val.Product.Name}}</td> 
                                                     <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
@@ -184,10 +185,9 @@
             </div>      
             <div class="box-footer">
                 {{if .r}} {{else}}
-                    <button type="submit" {{if .temp}} onclick="Save()" {{end}} class="btn btn-primary pull-right  {{if not .temp}} disabled {{end}} ">บันทึก/ปรับปรุง</button>
-                    <button type="submit" {{if .temp}} onclick="SaveTemp()" {{end}} class="btn bg-purple pull-right  {{if not .temp}} disabled {{end}} " style="margin-right:5px;">บันทึก/แสดงผลต่าง</button>
+                    <button type="submit"  onclick="Save()"  class="btn btn-primary pull-right ">บันทึก</button>
                 {{end}}
-                <a href="/stock/list" class="btn btn-default pull-right" style="margin-right:5px;">ยกเลิก</a>
+                <a href="/pickup/list" class="btn btn-default pull-right" style="margin-right:5px;">ยกเลิก</a>
             </div>
         </div>
         <div class="col-xs-12" id="editOveray">

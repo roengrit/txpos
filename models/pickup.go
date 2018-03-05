@@ -8,8 +8,8 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-//StockCount _
-type StockCount struct {
+//PickUp _
+type PickUp struct {
 	ID             int
 	Flag           int
 	Active         bool
@@ -25,20 +25,20 @@ type StockCount struct {
 	TotalAmount    float64 `orm:"digits(12);decimals(2)"`
 	TotalNetAmount float64 `orm:"digits(12);decimals(2)"`
 	CreditDay      int
-	CreditDate     time.Time       `orm:"type(date)"`
-	Remark         string          `orm:"size(300)"`
-	CancelRemark   string          `orm:"size(300)"`
-	Creator        *User           `orm:"rel(fk)"`
-	CreatedAt      time.Time       `orm:"auto_now_add;type(datetime)"`
-	Editor         *User           `orm:"null;rel(fk)"`
-	EditedAt       time.Time       `orm:"null;auto_now;type(datetime)"`
-	CancelUser     *User           `orm:"null;rel(fk)"`
-	CancelAt       time.Time       `orm:"null;type(datetime)"`
-	StockCountSub  []StockCountSub `orm:"-"`
+	CreditDate     time.Time   `orm:"type(date)"`
+	Remark         string      `orm:"size(300)"`
+	CancelRemark   string      `orm:"size(300)"`
+	Creator        *User       `orm:"rel(fk)"`
+	CreatedAt      time.Time   `orm:"auto_now_add;type(datetime)"`
+	Editor         *User       `orm:"null;rel(fk)"`
+	EditedAt       time.Time   `orm:"null;auto_now;type(datetime)"`
+	CancelUser     *User       `orm:"null;rel(fk)"`
+	CancelAt       time.Time   `orm:"null;type(datetime)"`
+	PickUpSub      []PickUpSub `orm:"-"`
 }
 
-//StockCountSub _
-type StockCountSub struct {
+//PickUpSub _
+type PickUpSub struct {
 	ID          int
 	Flag        int
 	Active      bool
@@ -58,51 +58,51 @@ type StockCountSub struct {
 	CreatedAt   time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
-//StockCountJSON StockCountJSON
-type StockCountJSON struct {
-	StockCountList *[]StockCount
-	Paging         string
-	Page           uint
-	PerPage        uint
+//PickUpJSON PickUpJSON
+type PickUpJSON struct {
+	PickUpList *[]PickUp
+	Paging     string
+	Page       uint
+	PerPage    uint
 }
 
 func init() {
-	orm.RegisterModel(new(StockCount), new(StockCountSub)) // Need to register model in init
+	orm.RegisterModel(new(PickUp), new(PickUpSub)) // Need to register model in init
 }
 
-//CreateStockCount _
-func CreateStockCount(StockCount StockCount, user User) (retID int64, errRet error) {
-	StockCount.DocNo = helpers.GetMaxDoc("stock_count", "STK")
-	StockCount.Creator = &user
-	StockCount.CreatedAt = time.Now()
-	StockCount.CreditDay = 0
-	StockCount.CreditDate = time.Now()
-	StockCount.Active = true
-	var fullDataSub []StockCountSub
-	for _, val := range StockCount.StockCountSub {
+//CreatePickUp _
+func CreatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
+	PickUp.DocNo = helpers.GetMaxDoc("pick_up", "PI")
+	PickUp.Creator = &user
+	PickUp.CreatedAt = time.Now()
+	PickUp.CreditDay = 0
+	PickUp.CreditDate = time.Now()
+	PickUp.Active = true
+	var fullDataSub []PickUpSub
+	for _, val := range PickUp.PickUpSub {
 		if val.Product.ID != 0 {
 			Product, _ := GetProduct(val.Product.ID)
 			val.CreatedAt = time.Now()
 			val.Creator = &user
-			val.DocNo = StockCount.DocNo
-			val.Flag = StockCount.Flag
+			val.DocNo = PickUp.DocNo
+			val.Flag = PickUp.Flag
 			val.BalanceQty = Product.BalanceQty
 			val.DiffQty = val.Qty - Product.BalanceQty
-			if StockCount.FlagTemp == 0 {
+			if PickUp.FlagTemp == 0 {
 				val.Active = true
 				val.Remark = ""
 			} else {
 				val.Active = false
 				val.Remark = "รอการปรับปรุง"
 			}
-			val.DocDate = StockCount.DocDate
+			val.DocDate = PickUp.DocDate
 			val.AverageCost = val.Price
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
 	o := orm.NewOrm()
 	o.Begin()
-	id, err := o.Insert(&StockCount)
+	id, err := o.Insert(&PickUp)
 	_, err = o.InsertMulti(len(fullDataSub), fullDataSub)
 	if err == nil {
 		retID = id
@@ -115,30 +115,30 @@ func CreateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 	return retID, errRet
 }
 
-//UpdateStockCount _
-func UpdateStockCount(StockCount StockCount, user User) (retID int64, errRet error) {
-	docCheck, _ := GetStockCount(StockCount.ID)
+//UpdatePickUp _
+func UpdatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
+	docCheck, _ := GetPickUp(PickUp.ID)
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
-	StockCount.Creator = docCheck.Creator
-	StockCount.CreatedAt = docCheck.CreatedAt
-	StockCount.CreditDay = docCheck.CreditDay
-	StockCount.CreditDate = docCheck.CreditDate
-	StockCount.EditedAt = time.Now()
-	StockCount.Editor = &user
-	StockCount.Active = docCheck.Active
-	var fullDataSub []StockCountSub
-	for _, val := range StockCount.StockCountSub {
+	PickUp.Creator = docCheck.Creator
+	PickUp.CreatedAt = docCheck.CreatedAt
+	PickUp.CreditDay = docCheck.CreditDay
+	PickUp.CreditDate = docCheck.CreditDate
+	PickUp.EditedAt = time.Now()
+	PickUp.Editor = &user
+	PickUp.Active = docCheck.Active
+	var fullDataSub []PickUpSub
+	for _, val := range PickUp.PickUpSub {
 		if val.Product.ID != 0 {
 			Product, _ := GetProduct(val.Product.ID)
 			val.CreatedAt = time.Now()
 			val.Creator = &user
-			val.DocNo = StockCount.DocNo
-			val.Flag = StockCount.Flag
+			val.DocNo = PickUp.DocNo
+			val.Flag = PickUp.Flag
 			val.BalanceQty = Product.BalanceQty
 			val.DiffQty = val.Qty - Product.BalanceQty
-			if StockCount.FlagTemp == 0 {
+			if PickUp.FlagTemp == 0 {
 				val.Active = true
 				val.Remark = ""
 			} else {
@@ -146,15 +146,15 @@ func UpdateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 				val.Remark = "รอการปรับปรุง"
 			}
 			val.AverageCost = val.Price
-			val.DocDate = StockCount.DocDate
+			val.DocDate = PickUp.DocDate
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
 	o := orm.NewOrm()
 	o.Begin()
-	id, err := o.Update(&StockCount)
+	id, err := o.Update(&PickUp)
 	if err == nil {
-		_, err = o.QueryTable("stock_count_sub").Filter("doc_no", StockCount.DocNo).Delete()
+		_, err = o.QueryTable("pick_up_sub").Filter("doc_no", PickUp.DocNo).Delete()
 	}
 	if err == nil {
 		_, err = o.InsertMulti(len(fullDataSub), fullDataSub)
@@ -169,18 +169,18 @@ func UpdateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 	return retID, errRet
 }
 
-//GetStockCount _
-func GetStockCount(ID int) (doc *StockCount, errRet error) {
-	StockCount := &StockCount{}
+//GetPickUp _
+func GetPickUp(ID int) (doc *PickUp, errRet error) {
+	PickUp := &PickUp{}
 	o := orm.NewOrm()
-	o.QueryTable("stock_count").Filter("ID", ID).RelatedSel().One(StockCount)
-	o.QueryTable("stock_count_sub").Filter("doc_no", StockCount.DocNo).RelatedSel().All(&StockCount.StockCountSub)
-	doc = StockCount
+	o.QueryTable("pick_up").Filter("ID", ID).RelatedSel().One(PickUp)
+	o.QueryTable("pick_up_sub").Filter("doc_no", PickUp.DocNo).RelatedSel().All(&PickUp.PickUpSub)
+	doc = PickUp
 	return doc, errRet
 }
 
-//GetStockCountList GetStockCountList
-func GetStockCountList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, term string) (num int64, stockCountList []StockCount, err error) {
+//GetPickUpList GetPickUpList
+func GetPickUpList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, term string) (num int64, pickupList []PickUp, err error) {
 	o := orm.NewOrm()
 	var sql = `SELECT 
 					T0.i_d,
@@ -190,23 +190,23 @@ func GetStockCountList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, ter
 					T0.flag_temp,
 					T0.active,
 					T0.total_amount
-			   FROM stock_count T0	   
+			   FROM pick_up T0	   
 			   WHERE (lower(T0.doc_no) like lower(?) or lower(T0.remark) like lower(?)) `
 	if txtDateBegin != "" && txtDateEnd != "" {
 		sql += " and date( T0.doc_date) between '" + helpers.ParseDateString(txtDateBegin) + "' and '" + helpers.ParseDateString(txtDateEnd) + "'"
 	}
-	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%").QueryRows(&stockCountList)
+	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%").QueryRows(&pickupList)
 	sql += " order by T0.doc_no  offset ? limit ?"
-	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&stockCountList)
+	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&pickupList)
 
-	return num, stockCountList, err
+	return num, pickupList, err
 }
 
-//UpdateCancelStockCount _
-func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errRet error) {
-	docCheck := &StockCount{}
+//UpdateCancelPickUp _
+func UpdateCancelPickUp(ID int, remark string, user User) (retID int64, errRet error) {
+	docCheck := &PickUp{}
 	o := orm.NewOrm()
-	o.QueryTable("stock_count").Filter("ID", ID).RelatedSel().One(docCheck)
+	o.QueryTable("pick_up").Filter("ID", ID).RelatedSel().One(docCheck)
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
@@ -217,7 +217,7 @@ func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errR
 	o.Begin()
 	_, err := o.Update(docCheck)
 	if err == nil {
-		_, err = o.Raw("update stock_count_sub set active = false where doc_no = ?", docCheck.DocNo).Exec()
+		_, err = o.Raw("update pick_up_sub set active = false where doc_no = ?", docCheck.DocNo).Exec()
 	}
 	if err != nil {
 		o.Rollback()
@@ -228,16 +228,16 @@ func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errR
 	return retID, errRet
 }
 
-//UpdateActiveStockCount _
-func UpdateActiveStockCount(ID int, user User) (retID int64, errRet error) {
+//UpdateActivePickUp _
+func UpdateActivePickUp(ID int, user User) (retID int64, errRet error) {
 	o := orm.NewOrm()
 	o.Begin()
 	orm.Debug = true
-	_, err := o.Raw("update stock_count set active = true,flag_temp = 0,editor_id = ?,edited_at = now() where i_d = ?", user.ID, ID).Exec()
+	_, err := o.Raw("update pick_up set active = true,flag_temp = 0,editor_id = ?,edited_at = now() where i_d = ?", user.ID, ID).Exec()
 	if err != nil {
 		o.Rollback()
 	} else {
-		_, err := o.Raw("update stock_count_sub set active = true where doc_no = (select stock_count.doc_no from stock_count where stock_count.i_d = ? limit 1)", ID).Exec()
+		_, err := o.Raw("update pick_up_sub set active = true where doc_no = (select pick_up.doc_no from pick_up where pick_up.i_d = ? limit 1)", ID).Exec()
 		if err != nil {
 			o.Rollback()
 		} else {

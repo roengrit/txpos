@@ -26,14 +26,6 @@ String.prototype.rpad = function(padString, length) {
         format: 'dd-mm-yyyy',      
     }); 
 });
-function cancelDoc(id){
-         hideTopAlert();
-         $.get( "/stock/cancel/?id=" + id , function( data ) {
-            $('#small-global-modal-content').html(data.RetData);
-            showGlobalSmallModal();
-          });
-    }
-
  function Paging(page) {
         $('#Page').val(page);
         LoadData();
@@ -67,11 +59,11 @@ function cancelDoc(id){
                                 <th style="width:150px!important;text-align:center">จัดการข้อมูล</th>
                             </tr>
                 `);
-                if(data.StockCountList == null){
+                if(data.PickUpList == null){
                     $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
                     return;
                 }
-                data.StockCountList.forEach(dat => {
+                data.PickUpList.forEach(dat => {
          
                     var todayTime = new Date(dat.DocDate ); 
                     
@@ -90,10 +82,10 @@ function cancelDoc(id){
                          <td style="text-align:right;">`+ addCommas(dat.TotalAmount) + `</td>
                         <td style="text-align:center;width:150px!important;">
                             <div class="btn-group">
-                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/stock/?id=`+ dat.ID + `">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/pickup/?id=`+ dat.ID + `">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a class="btn btn-sm btn-danger `+(!dat.Active ? "disabled": "")+` " onclick="cancelDoc(`+ dat.ID + `)"  title="ยกเลิก" href=javascript:void(0)">
+                                <a class="btn btn-sm btn-danger `+(!dat.Active ? "disabled": "")+` " onclick="cancelDoc(`+ dat.ID + `)"  title="ยกเลิก" href="javascript:void(0)">
                                     <i class="fa fa-ban"></i>
                                 </a>                                 
                             </div>
@@ -108,7 +100,7 @@ function cancelDoc(id){
     }
     function cancelDoc(id){
          hideTopAlert();
-         $.get( "/stock/cancel/?id=" + id , function( data ) {
+         $.get( "/pickup/cancel/?id=" + id , function( data ) {
             $('#global-modal-content').html(data.RetData);
             showGlobalModal();
           });
