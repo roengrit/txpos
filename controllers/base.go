@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"txpos/models"
+
 	"github.com/astaxie/beego"
 )
 
@@ -14,5 +16,6 @@ type BaseController struct {
 
 //Prepare _
 func (b *BaseController) Prepare() {
-
+	m, _ := models.GetSettingFirst()
+	b.Data["VatVal"] = m.VatValue
 }

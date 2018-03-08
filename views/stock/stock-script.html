@@ -120,6 +120,8 @@
                 deleteRow($(this));
                 $editOveray.hide();
             });
+            $('#RetData tr:last').trigger("click");
+            $('#item-name').focus();
         });
 
         $("#DocType").val('{{.m.DocType}}');
@@ -168,6 +170,7 @@
                     {
                         $('#price').attr('readonly','readonly');
                     }
+                    $('#qty').focus();
                 });
             }
         });

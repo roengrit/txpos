@@ -13,7 +13,6 @@ type PickUp struct {
 	ID             int
 	Flag           int
 	Active         bool
-	FlagTemp       int
 	DocType        int
 	DocNo          string    `orm:"size(30)"`
 	DocDate        time.Time `form:"-" orm:"null"`
@@ -88,13 +87,6 @@ func CreatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
 			val.Flag = PickUp.Flag
 			val.BalanceQty = Product.BalanceQty
 			val.DiffQty = val.Qty - Product.BalanceQty
-			if PickUp.FlagTemp == 0 {
-				val.Active = true
-				val.Remark = ""
-			} else {
-				val.Active = false
-				val.Remark = "รอการปรับปรุง"
-			}
 			val.DocDate = PickUp.DocDate
 			val.AverageCost = val.Price
 			fullDataSub = append(fullDataSub, val)
@@ -138,13 +130,6 @@ func UpdatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
 			val.Flag = PickUp.Flag
 			val.BalanceQty = Product.BalanceQty
 			val.DiffQty = val.Qty - Product.BalanceQty
-			if PickUp.FlagTemp == 0 {
-				val.Active = true
-				val.Remark = ""
-			} else {
-				val.Active = false
-				val.Remark = "รอการปรับปรุง"
-			}
 			val.AverageCost = val.Price
 			val.DocDate = PickUp.DocDate
 			fullDataSub = append(fullDataSub, val)

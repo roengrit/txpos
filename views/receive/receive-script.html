@@ -40,9 +40,10 @@
                                 <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[@].TotalPrice" value="{5}" />
 
                                 <td class="col-md-5 table-td-mid ProductNameText">{6}</td> 
-                                <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{7}</td>
-                                <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{8}</td>
-                                <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{9}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{7}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{8}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{9}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductTotalPriceText"  >{10}</td>
                                 <td class="col-md-1 table-td-mid table-td-number"  >
                                     <div class="btn-group">
                                         <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
@@ -96,8 +97,10 @@
                 deleteRow($(this));
                 $editOveray.hide();
             });
+            $('#RetData tr:last').trigger("click");
+            $('#item-name').focus();
         });
-
+        $("#price,#qty,#average-cost").focus(function() { $(this).select(); } );
         $("#DocType").val('{{.m.DocType}}'); 
         if($("#DocType").val()=='' || $("#DocType").val() == null){
             $("#DocType").val($("#DocType option:first").val());
@@ -180,6 +183,7 @@
                 .replace('{7}', '0.00')
                 .replace('{8}', '0.00')
                 .replace('{9}', '0.00')
+                .replace('{10}', '0.00')
             );
         }
 

@@ -13,7 +13,7 @@ import (
 
 func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos1 sslmode=disable")
+	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos sslmode=disable")
 }
 
 func main() {
@@ -30,6 +30,7 @@ func main() {
 	beego.Router("/", &c.AppController{})
 
 	beego.Router("/company", &c.CompanyController{}, "get:CreateCom;post:UpdateCom")
+	beego.Router("/setting", &c.SettingController{}, "get:CreateSetting;post:UpdateSetting")
 
 	beego.Router("/service/secure/json/", &c.ServiceController{}, "get:GetXSRF")
 
@@ -58,6 +59,8 @@ func main() {
 	beego.Router("/pickup/cancel", &c.PickUpController{}, "get:CancelPickUp;post:UpdateCancelPickUp")
 	beego.Router("/pickup/active", &c.PickUpController{}, "post:UpdateActivePickUp")
 	beego.Router("/pickup/list", &c.PickUpController{}, "get:PickUpList;post:GetPickUpListJSON")
+
+	beego.Router("/receive", &c.ReceiveController{})
 
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("TextThCommaSeperate", h.ThCommaSeperate)

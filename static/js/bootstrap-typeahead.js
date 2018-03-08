@@ -342,7 +342,7 @@
         },
         listen: function () {
             this.$element
-                .on('focus', $.proxy(this.focus, this))
+                //.on('focus', $.proxy(this.focus, this))
                 .on('blur', $.proxy(this.blur, this))
                 .on('keypress', $.proxy(this.keypress, this))
                 .on('keyup', $.proxy(this.keyup, this));

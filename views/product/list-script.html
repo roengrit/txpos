@@ -47,9 +47,14 @@
                         <td>`+ dat.CategoryName + `</td>
                         <td>` + (dat.Active ? `<span class="label label-success">เปิดใช้งาน</span>` : `<span class="label label-danger">ปิดใช้งาน</span>`) + `</td>
                         <td style="text-align:center;">
+                            <div class="btn-group">
                                 <a class="btn btn-sm btn-primary " title="แก้ไข" href="/product/?id=`+ dat.ID + `">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                <a class="btn btn-sm btn-danger " title="ลบ" onclick='confirmDeleteGlobal(`+dat.ID+`,"/product")' href="javascript:void(0)">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                         </tr>
                     `);

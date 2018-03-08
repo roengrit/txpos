@@ -25,14 +25,12 @@ func (c *PickUpController) Get() {
 	}
 	if docID == 0 {
 		c.Data["title"] = "เบิกสินค้า/วัตถุดิบ"
-		c.Data["temp"] = 1
 	} else {
 		doc, _ := m.GetPickUp(int(docID))
 		c.Data["m"] = doc
 		if !doc.Active {
 			c.Data["r"] = "readonly"
 		}
-		c.Data["temp"] = doc.FlagTemp
 		c.Data["RetCount"] = len(doc.PickUpSub)
 		c.Data["title"] = "แก้ไขเบิกสินค้า/วัตถุดิบ : " + doc.DocNo
 	}
