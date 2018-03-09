@@ -454,9 +454,15 @@
             $(e.currentTarget).addClass('active')
         },
         mouseleave: function (e) {
+            // this.mousedover = false
+            // if (!this.focused && this.shown)
+            //     this.hide()
+            //     console.log('ALL')
+        },
+        focusout :  function (e) {
             this.mousedover = false
             if (!this.focused && this.shown)
-                this.hide()
+                this.hide() 
         },
         destroy: function() {
             this.$element

@@ -22,7 +22,7 @@
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
         <div id="box-req" class="box box-primary">
             <div class="box-body">
-                <div class="form-group req-box-form">
+                <div class="form-group req-box-form top-content">
                     <div class="col-xs-6">
                         <label for="req-sn">วันที่ตรวจนับ</label>
                         <div class="input-group">
@@ -68,7 +68,7 @@
                             </div>
                     </div>
                 </div>         
-                <div class="form-group req-box-form">
+                <div class="form-group req-box-form top-content">
                    <div class="col-xs-6">
                                 <label for="req-sn">เอกสารอ้างอิง</label>
                                 <div class="input-group">
@@ -201,14 +201,14 @@
                 <div class="col-md-2">
                     <input type="number" id="qty" name="qty" step="1" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="input-group ">
                         <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" readonly placeholder="ราคา">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-success ok-edit-row">ตกลง</button>
-                            <button type="button" class="btn btn-default cancel-edit-row">ยกเลิก</button>
-                        </span>
                     </div>
+                    <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>
+                </div>
+                <div class="col-md-1" id="totalCal" style="text-align:right;margin-top:8px;">
+                    0.00
                 </div>
             </div>        
     </form>

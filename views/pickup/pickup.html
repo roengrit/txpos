@@ -51,9 +51,6 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-bell-o"></i>
                                 </span>
-                                {{if .m.FlagTemp}}
-                                  <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="W" readonly />
-                                {{else}}
                                  {{if .m.Active}}
                                       <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly />
                                  {{else}}
@@ -63,7 +60,6 @@
                                          <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> 
                                     {{end}}                                   
                                 {{end}}
-                               {{end}}
                             </div>
                     </div>
                 </div>         
@@ -190,25 +186,25 @@
             </div>
         </div>
         <div class="col-xs-12" id="editOveray">
-                <div class="col-md-6">
-                    <input type="text" id="item-name" name="item-name" class="form-control" autocomplete="off" placeholder="่ชื่อ">
-                    <input type="hidden" tabindex="-1" id="item-id" name="item-id"  >
-                    <input type="hidden" tabindex="-1" id="unit-id" name="unit-id"  >
-                    <input type="hidden" tabindex="-1" id="average-cost" name="average-cost" >   
-                    <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path"  >  
+            <div class="col-md-6">
+                <input type="text" id="item-name" name="item-name" class="form-control" autocomplete="off" placeholder="่ชื่อ">
+                <input type="hidden" tabindex="-1" id="item-id" name="item-id"  >
+                <input type="hidden" tabindex="-1" id="unit-id" name="unit-id"  >
+                <input type="hidden" tabindex="-1" id="average-cost" name="average-cost" >   
+                <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path"  >  
+            </div>
+            <div class="col-md-2">
+                <input type="number" id="qty" name="qty" step="1" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
+            </div>
+            <div class="col-md-2">
+                <div class="input-group ">
+                    <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" readonly placeholder="ราคา">
                 </div>
-                <div class="col-md-2">
-                    <input type="number" id="qty" name="qty" step="1" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group ">
-                        <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" readonly placeholder="ราคา">
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-success ok-edit-row">ตกลง</button>
-                            <button type="button" class="btn btn-default cancel-edit-row">ยกเลิก</button>
-                        </span>
-                    </div>
-                </div>
+                <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>
+            </div>
+            <div class="col-md-1" id="totalCal" style="text-align:right;margin-top:8px;">
+                0.00
+            </div>
             </div>        
     </form>
 </section>

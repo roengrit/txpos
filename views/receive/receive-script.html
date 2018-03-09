@@ -28,7 +28,26 @@
             $("#unit-code").val($(this).find(".ProductUnitID").val()); 
             $("#qty").val($(this).find(".ProductQty").val());
             $("#price").val($(this).find(".ProductPrice").val());
+            $("#discount").val($(this).find(".ProductDiscount").val());
+            $("#discountVal").val($(this).find(".ProductDiscountVal").val());
+            $("#totalExcludeVatCal").val($(this).find(".ProductTotalPriceExludeVat").val());
+            $("#totalCal").html(addCommas( $(this).find(".ProductTotalPrice").val()));
             $editOveray.show();
+            $('#item-name').focus();
+        });
+
+        
+        $("#price,#qty,#item-name,#discount").focus(function()
+        { 
+            $(this).select(); 
+        });
+
+        $('#qty,#price,#discount').keyup(function(){
+            totalCal = parseFloat($("#qty").val()) * parseFloat($("#price").val()) ; 
+            if(totalCal == NaN){
+                totalCal = 0.00; 
+            }
+            $("#totalCal").html(addCommas( totalCal));
         });
 
         var templateRow = `<tr  style="cursor: pointer;" index-val="@">
@@ -37,13 +56,16 @@
                                 <input type="hidden" class="ProductUnitID" name="ReceiveSub[@].Unit.ID" value="{2}" /> 
                                 <input type="hidden" class="ProductQty" name="ReceiveSub[@].Qty" value="{3}" />
                                 <input type="hidden" class="ProductPrice" name="ReceiveSub[@].Price" value="{4}" />
-                                <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[@].TotalPrice" value="{5}" />
+                                <input type="hidden" class="ProductDiscount" name="ReceiveSub[@].DiscountWord" value="{5}" />
+                                <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[@].DiscountVal" value="{6}" />
+                                <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[@].TotalPrice" value="{7}" />
+                                <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[@].TotalPriceExludeVat" value="{7}" />
 
-                                <td class="col-md-5 table-td-mid ProductNameText">{6}</td> 
-                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{7}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{8}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{9}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductTotalPriceText"  >{10}</td>
+                                <td class="col-md-5 table-td-mid ProductNameText">{8}</td> 
+                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{9}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{10}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductDiscount">{11}</td>
+                                <td class="col-md-1 table-td-mid table-td-number ProductTotalPriceText"  >{12}</td>
                                 <td class="col-md-1 table-td-mid table-td-number"  >
                                     <div class="btn-group">
                                         <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
@@ -64,25 +86,7 @@
         });
 
         $(".ok-edit-row").click(function (event) {
-            var index  =  $("#current-row").val();
-            var qty = parseFloat($('#qty').val()==''? '0': $('#qty').val()) ;
-            var price = parseFloat($('#price').val()==''? '0': $('#price').val());
-            var totalPrice = parseFloat($('#qty').val()==''? '0': $('#qty').val()) * parseFloat($('#price').val()==''? '0': $('#price').val());
-
-            $('#RetData > tr').eq(index).find(".ProductId").val($('#item-id').val());
-            $('#RetData > tr').eq(index).find(".ProductName").val($('#item-name').val());
-            $('#RetData > tr').eq(index).find(".ProductUnitID").val($('#unit-id').val()); 
-
-            $('#RetData > tr').eq(index).find(".ProductQty").val(qty);
-            $('#RetData > tr').eq(index).find(".ProductPrice").val(price);
-            $('#RetData > tr').eq(index).find(".ProductTotalPrice").val(totalPrice);
-
-            $('#RetData > tr').eq(index).find(".ProductNameText").html($('#item-name').val());
-            $('#RetData > tr').eq(index).find(".ProductQtyText").html(addCommas(qty));
-            $('#RetData > tr').eq(index).find(".ProductPriceText").html(addCommas(price));
-            $('#RetData > tr').eq(index).find(".ProductTotalPriceText").html(addCommas(totalPrice));
-            sumFoorter();
-            $editOveray.hide();
+             
         }); 
 
         $(".delete-row").click(function (event) {
@@ -100,7 +104,27 @@
             $('#RetData tr:last').trigger("click");
             $('#item-name').focus();
         });
-        $("#price,#qty,#average-cost").focus(function() { $(this).select(); } );
+
+        $("#price,#qty,#average-cost,#item-name,#discount").focus(function() { $(this).select(); } );
+
+        $('#qty').keypress(function(key){
+            if ( key.charCode == 13){
+                    $("#price").focus();
+            }
+        });
+
+        $('#price').keypress(function(key){
+            if (key.charCode == 13){
+                $("#discount").focus();
+            }
+        });
+        
+        $('#discount').keypress(function(key){
+            if ( key.charCode == 13){
+                    $(".ok-edit-row").trigger('click');
+            }
+        });
+
         $("#DocType").val('{{.m.DocType}}'); 
         if($("#DocType").val()=='' || $("#DocType").val() == null){
             $("#DocType").val($("#DocType option:first").val());
@@ -152,8 +176,9 @@
                 $('#item-id').val(data.value);  
                 $.get("/product/json/?id=" + data.value, function (product) {
                     $('#unit-id').val(product.Data1.Unit.ID);  
-                    $('#item-balance_cost').val(product.Data1.BalanceCost);  
+                    $('#item-balance_cost').val(product.Data1.BalanceCost);                      
                 });       
+                $('#qty').focus();
             }
         });
 

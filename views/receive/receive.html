@@ -132,11 +132,15 @@
                                     <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
                                     <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
                                     <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
+                                    <input type="hidden" class="ProductDiscount" name="ReceiveSub[{{$key}}].DiscountWord" value="{{$val.Discount}}" />
+                                    <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
                                     <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                    <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}" />
 
                                     <td class="col-md-5 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
+                                    <td class="col-md-2 table-td-mid table-td-number ProductDiscount">{{$val.ProductDiscount }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
                                     <td class="col-md-1 table-td-mid table-td-number">
                                         <div class="btn-group">
@@ -159,19 +163,10 @@
                                     </th>
                                     <th colspan="3" style="text-align:right;vertical-align: middle;">
                                         <div style="display:block;">
-                                            <input type="number" step="0.01" class="form-control" id="DiscountWord" value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaSeperate}}{{else}}0.00{{end}}"
+                                            <input type="text"  class="form-control" id="DiscountWord" 
+                                            value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaSeperate}}{{else}} {{end}}"
                                                 name="DiscountWord" style="width:130px!important;float:right;margin-left:5px;text-align: right;"
-                                                {{.r }} />
-                                            <select id="DiscountType" name="DiscountType" class="form-control" style="width:80px!important;float:right;margin-left:5px;"
-                                                {{.r }}>
-                                                {{if.m.DiscountType}}
-                                                <option value="1" selected>%</option>
-                                                <option value="0">เงิน</option>
-                                                {{else}}
-                                                <option value="0" selected>เงิน</option>
-                                                <option value="1">%</option>
-                                                {{end}}
-                                            </select>
+                                                 />
                                             <div style="padding-top:5px;height: 34px;float:right;">ส่วนลด</div>
                                         </div>
                                     </th>
@@ -244,12 +239,14 @@
             </div>
         </div>
         <div class="col-xs-12" id="editOveray">
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <input type="text" id="item-name" name="item-name" class="form-control" autocomplete="off" placeholder="่ชื่อ">
                 <input type="hidden" tabindex="-1" id="item-id" name="item-id">
                 <input type="hidden" tabindex="-1" id="unit-id" name="unit-id">
                 <input type="hidden" tabindex="-1" id="item-balance_cost" name="item-balance_cost">
                 <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path">
+                <input type="hidden" tabindex="-1" id="discountVal" name="discountVal">
+                <input type="hidden" tabindex="-1" id="totalExcludeVatCal" name="totalExcludeVatCal">
             </div>
             <div class="col-md-2">
                 <input type="number" id="qty" name="qty" step="0.01" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
@@ -258,16 +255,11 @@
                 <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" autocomplete="off"
                     placeholder="ราคา">
             </div>
-            <div class="col-md-3">
-                <div class="input-group ">
-                    <input type="text" id="discount" name="discount" class="form-control" style="text-align: right;" placeholder="ส่วนลด">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-success ok-edit-row">ตกลง</button>
-                        <button type="button" class="btn btn-default cancel-edit-row">ยกเลิก</button>
-                    </span>                    
-                </div>                
+            <div class="col-md-2">
+                <input type="text" id="discount" name="discount" class="form-control" style="text-align: right;" placeholder="ส่วนลด">
+                <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>        
             </div>
-            <div class="col-md-1" style="text-align:right;margin-top:8px;">
+            <div class="col-md-1" id="totalCal" style="text-align:right;margin-top:8px;">
                    0.00
             </div>
         </div>
