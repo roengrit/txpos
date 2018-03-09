@@ -6,6 +6,7 @@
         sumFoorter();
         var $editOveray = $('#editOveray');
         $('#ret-table').on("click", "tbody > tr", function (index) {
+            commitEdit();   
             var readonly = '{{.r}}';
             if(readonly)
               return;
@@ -86,15 +87,17 @@
         });
 
         $(".ok-edit-row").click(function (event) {
-             
+            commitEdit();   
         }); 
 
         $(".delete-row").click(function (event) {
+            commitEdit();
             deleteRow($(this));
             sumFoorter();
         });
 
         $(".add-row").click(function (event) {
+            commitEdit();
             var rowCount = $('#RetData tr').length;
             appendEmptyRow(rowCount);
             $(".delete-row").click(function (event) {
@@ -110,18 +113,21 @@
         $('#qty').keypress(function(key){
             if ( key.charCode == 13){
                     $("#price").focus();
+                    return false;
             }
         });
 
         $('#price').keypress(function(key){
             if (key.charCode == 13){
                 $("#discount").focus();
+                return false;
             }
         });
         
         $('#discount').keypress(function(key){
             if ( key.charCode == 13){
-                    $(".ok-edit-row").trigger('click');
+                    $(".ok-edit-row").trigger('click');    
+                    return false;           
             }
         });
 
@@ -175,8 +181,8 @@
                 }
                 $('#item-id').val(data.value);  
                 $.get("/product/json/?id=" + data.value, function (product) {
-                    $('#unit-id').val(product.Data1.Unit.ID);  
-                    $('#item-balance_cost').val(product.Data1.BalanceCost);                      
+                    $('#unit-id').val(product.UnitID);  
+                    $('#item-balance_cost').val(product.AverageCost);                      
                 });       
                 $('#qty').focus();
             }
@@ -249,7 +255,46 @@
             $('#TotalDiscountText').html(addCommas(totalDiscountAmount.toFixed(2)));
             $('#TotalNetAmount').val(totalNetAmount.toFixed(2));
             $('#TotalNetAmountText').html(addCommas(totalNetAmount.toFixed(2)));
-        }        
+        }     
+        function commitEdit(){
+            var index  =  $("#current-row").val();
+            if  ($("#current-row").val() == '')
+            {
+                return;
+            }
+            if  ($('#item-id').val() == '')
+            {
+                return;
+            }
+            var qty = parseFloat($('#qty').val()==''? '0': $('#qty').val()) ;
+            var averageCost = parseFloat($('#average-cost').val()==''? '0': $('#average-cost').val());
+            var price = parseFloat($('#price').val()==''? '0': $('#price').val());
+            var totalPrice = parseFloat($('#qty').val()==''? '0': $('#qty').val()) * parseFloat($('#price').val()==''? '0': $('#price').val());
+
+            if (price == 0) {
+                alert('กรุณาระบุต้นทุน');
+                return;
+            }
+            
+
+            $('#RetData > tr').eq(index).find(".ProductId").val($('#item-id').val());
+            $('#RetData > tr').eq(index).find(".ProductName").val($('#item-name').val());
+            $('#RetData > tr').eq(index).find(".ProductUnitID").val($('#unit-id').val());
+
+            $('#RetData > tr').eq(index).find(".ProductQty").val(qty);
+            $('#RetData > tr').eq(index).find(".AverageCost").val(averageCost);
+            $('#RetData > tr').eq(index).find(".ProductPrice").val(price);
+            $('#RetData > tr').eq(index).find(".ProductTotalPrice").val(totalPrice);
+
+            $('#RetData > tr').eq(index).find(".ProductNameText").html($('#item-name').val());
+            $('#RetData > tr').eq(index).find(".ProductQtyText").html(addCommas(qty));
+            $('#RetData > tr').eq(index).find(".ProductPriceText").html(addCommas(price));
+            $('#RetData > tr').eq(index).find(".ProductTotalPriceText").html(addCommas(totalPrice));
+            $("#current-row").val('');
+            $('#item-id').val('');
+            sumFoorter();
+            $editOveray.hide();
+        }   
     });
     function Save() {
             hideTopAlert();

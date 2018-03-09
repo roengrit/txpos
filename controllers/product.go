@@ -66,6 +66,7 @@ func (c *ProductController) CreateProduct() {
 	productID, _ := strconv.ParseInt(c.Ctx.Request.URL.Query().Get("id"), 10, 32)
 	if productID == 0 {
 		c.Data["title"] = "สร้างสินค้า"
+		c.Data["ProductCode"] = models.GetMaxItemCode("P")
 	} else {
 		c.Data["title"] = "แก้ไขสินค้า"
 		product, _ := models.GetProduct(int(productID))
@@ -210,6 +211,21 @@ func (c *ProductController) GetProductJSON() {
 	ID, _ := strconv.ParseInt(c.GetString("id"), 10, 32)
 	ret := models.RetModel{}
 	product, err := models.GetProduct(int(ID))
+	if err == nil {
+		ret.RetOK = true
+		ret.Data1 = product
+	} else {
+		ret.RetOK = false
+		ret.RetData = "ไม่พบข้อมูล"
+	}
+	c.Data["json"] = ret
+	c.ServeJSON()
+}
+
+//GetProductByCodeJSON  GetProductByCodeJSON
+func (c *ProductController) GetProductByCodeJSON() {
+	ret := models.RetModel{}
+	product, err := models.GetProductByCode(c.GetString("code"))
 	if err == nil {
 		ret.RetOK = true
 		ret.Data1 = product

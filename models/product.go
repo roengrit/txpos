@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -11,6 +12,7 @@ import (
 type Product struct {
 	ID          int
 	Lock        bool
+	Code        string    `orm:"size(13);unique"`
 	Name        string    `orm:"size(300)"`
 	Barcode     string    `orm:"size(13)"`
 	AverageCost float64   `orm:"digits(12);decimals(2)"`
@@ -37,6 +39,7 @@ type Product struct {
 type ProductList struct {
 	ID           int
 	Lock         bool
+	Code         string
 	Name         string
 	Barcode      string
 	AverageCost  float64
@@ -64,6 +67,7 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 	o := orm.NewOrm()
 	var sql = `SELECT 
 					T0.i_d,
+					T0.code,
 					T0.name,
 					T0.lock,
 					T0.active,
@@ -77,7 +81,7 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 			   FROM product T0	
 			   JOIN category T1 ON T0.category_id = T1.i_d	
 			   JOIN unit T2 ON T0.unit_id = T2.i_d    
-			   WHERE (lower(T0.name) like lower(?) or lower(T0.barcode) like lower(?) ) `
+			   WHERE (lower(T0.name) like lower(?) or lower(T0.barcode) like lower(?) or lower(T0.code) like lower(?) ) `
 
 	if statusTerm == "0" {
 		sql += " and NOT T0.Active"
@@ -89,9 +93,9 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 		sql += " and T1.i_d = (" + categoryTerm + ")"
 	}
 
-	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%").QueryRows(&productList)
+	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%").QueryRows(&productList)
 	sql += " order by T0.name  offset ? limit ?"
-	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&productList)
+	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&productList)
 
 	return num, productList, err
 }
@@ -104,12 +108,25 @@ func GetProduct(ID int) (pro *Product, errRet error) {
 	return Product, errRet
 }
 
+//GetProductByCode _
+func GetProductByCode(code string) (pro *Product, errRet error) {
+	Product := &Product{}
+	o := orm.NewOrm()
+	o.QueryTable("product").Filter("Code", code).RelatedSel().One(Product)
+	return Product, errRet
+}
+
 //CreateProduct _
 func CreateProduct(Product Product) (ID int64, err error) {
 	o := orm.NewOrm()
 	o.Begin()
 	ID, err = o.Insert(&Product)
 	o.Commit()
+	if err != nil {
+		if strings.Contains(err.Error(), "product_code_key") && strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
+			err = errors.New("รหัสสินค้าซ้ำ")
+		}
+	}
 	return ID, err
 }
 
@@ -152,4 +169,28 @@ func DeleteProduct(ID int) (errRet error) {
 		_ = num
 	}
 	return errRet
+}
+
+//GetMaxItemCode _
+func GetMaxItemCode(format string) (code string) {
+
+	var lists []orm.ParamsList
+	var sql = `SELECT 
+				 concat( '` + format + `' ,
+					  LPAD((COALESCE( MAX ( SUBSTRING ( code FROM '[0-9]{5,}$' )), '0' ) :: NUMERIC + 1)  :: text, 5, '0')
+					  ) AS  code 
+				 FROM
+					 product
+				 WHERE
+				     code LIKE '` + format + `%'`
+	o := orm.NewOrm()
+	num, err := o.Raw(sql).ValuesList(&lists)
+	if err == nil && num > 0 {
+		max := lists[0]
+		maxVal := max[0].(string)
+		code = maxVal
+	} else {
+		code = ""
+	}
+	return code
 }

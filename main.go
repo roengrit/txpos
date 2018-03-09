@@ -13,7 +13,7 @@ import (
 
 func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos1 sslmode=disable")
+	orm.RegisterDataBase("default", "postgres", "host=localhost port=5432 user=postgres password=P@ssw0rd dbname=txpos sslmode=disable")
 }
 
 func main() {
@@ -37,7 +37,8 @@ func main() {
 	beego.Router("/product/?:id", &c.ProductController{}, "get:CreateProduct;post:UpdateProduct;delete:DeleteProduct")
 	beego.Router("/product/list", &c.ProductController{}, "get:ProductList;post:GetProductListJSON")
 	beego.Router("/product/list/json", &c.ProductController{}, "get:ListProductJSON")
-	beego.Router("/product/json", &c.ProductController{}, "get:ListProductJSON")
+	beego.Router("/product/json", &c.ProductController{}, "get:GetProductJSON")
+	beego.Router("/product/json/code", &c.ProductController{}, "get:GetProductByCodeJSON")
 
 	beego.Router("/unit/?:id", &c.UnitController{}, "get:CreateUnit;post:UpdateUnit;delete:DeleteUnit")
 	beego.Router("/unit/list", &c.UnitController{}, "get:UnitList;post:GetUnitListJSON")

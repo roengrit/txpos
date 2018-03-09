@@ -42,13 +42,7 @@
 
         $("#price,#qty,#average-cost").focus(function() { $(this).select(); } );
 
-        $('#qty').keyup(function(){
-            totalCal = parseFloat($("#qty").val()) * parseFloat($("#average-cost").val()) ; 
-            if(totalCal == NaN){
-                totalCal = 0.00; 
-            }
-            $("#totalCal").html(addCommas( totalCal));
-        });
+       
 
         $("#DocType").val('{{.m.DocType}}'); 
         if($("#DocType").val()=='' || $("#DocType").val() == null){
@@ -161,9 +155,16 @@
         });
 
         $('#qty').keypress(function(key){
-            if ( key.charCode == 13){
-                commitEdit();
+            totalCal = parseFloat($("#qty").val()) * parseFloat($("#average-cost").val()) ; 
+            if(totalCal == NaN){
+                totalCal = 0.00; 
             }
+            $("#totalCal").html(addCommas( totalCal));
+            if ( key.charCode == 13){
+                commitEdit();        
+                return false;       
+            }
+         
         });
 
         $('#DocDate,#DocTime,#DocRefNo,#DocType,#Remark').focus(function(){

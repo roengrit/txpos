@@ -85,7 +85,9 @@
             return isSupported;
         },
         select: function () {
+           
             var $selectedItem = this.$menu.find('.active');
+            
             if($selectedItem.length) {
                 var value = $selectedItem.attr('data-value');
                 var text = this.$menu.find('.active a').text();
@@ -118,6 +120,7 @@
 
             if(this.options.alignWidth) {
                 var width = $(this.$element[0]).outerWidth();
+                width = 1024;
                 this.$menu.css({
                     width: width
                 });
@@ -256,14 +259,15 @@
             });
         },
         render: function (items) {
-            var that = this, display, isString = typeof that.options.displayField === 'string';
-
+            var that = this, display, isString = typeof that.options.displayField === 'string';         
             items = $(items).map(function (i, item) {
                 if (typeof item === 'object') {
                     display = isString ? item[that.options.displayField] : that.options.displayField(item);
+                    display = item.Code + " : " + display ;
                     i = $(that.options.item).attr('data-value', item[that.options.valueField]);
                 } else {
-                    display = item;
+                    display = item; 
+                    console.log(display)
                     i = $(that.options.item).attr('data-value', item);
                 }
                 i.find('a').html(that.highlighter(display));
@@ -399,8 +403,9 @@
                     break
                 case 9: // tab
                 case 13: // enter
-                    if (!this.shown)
-                        return
+                // console.log(this.shown);
+                //     if (!this.shown)
+                //         return
                     this.select()
                     this.hide()
                     break

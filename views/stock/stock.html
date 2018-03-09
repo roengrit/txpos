@@ -16,7 +16,7 @@
     <form action="/stock" autocomplete="off" id="pickup-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
         
-        <input type="hidden" id="current-row" /> 
+        <input type="hidden" id="currentRow" /> 
         <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
         <input type="hidden" id="FlagTemp" name="FlagTemp" value="{{.m.FlagTemp}}" />
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
@@ -96,7 +96,8 @@
                         <table class="table" id="ret-table">
                             <thead>
                                 <tr>
-                                    <th class="col-md-5 col-md-5-table">ชื่อ</th>
+                                    <th class="col-md-1 col-md-1-table">รหัส</th>
+                                    <th class="col-md-4 col-md-4-table">รายละเอียด</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">นับได้</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">ต้นทุน:หน่วย</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>
@@ -107,15 +108,16 @@
                                     {{if .RetCount}}
                                         {{range $key, $val := .m.StockCountSub}}
                                             <tr  style="cursor: pointer;" index-val="{{$key}}">
-                                                    <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" /> 
+                                                    <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />  
+                                                    <input type="hidden" class="ProductCode" name="StockCountSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
                                                     <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
                                                     <input type="hidden" class="ProductUnitID" name="StockCountSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
                                                     <input type="hidden" class="ProductQty" name="StockCountSub[{{$key}}].Qty" value="{{$val.Qty}}" />
                                                     <input type="hidden" class="ProductPrice" name="StockCountSub[{{$key}}].Price" value="{{$val.AverageCost}}" />
                                                     <input type="hidden" class="AverageCost" name="StockCountSub[{{$key}}].AverageCost" value="{{$val.AverageCost}}" />
                                                     <input type="hidden" class="ProductTotalPrice" name="StockCountSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
-                    
-                                                    <td class="col-md-5 table-td-mid ProductNameText">{{$val.Product.Name}}</td> 
+                                                    <td class="col-md-1 table-td-mid ProductCodeText">{{$val.Product.Code}}</td> 
+                                                    <td class="col-md-4 table-td-mid ProductNameText">{{$val.Product.Name}}</td> 
                                                     <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
                                                     <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
                                                     <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{{$val.TotalPrice | ThCommaSeperate }}</td>
@@ -143,7 +145,7 @@
                                         {{end}}
                                         >เพิ่ม</button>
                                     </th>
-                                    <th colspan="2" style="text-align:right;vertical-align: middle;">รวมเป็นเงิน</th>                                   
+                                    <th colspan="3" style="text-align:right;vertical-align: middle;">รวมเป็นเงิน</th>                                   
                                     <th style="text-align:right;vertical-align: middle;" id="TotalAmountText">
                                      {{if.m.TotalAmount}} {{.m.TotalAmount | ThCommaSeperate}} {{else}} 0.00 {{end}}
                                     </th>
@@ -191,23 +193,23 @@
             </div>
         </div>
         <div class="col-xs-12" id="editOveray">
-                <div class="col-md-6">
-                    <input type="text" id="item-name" name="item-name" class="form-control" autocomplete="off" placeholder="่ชื่อ">
-                    <input type="hidden" tabindex="-1" id="item-id" name="item-id"  >
-                    <input type="hidden" tabindex="-1" id="unit-id" name="unit-id"  >
-                    <input type="hidden" tabindex="-1" id="average-cost" name="average-cost" >   
-                    <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path"  >  
+                <div class="col-md-1">
+                    <input type="text" id="code" name="code" class="form-control" autocomplete="off" placeholder="รหัส/ชื่อ">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" id="itemName" name="itemName" class="form-control" autocomplete="off" placeholder="รายละเอียด">
+                    <input type="hidden" tabindex="-1" id="itemId" name="itemId">
+                    <input type="hidden" tabindex="-1" id="unitId" name="unitId">
+                    <input type="hidden" tabindex="-1" id="averageCost" name="averageCost">
                 </div>
                 <div class="col-md-2">
                     <input type="number" id="qty" name="qty" step="1" class="form-control" style="text-align: right;" autocomplete="off" placeholder="จำนวน">
                 </div>
-                <div class="col-md-2">
-                    <div class="input-group ">
-                        <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" readonly placeholder="ราคา">
-                    </div>
+                <div class="col-md-2 price">
+                    <input type="number" id="price" name="price" step="0.01" class="form-control" style="text-align: right;" readonly placeholder="ราคา">
                     <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>
                 </div>
-                <div class="col-md-1" id="totalCal" style="text-align:right;margin-top:8px;">
+                <div class="col-md-1" id="totalPrice" style="text-align:right;margin-top:8px;">
                     0.00
                 </div>
             </div>        
