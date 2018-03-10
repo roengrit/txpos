@@ -93,32 +93,31 @@
                         <table class="table" id="ret-table">
                             <thead>
                                 <tr>
-                                    <th class="col-md-3 col-md-3-table">ชื่อ</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">คงเหลือ</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">นับได้</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">ผลต่าง</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">ต้นทุน:หน่วย</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">รวมมูลค่า</th>                                     
+                                    <th class="col-md-1 col-md-1-table">รหัส</th>
+                                    <th class="col-md-5 col-md-5-table">รายละเอียด</th>
+                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">นับได้</th>
+                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">ต้นทุน:หน่วย</th>
+                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>                            
                                 </tr>
                             </thead>                           
                             <tbody class="table-bordered table-condensed" id="RetData">
                                     {{if .RetCount}}
                                         {{range $key, $val := .m.StockCountSub}}
-                                            <tr  style="cursor: pointer;" index-val="{{$key}}">
-                                                    <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" /> 
-                                                    <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
-                                                    <input type="hidden" class="ProductUnitID" name="StockCountSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
-                                                    <input type="hidden" class="ProductQty" name="StockCountSub[{{$key}}].Qty" value="{{$val.Qty}}" />
-                                                    <input type="hidden" class="ProductPrice" name="StockCountSub[{{$key}}].Price" value="{{$val.Price}}" />
-                                                    <input type="hidden" class="ProductTotalPrice" name="StockCountSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
-                    
-                                                    <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td> 
-                                                    <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.BalanceQty | ThCommaSeperate }}</td>
-                                                    <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
-                                                    <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.DiffQty | ThCommaSeperate }}</td>
-                                                    <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
-                                                    <td class="col-md-1 table-td-mid table-td-number ProductTotalPriceText"  >{{$val.TotalPrice | ThCommaSeperate }}</td>
-                                            </tr>
+                                        <tr>
+                                        <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />  
+                                        <input type="hidden" class="ProductCode" name="StockCountSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
+                                        <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
+                                        <input type="hidden" class="ProductUnitID" name="StockCountSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
+                                        <input type="hidden" class="ProductQty" name="StockCountSub[{{$key}}].Qty" value="{{$val.Qty}}" />
+                                        <input type="hidden" class="ProductPrice" name="StockCountSub[{{$key}}].Price" value="{{$val.AverageCost}}" />
+                                        <input type="hidden" class="AverageCost" name="StockCountSub[{{$key}}].AverageCost" value="{{$val.AverageCost}}" />
+                                        <input type="hidden" class="ProductTotalPrice" name="StockCountSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                        <td class="col-md-1 table-td-mid ProductCodeText">{{$val.Product.Code}}</td> 
+                                        <td class="col-md-5 table-td-mid ProductNameText">{{$val.ProductName}}</td> 
+                                        <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
+                                        <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
+                                        <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{{$val.TotalPrice | ThCommaSeperate }}</td>
+                                    </tr>
                                         {{end}}  
                                     {{end}}
                             </tbody>
@@ -130,7 +129,7 @@
                                     <th>
                                         
                                     </th>
-                                    <th colspan="4" style="text-align:right;vertical-align: middle;">รวม</th>                                   
+                                    <th colspan="3" style="text-align:right;vertical-align: middle;">รวม</th>                                   
                                     <th style="text-align:right;vertical-align: middle;" id="TotalAmountText">
                                      {{if.m.TotalAmount}} {{.m.TotalAmount | ThCommaSeperate}} {{else}} 0.00 {{end}}
                                     </th>

@@ -1,0 +1,4 @@
+1. create data base name
+2. run all file in /sql folder
+3. change connection string in main.go
+4. run main.go 

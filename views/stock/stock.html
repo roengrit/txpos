@@ -96,8 +96,8 @@
                         <table class="table" id="ret-table">
                             <thead>
                                 <tr>
-                                    <th class="col-md-1 col-md-1-table">รหัส</th>
-                                    <th class="col-md-4 col-md-4-table">รายละเอียด</th>
+                                    <th class="col-md-2 col-md-2-table">รหัส</th>
+                                    <th class="col-md-3 col-md-3-table">รายละเอียด</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">นับได้</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">ต้นทุน:หน่วย</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>
@@ -110,14 +110,14 @@
                                             <tr  style="cursor: pointer;" index-val="{{$key}}">
                                                     <input type="hidden" class="ProductId" name="StockCountSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />  
                                                     <input type="hidden" class="ProductCode" name="StockCountSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
-                                                    <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
+                                                    <input type="hidden" class="ProductName" name="StockCountSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
                                                     <input type="hidden" class="ProductUnitID" name="StockCountSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" /> 
                                                     <input type="hidden" class="ProductQty" name="StockCountSub[{{$key}}].Qty" value="{{$val.Qty}}" />
                                                     <input type="hidden" class="ProductPrice" name="StockCountSub[{{$key}}].Price" value="{{$val.AverageCost}}" />
                                                     <input type="hidden" class="AverageCost" name="StockCountSub[{{$key}}].AverageCost" value="{{$val.AverageCost}}" />
                                                     <input type="hidden" class="ProductTotalPrice" name="StockCountSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
-                                                    <td class="col-md-1 table-td-mid ProductCodeText">{{$val.Product.Code}}</td> 
-                                                    <td class="col-md-4 table-td-mid ProductNameText">{{$val.Product.Name}}</td> 
+                                                    <td class="col-md-2 table-td-mid ProductCodeText">{{$val.Product.Code}}</td> 
+                                                    <td class="col-md-3 table-td-mid ProductNameText">{{$val.ProductName}}</td> 
                                                     <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
                                                     <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
                                                     <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{{$val.TotalPrice | ThCommaSeperate }}</td>

@@ -116,10 +116,11 @@
                         <table class="table" id="ret-table">
                             <thead>
                                 <tr>
-                                    <th class="col-md-5 col-md-5-table">ชื่อ</th>
+                                    <th class="col-md-2 col-md-2-table">รหัส</th>
+                                    <th class="col-md-3 col-md-3-table">รายละเอียด</th>
                                     <th class="col-md-1 col-md-1-table" style="text-align:right;">จำนวน</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">ราคา:หน่วย</th>
-                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">ส่วนลด:หน่วย</th>
+                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">ส่วนลด:หน่วย</th>
                                     <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>
                                     <th class="col-md-1 col-md-1-table" style="width:100%;"></th>
                                 </tr>
@@ -128,7 +129,8 @@
                                 {{if .RetCount}} {{range $key, $val := .m.ReceiveSub}}
                                 <tr style="cursor: pointer;" index-val="{{$key}}">
                                     <input type="hidden" class="ProductId" name="ReceiveSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
-                                    <input type="hidden" class="ProductName" name="ReceiveSub[{{$key}}].Product.Name" value="{{$val.Product.Name}}" />
+                                    <input type="hidden" class="ProductCode" name="ReceiveSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
+                                    <input type="hidden" class="ProductName" name="ReceiveSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
                                     <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
                                     <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
                                     <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
@@ -136,11 +138,12 @@
                                     <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
                                     <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
                                     <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}" />
-
-                                    <td class="col-md-5 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
-                                    <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
+                                    
+                                    <td class="col-md-2 table-td-mid ProductCodeText">{{$val.Product.Code}}</td>
+                                    <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
+                                    <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
-                                    <td class="col-md-2 table-td-mid table-td-number ProductDiscount">{{$val.ProductDiscount }}</td>
+                                    <td class="col-md-1 table-td-mid table-td-number ProductDiscount">{{$val.ProductDiscount }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
                                     <td class="col-md-1 table-td-mid table-td-number">
                                         <div class="btn-group">
@@ -161,7 +164,7 @@
                                         <button type="button" class="btn btn-sm btn-success add-row" {{if.r }} style="display:none;"
                                             {{else}} {{end}}>เพิ่ม</button>
                                     </th>
-                                    <th colspan="3" style="text-align:right;vertical-align: middle;">
+                                    <th colspan="4" style="text-align:right;vertical-align: middle;">
                                         <div style="display:block;">
                                             <input type="text"  class="form-control" id="DiscountWord" 
                                             value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaSeperate}}{{else}} {{end}}"
@@ -176,7 +179,7 @@
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="3">
+                                    <th colspan="4">
                                     </th>
                                     <th>
                                         <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวมก่อนภาษี</div>
@@ -187,7 +190,7 @@
                                     <th></th>
                                 </tr>
                                 <tr>
-                                        <th colspan="3">
+                                        <th colspan="4">
                                         </th>
                                         <th>
                                             <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม</div>
@@ -198,7 +201,7 @@
                                         <th></th>
                                 </tr>
                                 <tr>
-                                        <th colspan="3">
+                                        <th colspan="4">
                                         </th>
                                         <th>
                                             <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวม</div>
@@ -239,10 +242,13 @@
             </div>
         </div>
         <div class="col-xs-12" id="editOveray">
-            <div class="col-md-5">
-                <input type="text" id="item-name" name="item-name" class="form-control" autocomplete="off" placeholder="่ชื่อ">
-                <input type="hidden" tabindex="-1" id="item-id" name="item-id">
-                <input type="hidden" tabindex="-1" id="unit-id" name="unit-id">
+                <div class="col-md-2">
+                <input type="text" id="code" name="code" class="form-control" autocomplete="off" placeholder="รหัส/ชื่อ">
+                </div>
+            <div class="col-md-3">
+                <input type="text" id="itemName" name="itemName" class="form-control" autocomplete="off" placeholder="รายละเอียด">
+                <input type="hidden" tabindex="-1" id="itemId" name="itemId">
+                <input type="hidden" tabindex="-1" id="unitId" name="unit-id">
                 <input type="hidden" tabindex="-1" id="item-balance_cost" name="item-balance_cost">
                 <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path">
                 <input type="hidden" tabindex="-1" id="discountVal" name="discountVal">
@@ -259,7 +265,7 @@
                 <input type="text" id="discount" name="discount" class="form-control" style="text-align: right;" placeholder="ส่วนลด">
                 <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>        
             </div>
-            <div class="col-md-1" id="totalCal" style="text-align:right;margin-top:8px;">
+            <div class="col-md-1" id="totalPrice" style="text-align:right;margin-top:8px;">
                    0.00
             </div>
         </div>

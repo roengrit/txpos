@@ -3,6 +3,12 @@
 <script src="/static/js/bootstrap-typeahead.js" charset="UTF-8"></script>
 <script>
     $(document).ready(function () {
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
         sumFoorter();
         var $editOveray = $('#editOveray');
         $('#ret-table').on("click", "tbody > tr", function (index) {
@@ -23,50 +29,61 @@
                 width: (intWidth - 15) + 'px',
                 height: bottomHeight,
             });
-            $("#current-row").val($(this).attr("index-val"));
-            $("#item-id").val($(this).find(".ProductId").val());
-            $("#item-name").val($(this).find(".ProductName").val());
-            $("#unit-code").val($(this).find(".ProductUnitID").val()); 
+            $("#currentRow").val($(this).attr("index-val"));
+            $("#itemId").val($(this).find(".ProductId").val());
+            $("#code").val($(this).find(".ProductCode").val());
+            $("#itemName").val($(this).find(".ProductName").val());
+            $("#unitId").val($(this).find(".ProductUnitID").val());
             $("#qty").val($(this).find(".ProductQty").val());
-            $("#price").val($(this).find(".ProductPrice").val());
+            $("#price").val($(this).find(".ProductPrice").val()); 
             $("#discount").val($(this).find(".ProductDiscount").val());
             $("#discountVal").val($(this).find(".ProductDiscountVal").val());
-            $("#totalExcludeVatCal").val($(this).find(".ProductTotalPriceExludeVat").val());
-            $("#totalCal").html(addCommas( $(this).find(".ProductTotalPrice").val()));
+            $("#totalPriceExludeVat").val($(this).find(".ProductTotalPriceExludeVat").val());
+            $("#totalPrice").html(addCommas( $(this).find(".ProductTotalPrice").val()));
             $editOveray.show();
             $('#item-name').focus();
         });
 
         
-        $("#price,#qty,#item-name,#discount").focus(function()
+        $("#price,#qty,#code,#itemName,#discount").focus(function()
         { 
             $(this).select(); 
         });
 
-        $('#qty,#price,#discount').keyup(function(){
+        $('#qty,#price,#discount').keyup(function(key){
             totalCal = parseFloat($("#qty").val()) * parseFloat($("#price").val()) ; 
             if(totalCal == NaN){
                 totalCal = 0.00; 
             }
-            $("#totalCal").html(addCommas( totalCal));
+            $("#totalPrice").html(addCommas( totalCal));
+            if(key.keyCode == 13 && $(this).attr('id')=='qty'){
+                $('#qty').focus();
+            }
+            if(key.keyCode == 13 && $(this).attr('id')=='price'){
+                $('#discount').focus();
+            }
+            if(key.keyCode == 13 && $(this).attr('id')=='discount'){
+                commitEdit();
+            }
         });
 
         var templateRow = `<tr  style="cursor: pointer;" index-val="@">
                                 <input type="hidden" class="ProductId" name="ReceiveSub[@].Product.ID" value="{0}" /> 
-                                <input type="hidden" class="ProductName" name="ReceiveSub[@].Product.Name" value="{1}" />
-                                <input type="hidden" class="ProductUnitID" name="ReceiveSub[@].Unit.ID" value="{2}" /> 
-                                <input type="hidden" class="ProductQty" name="ReceiveSub[@].Qty" value="{3}" />
-                                <input type="hidden" class="ProductPrice" name="ReceiveSub[@].Price" value="{4}" />
-                                <input type="hidden" class="ProductDiscount" name="ReceiveSub[@].DiscountWord" value="{5}" />
-                                <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[@].DiscountVal" value="{6}" />
-                                <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[@].TotalPrice" value="{7}" />
-                                <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[@].TotalPriceExludeVat" value="{7}" />
-
-                                <td class="col-md-5 table-td-mid ProductNameText">{8}</td> 
-                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{9}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductPriceText">{10}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductDiscount">{11}</td>
-                                <td class="col-md-1 table-td-mid table-td-number ProductTotalPriceText"  >{12}</td>
+                                <input type="hidden" class="ProductCode" name="ReceiveSub[@].Product.Code" value="{1}" />
+                                <input type="hidden" class="ProductName" name="ReceiveSub[@].Product.Name" value="{2}" />
+                                <input type="hidden" class="ProductUnitID" name="ReceiveSub[@].Unit.ID" value="{3}" /> 
+                                <input type="hidden" class="ProductQty" name="ReceiveSub[@].Qty" value="{4}" />
+                                <input type="hidden" class="ProductPrice" name="ReceiveSub[@].Price" value="{5}" />
+                                <input type="hidden" class="ProductDiscount" name="ReceiveSub[@].DiscountWord" value="{6}" />
+                                <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[@].DiscountVal" value="{7}" />
+                                <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[@].TotalPrice" value="{8}" />
+                                <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[@].TotalPriceExludeVat" value="{9}" />
+                                <td class="col-md-1 table-td-mid ProductNameCode">{10}</td> 
+                                <td class="col-md-3 table-td-mid ProductNameText">{11}</td> 
+                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{12}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{13}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductDiscount">{14}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{15}</td>
                                 <td class="col-md-1 table-td-mid table-td-number"  >
                                     <div class="btn-group">
                                         <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
@@ -105,31 +122,10 @@
                 $editOveray.hide();
             });
             $('#RetData tr:last').trigger("click");
-            $('#item-name').focus();
+            $('#itemName').focus();
         });
 
-        $("#price,#qty,#average-cost,#item-name,#discount").focus(function() { $(this).select(); } );
-
-        $('#qty').keypress(function(key){
-            if ( key.charCode == 13){
-                    $("#price").focus();
-                    return false;
-            }
-        });
-
-        $('#price').keypress(function(key){
-            if (key.charCode == 13){
-                $("#discount").focus();
-                return false;
-            }
-        });
-        
-        $('#discount').keypress(function(key){
-            if ( key.charCode == 13){
-                    $(".ok-edit-row").trigger('click');    
-                    return false;           
-            }
-        });
+        $("#price,#qty,#averageCost,#item-name,#discount").focus(function() { $(this).select(); } );
 
         $("#DocType").val('{{.m.DocType}}'); 
         if($("#DocType").val()=='' || $("#DocType").val() == null){
@@ -168,7 +164,7 @@
             }
         });
 
-        $('#item-name').typeahead({
+        $('#code').typeahead({
             ajax: '/product/list/json',
             display: 'Name',
             displayField: 'Name',
@@ -179,10 +175,13 @@
                 if (data.value == 0) {
                     return;
                 }
-                $('#item-id').val(data.value);  
+                $('#itemId').val(data.value);  
                 $.get("/product/json/?id=" + data.value, function (product) {
-                    $('#unit-id').val(product.UnitID);  
-                    $('#item-balance_cost').val(product.AverageCost);                      
+                    $('#code').val(product.Data1.Code);
+                    $('#itemName').val(product.Data1.Name);
+                    $('#unitId').val(product.Data1.Unit.ID);
+                    $('#averageCost').val(product.Data1.AverageCost);
+                    $('#price').val(product.Data1.AverageCost);                   
                 });       
                 $('#qty').focus();
             }
@@ -201,20 +200,26 @@
         })
 
         function appendEmptyRow(index) {
+             
             $('#RetData').append(
                 templateRow.replace(/@/g, index)
                 .replace(/@/g, index)
                 .replace('{0}', '')
                 .replace('{1}', '')
                 .replace('{2}', '')
-                .replace('{3}', '0.00')
+                .replace('{3}', '')
                 .replace('{4}', '0.00')
                 .replace('{5}', '0.00')
-                .replace('{6}', '')                 
+                .replace('{6}', '0.00')                 
                 .replace('{7}', '0.00')
                 .replace('{8}', '0.00')
                 .replace('{9}', '0.00')
-                .replace('{10}', '0.00')
+                .replace('{10}', '')
+                .replace('{11}', '')
+                .replace('{12}', '0.00')
+                .replace('{13}', '0.00')
+                .replace('{14}', '')
+                .replace('{15}', '0.00')
             );
         }
 
@@ -224,6 +229,7 @@
             $("#RetData tr").each(function (index) {
                 $(this).attr("index-val", index);
                 $(this).find(".ProductId").attr("name", "ReceiveSub[" + index + "].Product.ID");
+                $(this).find(".ProductCode").attr("name", "ReceiveSub[" + index + "].Product.Code");
                 $(this).find(".ProductName").attr("name", "ReceiveSub[" + index + "].Product.Name");
                 $(this).find(".ProductUnitID").attr("name", "ReceiveSub[" + index + "].Unit.ID");
                 $(this).find(".ProductQty").attr("name", "ReceiveSub[" + index + "].Qty");
@@ -257,43 +263,54 @@
             $('#TotalNetAmountText').html(addCommas(totalNetAmount.toFixed(2)));
         }     
         function commitEdit(){
-            var index  =  $("#current-row").val();
-            if  ($("#current-row").val() == '')
+            var index  =  $("#currentRow").val();
+            if  ($("#currentRow").val() == '')
             {
                 return;
             }
-            if  ($('#item-id').val() == '')
+            if  ($('#itemId').val() == '')
             {
                 return;
             }
             var qty = parseFloat($('#qty').val()==''? '0': $('#qty').val()) ;
-            var averageCost = parseFloat($('#average-cost').val()==''? '0': $('#average-cost').val());
+            var averageCost = parseFloat($('#averageCost').val()==''? '0': $('#averageCost').val());
             var price = parseFloat($('#price').val()==''? '0': $('#price').val());
             var totalPrice = parseFloat($('#qty').val()==''? '0': $('#qty').val()) * parseFloat($('#price').val()==''? '0': $('#price').val());
 
             if (price == 0) {
-                alert('กรุณาระบุต้นทุน');
-                return;
+                $( ".help-block" ).remove();
+                $( "#price" ).after( "<span class='help-block' style='color:red'>กรุณาระบุต้นทุน</span>" );  
+                $( ".price" ).addClass('has-error');
+                return false;
+            }else{
+                $( ".price" ).removeClass('has-error');
+                $( ".help-block" ).remove();
             }
-            
 
-            $('#RetData > tr').eq(index).find(".ProductId").val($('#item-id').val());
-            $('#RetData > tr').eq(index).find(".ProductName").val($('#item-name').val());
-            $('#RetData > tr').eq(index).find(".ProductUnitID").val($('#unit-id').val());
+            $('#RetData > tr').eq(index).find(".ProductId").val($('#itemId').val());
+            $('#RetData > tr').eq(index).find(".ProductCode").val($('#code').val());
+            $('#RetData > tr').eq(index).find(".ProductName").val($('#itemName').val());
+            $('#RetData > tr').eq(index).find(".ProductUnitID").val($('#unitId').val());
+
 
             $('#RetData > tr').eq(index).find(".ProductQty").val(qty);
             $('#RetData > tr').eq(index).find(".AverageCost").val(averageCost);
             $('#RetData > tr').eq(index).find(".ProductPrice").val(price);
             $('#RetData > tr').eq(index).find(".ProductTotalPrice").val(totalPrice);
 
-            $('#RetData > tr').eq(index).find(".ProductNameText").html($('#item-name').val());
+            $('#RetData > tr').eq(index).find(".ProductCodeText").html($('#code').val());
+            $('#RetData > tr').eq(index).find(".ProductNameText").html($('#itemName').val());
             $('#RetData > tr').eq(index).find(".ProductQtyText").html(addCommas(qty));
             $('#RetData > tr').eq(index).find(".ProductPriceText").html(addCommas(price));
             $('#RetData > tr').eq(index).find(".ProductTotalPriceText").html(addCommas(totalPrice));
-            $("#current-row").val('');
-            $('#item-id').val('');
+            $("#currentRow").val('');
+            $('#itemId').val('');
             sumFoorter();
             $editOveray.hide();
+            if(index < $('#RetData > tr').length-1){
+                $('#RetData > tr').eq( parseInt(index)+1).trigger("click");
+            }
+            return false;
         }   
     });
     function Save() {

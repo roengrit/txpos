@@ -45,6 +45,7 @@ type StockCountSub struct {
 	DocNo       string    `orm:"size(30)"`
 	DocDate     time.Time `form:"-" orm:"null"`
 	Product     *Product  `orm:"rel(fk)"`
+	ProductName string    `orm:"size(300)"`
 	Unit        *Unit     `orm:"rel(fk)"`
 	BalanceQty  float64   `orm:"digits(12);decimals(2)"`
 	Qty         float64   `orm:"digits(12);decimals(2)"`
@@ -97,6 +98,7 @@ func CreateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 			}
 			val.DocDate = StockCount.DocDate
 			val.AverageCost = val.Price
+			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
@@ -147,6 +149,7 @@ func UpdateStockCount(StockCount StockCount, user User) (retID int64, errRet err
 			}
 			val.AverageCost = val.Price
 			val.DocDate = StockCount.DocDate
+			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
@@ -233,7 +236,6 @@ func UpdateCancelStockCount(ID int, remark string, user User) (retID int64, errR
 func UpdateActiveStockCount(ID int, user User) (retID int64, errRet error) {
 	o := orm.NewOrm()
 	o.Begin()
-	orm.Debug = true
 	_, err := o.Raw("update stock_count set active = true,flag_temp = 0,editor_id = ?,edited_at = now() where i_d = ?", user.ID, ID).Exec()
 	if err != nil {
 		o.Rollback()

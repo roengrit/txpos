@@ -44,6 +44,7 @@ type PickUpSub struct {
 	DocNo       string    `orm:"size(30)"`
 	DocDate     time.Time `form:"-" orm:"null"`
 	Product     *Product  `orm:"rel(fk)"`
+	ProductName string    `orm:"size(300)"`
 	Unit        *Unit     `orm:"rel(fk)"`
 	BalanceQty  float64   `orm:"digits(12);decimals(2)"`
 	Qty         float64   `orm:"digits(12);decimals(2)"`
@@ -89,6 +90,7 @@ func CreatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
 			val.DiffQty = val.Qty - Product.BalanceQty
 			val.DocDate = PickUp.DocDate
 			val.AverageCost = val.Price
+			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
@@ -132,6 +134,7 @@ func UpdatePickUp(PickUp PickUp, user User) (retID int64, errRet error) {
 			val.DiffQty = val.Qty - Product.BalanceQty
 			val.AverageCost = val.Price
 			val.DocDate = PickUp.DocDate
+			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
@@ -171,8 +174,7 @@ func GetPickUpList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, term st
 					T0.i_d,
 					T0.doc_no,
 					T0.doc_date,
-					T0.remark,
-					T0.flag_temp,
+					T0.remark,				 
 					T0.active,
 					T0.total_amount
 			   FROM pick_up T0	   
@@ -217,7 +219,6 @@ func UpdateCancelPickUp(ID int, remark string, user User) (retID int64, errRet e
 func UpdateActivePickUp(ID int, user User) (retID int64, errRet error) {
 	o := orm.NewOrm()
 	o.Begin()
-	orm.Debug = true
 	_, err := o.Raw("update pick_up set active = true,flag_temp = 0,editor_id = ?,edited_at = now() where i_d = ?", user.ID, ID).Exec()
 	if err != nil {
 		o.Rollback()

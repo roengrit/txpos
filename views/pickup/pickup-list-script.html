@@ -77,7 +77,7 @@ String.prototype.rpad = function(padString, length) {
                         <td>`+ dat.DocNo + `</td>
                         <td>`+ dat.Remark + `</td>
                         <td>` +
-                        (dat.FlagTemp ? `<span class="label label-warning">รอปรับปรุง</span>` : (dat.Active ? `<span class="label label-success">ปกติ</span>` : `<span class="label label-danger">ยกเลิก</span>`))
+                        (dat.Active ? `<span class="label label-success">ปกติ</span>` : `<span class="label label-danger">ยกเลิก</span>` )
                         + `</td>
                          <td style="text-align:right;">`+ addCommas(dat.TotalAmount) + `</td>
                         <td style="text-align:center;width:150px!important;">

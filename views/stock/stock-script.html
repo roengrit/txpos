@@ -88,8 +88,8 @@
                                 <input type="hidden" class="ProductPrice" name="StockCountSub[@].Price" value="{5}" />
                                 <input type="hidden" class="AverageCost" name="StockCountSub[@].AverageCost" value="{6}" />
                                 <input type="hidden" class="ProductTotalPrice" name="StockCountSub[@].TotalPrice" value="{7}" />
-                                <td class="col-md-1 table-td-mid ProductCodeText">{8}</td>
-                                <td class="col-md-4 table-td-mid ProductNameText">{9}</td>
+                                <td class="col-md-2 table-td-mid ProductCodeText">{8}</td>
+                                <td class="col-md-3 table-td-mid ProductNameText">{9}</td>
                                 <td class="col-md-2 table-td-mid table-td-number ProductQtyText">{10}</td>
                                 <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{11}</td>
                                 <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{12}</td>
@@ -249,12 +249,8 @@
                 totalAmount += parseFloat($(this).find(".ProductTotalPrice").val());
             });
 
-            if($('#DiscountType').val() == "0"){
-                totalDiscountAmount = discountVal;
-            }else{
-                totalDiscountAmount = (discountVal / 100) * totalAmount;
-            }
-            totalNetAmount = totalAmount-totalDiscountAmount;
+             
+            totalNetAmount = totalAmount;
 
             $('#TotalAmount').val(totalAmount.toFixed(2));
             $('#TotalAmountText').html(addCommas(totalAmount.toFixed(2)));
