@@ -14,6 +14,7 @@ type Receive struct {
 	Flag                 int
 	Active               bool
 	DocType              int
+	VatType              int
 	DocNo                string    `orm:"size(30)"`
 	DocDate              time.Time `form:"-" orm:"null"`
 	DocTime              string    `orm:"size(6)"`
@@ -23,6 +24,7 @@ type Receive struct {
 	MemberName           string    `orm:"size(300)"`
 	DiscountType         int
 	DiscountWord         string  `orm:"size(300)"`
+	VatVal               float64 `orm:"digits(12);decimals(2)"`
 	TotalDiscount        float64 `orm:"digits(12);decimals(2)"`
 	TotalAmount          float64 `orm:"digits(12);decimals(2)"`
 	TotalAmountExludeVat float64 `orm:"digits(12);decimals(2)"`
@@ -54,6 +56,7 @@ type ReceiveSub struct {
 	RemainQty           float64   `orm:"digits(12);decimals(2)"`
 	AverageCost         float64   `orm:"digits(12);decimals(2)"`
 	Price               float64   `orm:"digits(12);decimals(2)"`
+	VatVal              float64   `orm:"digits(12);decimals(2)"`
 	DiscountWord        string    `orm:"size(300)"`
 	DiscountVal         float64   `orm:"digits(12);decimals(2)"`
 	TotalPrice          float64   `orm:"digits(12);decimals(2)"`

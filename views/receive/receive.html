@@ -16,14 +16,15 @@
     <form action="/receive" autocomplete="off" id="receive-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
 
-        <input type="hidden" id="current-row" />
+        <input type="hidden" id="currentRow" />
         <input type="hidden" id="MemberID" name="Member.ID" value="{{.m.Member.ID}}" />
         <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
+        <input type="hidden" id="VatVal" name="VatVal" value="{{.m.VatVal}}" />
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
 
         <div id="box-req" class="box box-primary">
             <div class="box-body">
-                <div class="form-group req-box-form">
+                <div class="form-group req-box-form head" >
                     <div class="col-xs-10">
                         <label for="req-name">ผู้จำหน่าย</label>
                         <div class="input-group">
@@ -47,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group req-box-form">
+                <div class="form-group req-box-form head">
                     <div class="col-xs-3">
                         <label for="req-sn">วันที่รับ</label>
                         <div class="input-group">
@@ -84,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group req-box-form">
+                <div class="form-group req-box-form head">
                     <div class="col-xs-6">
                         <label for="req-sn">ประเภทการรับ</label>
                         <div class="input-group">
@@ -105,8 +106,8 @@
                             </span>
                             <select id="VatType" name="VatType" class="form-control" autocomplete="off">
                                 <option value="0">ไม่มีภาษี</option>
-                                <option value="1">แยกภาษีมูลค่าเพิ่ม</option>
-                                <option value="2">รวมภาษีมูลค่าเพิ่ม</option>
+                                <option value="1">รวมภาษีมูลค่าเพิ่ม</option>
+                                <option value="2">แยกภาษีมูลค่าเพิ่ม</option>                                
                             </select>
                         </div>
                     </div>
@@ -134,6 +135,7 @@
                                     <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
                                     <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
                                     <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
+                                    <input type="hidden" class="ProductVatVal" name="ReceiveSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
                                     <input type="hidden" class="ProductDiscount" name="ReceiveSub[{{$key}}].DiscountWord" value="{{$val.Discount}}" />
                                     <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
                                     <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
@@ -143,7 +145,7 @@
                                     <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
                                     <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
-                                    <td class="col-md-1 table-td-mid table-td-number ProductDiscount">{{$val.ProductDiscount }}</td>
+                                    <td class="col-md-1 table-td-mid table-td-number ProductDiscountText">{{$val.ProductDiscount }}</td>
                                     <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
                                     <td class="col-md-1 table-td-mid table-td-number">
                                         <div class="btn-group">
@@ -155,11 +157,11 @@
                                 </tr>
                                 {{end}} {{end}}
                             </tbody>
-                            <tfoot class="table-bordered table-condensed">
+                            <tfoot class="table-bordered table-condensed ">
                                 <input type="hidden" name="TotalAmount" id="TotalAmount" value="{{.m.TotalAmount}}" />
                                 <input type="hidden" name="TotalDiscount" id="TotalDiscount" value="{{.m.TotalDiscount}}" />
                                 <input type="hidden" name="TotalNetAmount" id="TotalNetAmount" value="{{.m.TotalNetAmount}}" />
-                                <tr>
+                                <tr class="footer">
                                     <th>
                                         <button type="button" class="btn btn-sm btn-success add-row" {{if.r }} style="display:none;"
                                             {{else}} {{end}}>เพิ่ม</button>
@@ -178,35 +180,35 @@
                                     </th>
                                     <th></th>
                                 </tr>
-                                <tr>
+                                <tr  class="footer">
                                     <th colspan="4">
                                     </th>
                                     <th>
                                         <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวมก่อนภาษี</div>
                                     </th>
-                                    <th style="text-align:right;vertical-align: middle;" id="TotalDiscountText">
+                                    <th style="text-align:right;vertical-align: middle;" id="TotalAmountExcludeVatText">
                                         {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
                                     </th>
                                     <th></th>
                                 </tr>
-                                <tr>
+                                <tr  class="footer">
                                         <th colspan="4">
                                         </th>
                                         <th>
                                             <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม</div>
                                         </th>
-                                        <th style="text-align:right;vertical-align: middle;" id="TotalDiscountText">
+                                        <th style="text-align:right;vertical-align: middle;" id="TotalVatValText">
                                             {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
                                         </th>
                                         <th></th>
                                 </tr>
-                                <tr>
+                                <tr  class="footer">
                                         <th colspan="4">
                                         </th>
                                         <th>
                                             <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวม</div>
                                         </th>
-                                        <th style="text-align:right;vertical-align: middle;" id="TotalDiscountText">
+                                        <th style="text-align:right;vertical-align: middle;" id="TotalAmountText">
                                             {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
                                         </th>
                                         <th></th>
@@ -248,7 +250,7 @@
             <div class="col-md-3">
                 <input type="text" id="itemName" name="itemName" class="form-control" autocomplete="off" placeholder="รายละเอียด">
                 <input type="hidden" tabindex="-1" id="itemId" name="itemId">
-                <input type="hidden" tabindex="-1" id="unitId" name="unit-id">
+                <input type="hidden" tabindex="-1" id="unitId" name="unitId">
                 <input type="hidden" tabindex="-1" id="item-balance_cost" name="item-balance_cost">
                 <input type="hidden" tabindex="-1" id="item-image_path" name="item-image_path">
                 <input type="hidden" tabindex="-1" id="discountVal" name="discountVal">

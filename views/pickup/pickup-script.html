@@ -188,6 +188,7 @@
 
         $('#DocDate,#DocTime,#DocRefNo,#DocType,#Remark').focus(function(){
             commitEdit();
+            $editOveray.hide();
         });
 
         $('#DiscountType').change(function(){
