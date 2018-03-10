@@ -525,6 +525,7 @@
 
     
     commit: function() {
+      this.updateFromWidgetInputs();
       this.updateElement();
       this.hideWidget();
     },
@@ -787,7 +788,6 @@
 
     updateFromElementVal: function() {
                         var val = this.$element.val();
-
                         if (val) {
                                 this.setTime(val);
                         }
@@ -833,7 +833,6 @@
         $('input.bootstrap-timepicker-minute', this.$widget).val() +
         (this.showSeconds ? ':' + $('input.bootstrap-timepicker-second', this.$widget).val() : '') +
         (this.showMeridian ? ' ' + $('input.bootstrap-timepicker-meridian', this.$widget).val() : '');
-
       this.setTime(time);
     },
 
