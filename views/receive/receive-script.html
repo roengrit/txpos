@@ -3,6 +3,21 @@
 <script src="/static/js/bootstrap-typeahead.js" charset="UTF-8"></script>
 <script>
     $(document).ready(function () {
+        $("#DocType").val('{{.m.DocType}}'.trim()); 
+        if($("#DocType").val()=='' || $("#DocType").val() == null){
+            $("#DocType").val($("#DocType option:first").val());
+        }
+
+         $("#SaleType").val('{{.m.SaleType}}'.trim()); 
+        if($("#SaleType").val()=='' || $("#SaleType").val() == null){
+            $("#SaleType").val($("#SaleType option:first").val());
+        }
+
+         $("#VatType").val('{{.m.VatType}}'.trim()); 
+        if($("#VatType").val()=='' || $("#VatType").val() == null){
+            $("#VatType").val($("#VatType option:first").val());
+        }
+
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
@@ -130,11 +145,6 @@
 
         $("#price,#qty,#averageCost,#item-name,#discount").focus(function() { $(this).select(); } );
 
-        $("#DocType").val('{{.m.DocType}}'); 
-        if($("#DocType").val()=='' || $("#DocType").val() == null){
-            $("#DocType").val($("#DocType option:first").val());
-        }
-
         $('#DocDate').datepicker({
             autoclose: true,
             language: 'th',
@@ -143,6 +153,14 @@
             todayHighlight: true,
             format: 'dd-mm-yyyy',
         });
+        $('#CashPayDate,#TransferPayDate,#CreditPayDate,#CreditDate,#OtherPayDate').datepicker({
+            autoclose: true,
+            language: 'th',
+            todayBtn: true,
+            orientation: "auto",
+            todayHighlight: true,
+            format: 'dd-mm-yyyy',
+        });        
         $('#DocTime').timepicker({
             minuteStep: 1,
             disableFocus: true,
@@ -153,7 +171,7 @@
          }); 
 
          $('#MemberName').typeahead({
-            ajax: '/service/entity/list/json/?entity=member',
+            ajax: '/member/list/json',
             display: 'Name',
             displayField: 'Name',
             valueField: 'ID',
@@ -198,6 +216,18 @@
             sumFoorter();          
         });
 
+        $("#DiscountWord").focusout( function () {
+             if($(this).val().indexOf("%")==-1){
+                $(this).val(addCommas($(this).val()));
+             }         
+        });
+
+        $("#DiscountWord").focusin( function () {
+            if($(this).val().indexOf("%")==-1){
+                $(this).val( $(this).val().replace(/,/g,""));
+             }            
+        });
+
         $('#DiscountWord').change(function(){
             sumFoorter();
         })
@@ -207,8 +237,9 @@
           $editOveray.hide();
         });
 
-         $('#VatType').change(function(){
+     
 
+         $('#VatType').change(function(){
              $("#RetData tr").each(function (index) {
                  if ($(this).find(".ProductId").val() == '0' || $(this).find(".ProductId").val() == '') {
                     return true;
@@ -311,10 +342,18 @@
                 totalAmountExcludeVat = totalAmountExcludeVat - totalDiscountAmount;
                 totalVatVal = totalVatVal - totalVatDiscountAmount;
             }
-            //totalNetAmount = totalAmount - totalAmountExcludeVat;
 
+            
+            if ($('#VatType').val()=="0"){
+                totalVatVal = 0;
+            }
+
+           
+            
             $('#TotalAmountExcludeVatText').html(addCommas(totalAmountExcludeVat.toFixed(2)))
+            $('#TotalAmountExludeVat').val(totalAmountExcludeVat.toFixed(2))
             $('#TotalVatValText').html(addCommas(totalVatVal.toFixed(2)))
+            $('#VatVal').val(totalVatVal.toFixed(2));
             $('#TotalAmount').val((totalAmountExcludeVat + totalVatVal) .toFixed(2));
             $('#TotalAmountText').html(addCommas((totalAmountExcludeVat + totalVatVal).toFixed(2)));
             $('#TotalDiscount').val(totalDiscountAmount.toFixed(2));
@@ -410,13 +449,13 @@
         }   
     });
     function Save() {
-            commitEdit();
+            $(".ok-edit-row").trigger("click");
             hideTopAlert();
             url = $('#receive-form').attr('action');
             $.post(url, $('#receive-form').serialize(), function (data) {
                 if (data.RetOK) {
                     showTopAlert(data.RetData, "success")
-                    setTimeout(function () { window.location.href = '/receive/list' }, 600);
+                   // setTimeout(function () { window.location.href = '/receive/list' }, 600);
                 } else {
                     showTopAlert(data.RetData, "danger")
                 }

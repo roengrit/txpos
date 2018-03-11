@@ -14,6 +14,7 @@ type Receive struct {
 	Flag                 int
 	Active               bool
 	DocType              int
+	SaleType             int
 	VatType              int
 	DocNo                string    `orm:"size(30)"`
 	DocDate              time.Time `form:"-" orm:"null"`
@@ -30,7 +31,7 @@ type Receive struct {
 	TotalAmountExludeVat float64 `orm:"digits(12);decimals(2)"`
 	TotalNetAmount       float64 `orm:"digits(12);decimals(2)"`
 	CreditDay            int
-	CreditDate           time.Time    `orm:"type(date)"`
+	CreditDate           time.Time    `form:"-" orm:"type(date)"`
 	Remark               string       `orm:"size(300)"`
 	CancelRemark         string       `orm:"size(300)"`
 	Creator              *User        `orm:"rel(fk)"`
@@ -40,6 +41,7 @@ type Receive struct {
 	CancelUser           *User        `orm:"null;rel(fk)"`
 	CancelAt             time.Time    `orm:"null;type(datetime)"`
 	ReceiveSub           []ReceiveSub `orm:"-"`
+	Payment              []Payment    `orm:"-"`
 }
 
 //ReceiveSub _
@@ -78,6 +80,7 @@ func CreateReceive(receive Receive, user User) (retID int64, errRet error) {
 	receive.CreditDate = time.Now()
 	receive.Active = true
 	var fullDataSub []ReceiveSub
+	var fullDataPayment []Payment
 	for _, val := range receive.ReceiveSub {
 		if val.Product.ID != 0 {
 			val.CreatedAt = time.Now()
@@ -90,10 +93,17 @@ func CreateReceive(receive Receive, user User) (retID int64, errRet error) {
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
+	for _, val := range receive.Payment {
+		val.CreatedAt = time.Now()
+		val.Creator = &user
+		val.DocNo = receive.DocNo
+		fullDataPayment = append(fullDataPayment, val)
+	}
 	o := orm.NewOrm()
 	o.Begin()
 	id, err := o.Insert(&receive)
 	id, err = o.InsertMulti(len(fullDataSub), fullDataSub)
+	id, err = o.InsertMulti(len(fullDataPayment), fullDataPayment)
 	if err == nil {
 		retID = id
 		o.Commit()
@@ -118,6 +128,7 @@ func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
 	receive.Editor = &user
 	receive.Active = docCheck.Active
 	var fullDataSub []ReceiveSub
+	var fullDataPayment []Payment
 	for _, val := range receive.ReceiveSub {
 		if val.Product.ID != 0 {
 			val.CreatedAt = time.Now()
@@ -130,6 +141,12 @@ func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
+	for _, val := range receive.Payment {
+		val.CreatedAt = time.Now()
+		val.Creator = &user
+		val.DocNo = receive.DocNo
+		fullDataPayment = append(fullDataPayment, val)
+	}
 	o := orm.NewOrm()
 	o.Begin()
 	id, err := o.Update(&receive)
@@ -138,6 +155,12 @@ func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
 	}
 	if err == nil {
 		_, err = o.InsertMulti(len(fullDataSub), fullDataSub)
+	}
+	if err == nil {
+		_, err = o.QueryTable("payment").Filter("doc_no", receive.DocNo).Delete()
+	}
+	if err == nil {
+		_, err = o.InsertMulti(len(fullDataPayment), fullDataPayment)
 	}
 	if err == nil {
 		retID = id
@@ -155,6 +178,7 @@ func GetReceive(ID int) (doc *Receive, errRet error) {
 	o := orm.NewOrm()
 	o.QueryTable("receive").Filter("ID", ID).RelatedSel().One(receiveDoc)
 	o.QueryTable("receive_sub").Filter("doc_no", receiveDoc.DocNo).RelatedSel().All(&receiveDoc.ReceiveSub)
+	o.QueryTable("payment").Filter("doc_no", receiveDoc.DocNo).OrderBy("ID").RelatedSel().All(&receiveDoc.Payment)
 	doc = receiveDoc
 	return doc, errRet
 }

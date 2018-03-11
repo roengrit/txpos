@@ -12,237 +12,471 @@
         {{.title}}
     </h1>
 </section>
+
 <section class="content">
     <form action="/receive" autocomplete="off" id="receive-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
-
         <input type="hidden" id="currentRow" />
         <input type="hidden" id="MemberID" name="Member.ID" value="{{.m.Member.ID}}" />
-        <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
-        <input type="hidden" id="VatVal" name="VatVal" value="{{.m.VatVal}}" />
+        <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" /> 
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
-
-        <div id="box-req" class="box box-primary">
-            <div class="box-body">
-                <div class="form-group req-box-form head" >
-                    <div class="col-xs-10">
-                        <label for="req-name">ผู้จำหน่าย</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" style="cursor:pointer;" onclick="OTC()">
-                                <i class="fa fa-user"></i>
-                            </span>
-                            <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ผู้จำหน่าย...."
-                                value="{{.m.MemberName}}" {{.r }} />
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_1-1" data-toggle="tab" class="head" aria-expanded="true">รับสินค้า</a></li>
+              <li class=""><a href="#tab_2-2" data-toggle="tab" class="head" aria-expanded="false">การชำระเงิน</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1-1">
+                <div id="box-req"  >
+                    <div class="box-body">
+                        <div class="form-group req-box-form head" >
+                            <div class="col-xs-10">
+                                <label for="req-name">ผู้จำหน่าย</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="cursor:pointer;" onclick="OTC()">
+                                        <i class="fa fa-user"></i>
+                                    </span>
+                                    <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ผู้จำหน่าย...."
+                                        value="{{.m.MemberName}}" {{.r }} />
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <label for="req-name">สถานะ</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-bell-o"></i>
+                                    </span>
+                                    {{if .m.Active}}
+                                    <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{else}} {{if .m.DocNo}}
+                                    <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="C" readonly /> {{else}}
+                                    <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{end}} {{end}}
+                                </div>
+                            </div>
                         </div>
+                        <div class="form-group req-box-form head">
+                            <div class="col-xs-3">
+                                <label for="req-sn">วันที่รับ</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calculator"></i>
+                                    </span>
+                                    {{if .DocDate}}
+                                    <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{.m.DocDate}}'
+                                        {{.r }} /> {{else}}
+                                    <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{date .CurrentDate "d-m-Y"}}'
+                                        {{.r }} /> {{end}}
+        
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <label for="req-sn">เวลาที่รับ</label>
+                                <div class="input-group bootstrap-timepicker timepicker">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                    </span>
+                                    {{if .DocTime}}
+                                    <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{.m.DocTime}}' {{.r }} /> {{else}}
+                                    <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{date .CurrentDate "H:i"}}' {{.r }} /> {{end}}
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <label for="req-sn">เอกสารอ้างอิง</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa  fa-file-text-o"></i>
+                                    </span>
+                                    <input type="text" id="DocRefNo" name="DocRefNo" class="form-control" autocomplete="off" value="{{.m.DocRefNo}}" placeholder="เอกสารอ้างอิง"
+                                        {{.r }} />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group req-box-form head">
+                            <div class="col-xs-3">
+                                <label for="req-sn">ประเภทการรับ</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa  fa-file-text-o"></i>
+                                    </span>
+                                    <select id="DocType" name="DocType" class="form-control" autocomplete="off">
+                                        <option value="0">ทั่วไป</option>
+                                        <option value="1">จากการผลิต</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <label for="req-sn">ประเภทบิล</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa  fa-file-text-o"></i>
+                                    </span>
+                                    <select id="SaleType" name="SaleType" class="form-control" autocomplete="off">
+                                        <option value="0">สด</option>
+                                        <option value="1">เชื่อ</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <label for="req-sn">ประเภทภาษี</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa  fa-file-text-o"></i>
+                                    </span>
+                                    <select id="VatType" name="VatType" class="form-control" autocomplete="off">
+                                        <option value="0">ไม่มีภาษี</option>
+                                        <option value="1">รวมภาษีมูลค่าเพิ่ม</option>
+                                        <option value="2">แยกภาษีมูลค่าเพิ่ม</option>                                
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group req-box-form">
+                            <div class="col-xs-12">
+                                <table class="table" id="ret-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2 col-md-2-table">รหัส</th>
+                                            <th class="col-md-3 col-md-3-table">รายละเอียด</th>
+                                            <th class="col-md-1 col-md-1-table" style="text-align:right;">จำนวน</th>
+                                            <th class="col-md-2 col-md-2-table" style="text-align:right;">ราคา:หน่วย</th>
+                                            <th class="col-md-1 col-md-1-table" style="text-align:right;">ส่วนลด:หน่วย</th>
+                                            <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>
+                                            <th class="col-md-1 col-md-1-table" style="width:100%;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-bordered table-condensed" id="RetData">
+                                        {{if .RetCount}} {{range $key, $val := .m.ReceiveSub}}
+                                        <tr style="cursor: pointer;" index-val="{{$key}}">
+                                            <input type="hidden" class="ProductId" name="ReceiveSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
+                                            <input type="hidden" class="ProductCode" name="ReceiveSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
+                                            <input type="hidden" class="ProductName" name="ReceiveSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
+                                            <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
+                                            <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
+                                            <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
+                                            <input type="hidden" class="ProductVatVal" name="ReceiveSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
+                                            <input type="hidden" class="ProductDiscount" name="ReceiveSub[{{$key}}].DiscountWord" value="{{$val.DiscountWord}}" />
+                                            <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
+                                            <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                            <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}" />
+                                            
+                                            <td class="col-md-2 table-td-mid ProductCodeText">{{$val.Product.Code}}</td>
+                                            <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
+                                            <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
+                                            <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
+                                            <td class="col-md-1 table-td-mid table-td-number ProductDiscountText">{{$val.DiscountWord | TextThCommaAndPercentSeperate }}</td>
+                                            <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
+                                            <td class="col-md-1 table-td-mid table-td-number">
+                                                <div class="btn-group">
+                                                    <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
+                                                        <i class="fa  fa-close"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {{end}} {{end}}
+                                    </tbody>
+                                    <tfoot class="table-bordered table-condensed ">
+                                        <input type="hidden" name="TotalAmount" id="TotalAmount" value="{{.m.TotalAmount}}" />
+                                        <input type="hidden" name="TotalDiscount" id="TotalDiscount" value="{{.m.TotalDiscount}}" />
+                                        <input type="hidden" name="TotalAmountExludeVat" id="TotalAmountExludeVat" value="{{.m.TotalAmountExludeVat}}" />
+                                        <input type="hidden" name="VatVal" id="VatVal" value="{{.m.VatVal}}" />
+                                        <tr class="footer">
+                                            <th>
+                                                <button type="button" class="btn btn-sm btn-success add-row" {{if.r }} style="display:none;"
+                                                    {{else}} {{end}}>เพิ่ม</button>
+                                            </th>
+                                            <th colspan="4" style="text-align:right;vertical-align: middle;">
+                                                <div style="display:block;">
+                                                   <input type="text"  class="form-control" id="DiscountWord" 
+                                                    value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaAndPercentSeperate }}{{else}} {{end}}" 
+                                                    name="DiscountWord" style="width:130px!important;float:right;margin-left:5px;text-align: right;" />
+                                                    <div style="padding-top:5px;height: 34px;float:right;">ส่วนลด</div>
+                                                </div>
+                                            </th>
+                                            <th style="text-align:right;vertical-align: middle;" id="TotalDiscountText">
+                                                {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                        <tr  class="footer">
+                                            <th colspan="4">
+                                            </th>
+                                            <th>
+                                                <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวมก่อนภาษี</div>
+                                            </th>
+                                            <th style="text-align:right;vertical-align: middle;" id="TotalAmountExcludeVatText">
+                                                {{if.m.TotalAmountExludeVat }} {{.m.TotalAmountExludeVat | ThCommaSeperate}} {{else}} 0.00 {{end}}
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                        <tr  class="footer">
+                                                <th colspan="4">
+                                                </th>
+                                                <th>
+                                                    <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม</div>
+                                                </th>
+                                                <th style="text-align:right;vertical-align: middle;" id="TotalVatValText">
+                                                    {{if.m.VatVal}} {{.m.VatVal  }} {{else}} 0.00 {{end}}
+                                                </th>
+                                                <th></th>
+                                        </tr>
+                                        <tr  class="footer">
+                                                <th colspan="4">
+                                                </th>
+                                                <th>
+                                                    <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวม</div>
+                                                </th>
+                                                <th style="text-align:right;vertical-align: middle;" id="TotalAmountText">
+                                                    {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
+                                                </th>
+                                                <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group req-box-form">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>หมายเหตุ</label>
+                                    <textarea class="form-control" id="Remark" name="Remark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.Remark}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        {{if not .m.Active}} {{if .m.DocNo}}
+                        <div class="form-group req-box-form">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label>หมายเหตุการยกเลิก</label>
+                                    <textarea class="form-control" id="CancelRemark" name="CancelRemark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.CancelRemark}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}} {{end}}
                     </div>
-                    <div class="col-xs-2">
-                        <label for="req-name">สถานะ</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-bell-o"></i>
-                            </span>
-                            {{if .m.Active}}
-                            <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{else}} {{if .m.DocNo}}
-                            <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="C" readonly /> {{else}}
-                            <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{end}} {{end}}
-                        </div>
+                    <div class="box-footer">
+                        {{if .r}} {{else}}
+                        <button type="submit" onclick="Save()" class="btn btn-primary pull-right">บันทึก</button>
+                        {{end}}
+                        <a href="/receive/list" class="btn btn-default pull-right" style="margin-right:5px;">ยกเลิก</a>
                     </div>
                 </div>
-                <div class="form-group req-box-form head">
-                    <div class="col-xs-3">
-                        <label for="req-sn">วันที่รับ</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-calculator"></i>
-                            </span>
-                            {{if .DocTime}}
-                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{.m.DocDate}}'
-                                {{.r }} /> {{else}}
-                            <input type="text" id="DocDate" data-date-language="th" name="DocDate" tabindex="2" class="form-control" value='{{date .CurrentDate "d-m-Y"}}'
-                                {{.r }} /> {{end}}
-
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_2-2">
+                <div id="box-req"  >
+                    <div class="box-body">
+                        <div class="form-group req-box-form head">
+                            <div class="col-xs-2">
+                                <label for="req-name">วันที่เครดิต(กรณีเงินเชื่อ)</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="cursor:pointer;">
+                                        <i class="fa fa-calculator"></i>
+                                    </span>
+                                    {{if .CreditDate}}
+                                    <input type="text" id="CreditDate" data-date-language="th" name="CreditDate" tabindex="2" class="form-control" value='{{.m.CreditDate}}'
+                                        {{.r }} placeholder="วันที่...."/> {{else}}
+                                    <input type="text" id="CreditDate" data-date-language="th" name="CreditDate" tabindex="2" class="form-control" value='{{date .CurrentDate "d-m-Y"}}'
+                                        {{.r }} placeholder="วันที่...."/> {{end}} 
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-3">
-                        <label for="req-sn">เวลาที่รับ</label>
-                        <div class="input-group bootstrap-timepicker timepicker">
-                            <span class="input-group-addon">
-                                <i class="fa fa-clock-o"></i>
-                            </span>
-                            {{if .DocTime}}
-                            <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{.m.DocTime}}' {{.r }} /> {{else}}
-                            <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{date .CurrentDate "H:i"}}' {{.r }} /> {{end}}
+                        <div class="form-group req-box-form head">
+                            <div class="col-xs-2">
+                                <label for="req-name">เงินสด</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="cursor:pointer;">
+                                        <i class="fa fa-dollar"></i>
+                                    </span>
+                                    <input type="number" id="Payment[0].TotalAmount" name="Payment[0].TotalAmount" tabindex="0" class="form-control " 
+                                    autocomplete="off" placeholder="เงินสด...."
+                                    {{if .RetPayCount}}
+                                    value="{{(index .m.Payment 0).TotalAmount}}"
+                                    {{end}}
+                                    />
+                                    <span class="input-group-btn " style="cursor:pointer;">
+                                        <button type="button" class="btn btn-success btn-flat">พอดี</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <label for="req-name">วันที่</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="cursor:pointer;">
+                                        <i class="fa fa-calculator"></i>
+                                    </span>
+                                     {{if .RetPayCount}} {{if (index .m.Payment 0).PayDate}}
+                                    <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" value='{{date (index .m.Payment 0).PayDate "d-m-Y"}}'
+                                        {{.r }} placeholder="วันที่...."/> {{end}} {{else}}
+                                    <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control"
+                                        {{.r }} placeholder="วันที่...."/> {{end}}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="req-sn">เอกสารอ้างอิง</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa  fa-file-text-o"></i>
-                            </span>
-                            <input type="text" id="DocRefNo" name="DocRefNo" class="form-control" autocomplete="off" value="{{.m.DocRefNo}}" placeholder="เอกสารอ้างอิง"
-                                {{.r }} />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group req-box-form head">
-                    <div class="col-xs-6">
-                        <label for="req-sn">ประเภทการรับ</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa  fa-file-text-o"></i>
-                            </span>
-                            <select id="DocType" name="DocType" class="form-control" autocomplete="off">
-                                <option value="0">ทั่วไป</option>
-                                <option value="2">จากการผลิต</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="req-sn">ประเภทภาษี</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa  fa-file-text-o"></i>
-                            </span>
-                            <select id="VatType" name="VatType" class="form-control" autocomplete="off">
-                                <option value="0">ไม่มีภาษี</option>
-                                <option value="1">รวมภาษีมูลค่าเพิ่ม</option>
-                                <option value="2">แยกภาษีมูลค่าเพิ่ม</option>                                
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group req-box-form">
-                    <div class="col-xs-12">
-                        <table class="table" id="ret-table">
-                            <thead>
-                                <tr>
-                                    <th class="col-md-2 col-md-2-table">รหัส</th>
-                                    <th class="col-md-3 col-md-3-table">รายละเอียด</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">จำนวน</th>
-                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">ราคา:หน่วย</th>
-                                    <th class="col-md-1 col-md-1-table" style="text-align:right;">ส่วนลด:หน่วย</th>
-                                    <th class="col-md-2 col-md-2-table" style="text-align:right;">รวม</th>
-                                    <th class="col-md-1 col-md-1-table" style="width:100%;"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-bordered table-condensed" id="RetData">
-                                {{if .RetCount}} {{range $key, $val := .m.ReceiveSub}}
-                                <tr style="cursor: pointer;" index-val="{{$key}}">
-                                    <input type="hidden" class="ProductId" name="ReceiveSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
-                                    <input type="hidden" class="ProductCode" name="ReceiveSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" /> 
-                                    <input type="hidden" class="ProductName" name="ReceiveSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
-                                    <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
-                                    <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
-                                    <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
-                                    <input type="hidden" class="ProductVatVal" name="ReceiveSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
-                                    <input type="hidden" class="ProductDiscount" name="ReceiveSub[{{$key}}].DiscountWord" value="{{$val.Discount}}" />
-                                    <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
-                                    <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
-                                    <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}" />
-                                    
-                                    <td class="col-md-2 table-td-mid ProductCodeText">{{$val.Product.Code}}</td>
-                                    <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
-                                    <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
-                                    <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
-                                    <td class="col-md-1 table-td-mid table-td-number ProductDiscountText">{{$val.ProductDiscount }}</td>
-                                    <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
-                                    <td class="col-md-1 table-td-mid table-td-number">
-                                        <div class="btn-group">
-                                            <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
-                                                <i class="fa  fa-close"></i>
-                                            </a>
+                        <div class="form-group req-box-form head">
+                                <div class="col-xs-2">
+                                    <label for="req-name">เงินโอน</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-dollar"></i>
+                                        </span>
+                                        <input type="number" id="Payment[1].TotalAmount" name="Payment[1].TotalAmount" tabindex="0" 
+                                        class="form-control " autocomplete="off" placeholder="เงินโอน...."
+                                        {{if .RetPayCount}}
+                                           value="{{(index .m.Payment 1).TotalAmount}}"
+                                        {{end}}
+                                        />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                        <label for="req-name">ธนาคาร</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="cursor:pointer;">
+                                                <i class="fa fa-bank"></i>
+                                            </span>
+                                            <input type="text" id="Payment[1].Remark" name="Payment[1].Remark" tabindex="0" class="form-control " autocomplete="off"
+                                                placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Remark}}" {{end}} />
                                         </div>
-                                    </td>
-                                </tr>
-                                {{end}} {{end}}
-                            </tbody>
-                            <tfoot class="table-bordered table-condensed ">
-                                <input type="hidden" name="TotalAmount" id="TotalAmount" value="{{.m.TotalAmount}}" />
-                                <input type="hidden" name="TotalDiscount" id="TotalDiscount" value="{{.m.TotalDiscount}}" />
-                                <input type="hidden" name="TotalNetAmount" id="TotalNetAmount" value="{{.m.TotalNetAmount}}" />
-                                <tr class="footer">
-                                    <th>
-                                        <button type="button" class="btn btn-sm btn-success add-row" {{if.r }} style="display:none;"
-                                            {{else}} {{end}}>เพิ่ม</button>
-                                    </th>
-                                    <th colspan="4" style="text-align:right;vertical-align: middle;">
-                                        <div style="display:block;">
-                                            <input type="text"  class="form-control" id="DiscountWord" 
-                                            value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaSeperate}}{{else}} {{end}}"
-                                                name="DiscountWord" style="width:130px!important;float:right;margin-left:5px;text-align: right;"
-                                                 />
-                                            <div style="padding-top:5px;height: 34px;float:right;">ส่วนลด</div>
+                                </div>
+                                <div class="col-xs-2">
+                                        <label for="req-name">เลขที่บัญชี</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="cursor:pointer;">
+                                                <i class="fa fa-clone"></i>
+                                            </span>
+                                            <input type="text" id="Payment[1].Number" name="Payment[1].Number" tabindex="0" class="form-control " autocomplete="off"
+                                                placeholder="เลขที่บัญชี...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Number}}" {{end}} />
                                         </div>
-                                    </th>
-                                    <th style="text-align:right;vertical-align: middle;" id="TotalDiscountText">
-                                        {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
-                                    </th>
-                                    <th></th>
-                                </tr>
-                                <tr  class="footer">
-                                    <th colspan="4">
-                                    </th>
-                                    <th>
-                                        <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวมก่อนภาษี</div>
-                                    </th>
-                                    <th style="text-align:right;vertical-align: middle;" id="TotalAmountExcludeVatText">
-                                        {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
-                                    </th>
-                                    <th></th>
-                                </tr>
-                                <tr  class="footer">
-                                        <th colspan="4">
-                                        </th>
-                                        <th>
-                                            <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม</div>
-                                        </th>
-                                        <th style="text-align:right;vertical-align: middle;" id="TotalVatValText">
-                                            {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
-                                        </th>
-                                        <th></th>
-                                </tr>
-                                <tr  class="footer">
-                                        <th colspan="4">
-                                        </th>
-                                        <th>
-                                            <div style="padding-top:5px;height: 34px;float:right;">มูลค่ารวม</div>
-                                        </th>
-                                        <th style="text-align:right;vertical-align: middle;" id="TotalAmountText">
-                                            {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
-                                        </th>
-                                        <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 1).PayDate}}
+                                        <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="2" class="form-control"
+                                            value='{{date (index .m.Payment 1).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...." /> {{end}} {{else}}
+                                        <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="2" class="form-control"
+                                            value="" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                    <div class="col-xs-2">
+                                        <label for="req-name">บัตรเครดิต</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="cursor:pointer;">
+                                                <i class="fa fa-dollar"></i>
+                                            </span>
+                                            <input type="number" id="Payment[2].TotalAmount" name="Payment[2].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
+                                                placeholder="บัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).TotalAmount}}" {{end}} />
+                                            <span class="input-group-btn " style="cursor:pointer;">
+                                                <button type="button" class="btn btn-success btn-flat">พอดี</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                            <label for="req-name">ธนาคาร</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="cursor:pointer;">
+                                                    <i class="fa fa-bank"></i>
+                                                </span>
+                                                <input type="text" id="Payment[2].Remark" name="Payment[2].Remark" tabindex="0" class="form-control " autocomplete="off"
+                                                placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Remark}}" {{end}} />
+                                            </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                            <label for="req-name">บัตรเครดิต</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="cursor:pointer;">
+                                                    <i class="fa fa-credit-card"></i>
+                                                </span>
+                                                
+                                                <input type="text" id="Payment[2].Number" name="Payment[2].Number" tabindex="0" class="form-control " autocomplete="off"
+                                                placeholder="หมายเลขบัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Number}}" {{end}} />
+                                            </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label for="req-name">วันที่</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="cursor:pointer;">
+                                                <i class="fa fa-calculator"></i>
+                                            </span>
+                                            {{if .RetPayCount}} {{if (index .m.Payment 2).PayDate}}
+                                        <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="2" class="form-control"
+                                            value='{{date (index .m.Payment 2).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...." /> {{end}} {{else}}
+                                        <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="2" class="form-control"
+                                            value="" {{.r }} placeholder="วันที่...." /> {{end}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group req-box-form head">
+                                        <div class="col-xs-2">
+                                            <label for="req-name">อื่นๆ</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="cursor:pointer;">
+                                                    <i class="fa fa-dollar"></i>
+                                                </span>
+                                                <input type="number" id="Payment[3].TotalAmount" name="Payment[3].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
+                                                    placeholder="อื่นๆ...." {{if .RetPayCount}} value="{{(index .m.Payment 3).TotalAmount}}" {{end}} />
+                                                <span class="input-group-btn " style="cursor:pointer;">
+                                                    <button type="button" class="btn btn-success btn-flat">พอดี</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-3">
+                                                <label for="req-name">คำอธิบาย</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" style="cursor:pointer;">
+                                                        <i class="fa  fa-file-text-o"></i>
+                                                    </span>
+                                                    <input type="text" id="Payment[3].Remark" name="Payment[3].Remark" tabindex="0" class="form-control " autocomplete="off"
+                                                    placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Remark}}" {{end}} />
+                                                </div>
+                                        </div>
+                                        <div class="col-xs-2">
+                                                <label for="req-name">รหัส/เลขที่</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" style="cursor:pointer;">
+                                                        <i class="fa  fa-circle-o"></i>
+                                                    </span>
+                                                    
+                                                    <input type="text" id="Payment[3].Number" name="Payment[3].Number" tabindex="0" class="form-control " autocomplete="off"
+                                                    placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Number}}" {{end}} />
+                                                </div>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <label for="req-name">วันที่</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="cursor:pointer;">
+                                                    <i class="fa fa-calculator"></i>
+                                                </span>
+                                                {{if .RetPayCount}} {{if (index .m.Payment 3).PayDate}}
+                                            <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
+                                                value='{{date (index .m.Payment 3).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...." /> {{end}} {{else}}
+                                            <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
+                                                value="" {{.r }} placeholder="วันที่...." /> {{end}}
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                
+                    </div>
+                    <div class="box-footer">
+                        <a href="/receive/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
+                        {{if .r}} {{else}}
+                        <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
+                        {{end}}
                     </div>
                 </div>
-                <div class="form-group req-box-form">
-                    <div class="col-xs-12">
-                        <div class="form-group">
-                            <label>หมายเหตุ</label>
-                            <textarea class="form-control" id="Remark" name="Remark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.Remark}}</textarea>
-                        </div>
-                    </div>
-                </div>
-                {{if not .m.Active}} {{if .m.DocNo}}
-                <div class="form-group req-box-form">
-                    <div class="col-xs-12">
-                        <div class="form-group">
-                            <label>หมายเหตุการยกเลิก</label>
-                            <textarea class="form-control" id="CancelRemark" name="CancelRemark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.CancelRemark}}</textarea>
-                        </div>
-                    </div>
-                </div>
-                {{end}} {{end}}
+              </div>
+              <!-- /.tab-pane -->
             </div>
-            <div class="box-footer">
-                {{if .r}} {{else}}
-                <button type="submit" onclick="Save()" class="btn btn-primary pull-right">บันทึก</button>
-                {{end}}
-                <a href="/receive/list" class="btn btn-default pull-right" style="margin-right:5px;">ยกเลิก</a>
-            </div>
-        </div>
+            <!-- /.tab-content -->
+          </div>
+        
         <div class="col-xs-12" id="editOveray">
                 <div class="col-md-2">
                 <input type="text" id="code" name="code" class="form-control" autocomplete="off" placeholder="รหัส/ชื่อ">

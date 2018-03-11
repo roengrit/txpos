@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -17,14 +18,19 @@ import (
 //ParseDateTime ParseDateTime
 func ParseDateTime(dateStr string, timeStr string) (time.Time, error) {
 	sp := strings.Split(dateStr, "-")
-	retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[1]+"-"+sp[0]+"T"+timeStr+":00+00:00")
-	if errDate != nil {
-		if strings.Contains(errDate.Error(), "month out of range") {
-			retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[0]+"-"+sp[1]+"T"+timeStr+":00+00:00")
-			return retDate, errDate
+	if dateStr == "" {
+		fmt.Println(len(sp))
+		return time.Now(), errors.New("วันที่ไม่ถูกต้อง")
+	} else {
+		retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[1]+"-"+sp[0]+"T"+timeStr+":00+00:00")
+		if errDate != nil {
+			if strings.Contains(errDate.Error(), "month out of range") {
+				retDate, errDate := time.Parse(time.RFC3339, sp[2]+"-"+sp[0]+"-"+sp[1]+"T"+timeStr+":00+00:00")
+				return retDate, errDate
+			}
 		}
+		return retDate, errDate
 	}
-	return retDate, errDate
 }
 
 //ParseDateString ParseDateString
@@ -48,6 +54,18 @@ func ThCommaSeperate(in float64) (out string) {
 func TextThCommaSeperate(in string) (out string) {
 	val, _ := strconv.ParseFloat(in, 64)
 	out = fmt.Sprintf("%s", RenderFloat("#,###.##", val))
+	return
+}
+
+//TextThCommaAndPercentSeperate _
+func TextThCommaAndPercentSeperate(in string) (out string) {
+	if strings.Contains(in, "%") {
+		out = in
+	} else {
+
+		val, _ := strconv.ParseFloat(in, 64)
+		out = fmt.Sprintf("%s", RenderFloat("#,###.##", val))
+	}
 	return
 }
 

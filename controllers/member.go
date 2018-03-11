@@ -139,3 +139,20 @@ func (c *MemberController) GetMemberListJSON() {
 	c.Data["json"] = ret
 	c.ServeJSON()
 }
+
+//ListMemberJSON ListMemberJSON
+func (c *MemberController) ListMemberJSON() {
+	term := strings.TrimSpace(c.GetString("query"))
+	ret := m.RetModel{}
+	_, list, _ := m.GetMemberListPaging(0, 20, term)
+	if len(list) > 0 {
+		ret.RetOK = true
+		ret.RetCount = int64(len(list))
+		ret.ListData = list
+	} else {
+		ret.RetOK = false
+		ret.RetData = "ไม่พบข้อมูล"
+	}
+	c.Data["json"] = ret
+	c.ServeJSON()
+}

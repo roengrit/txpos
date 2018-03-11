@@ -263,11 +263,12 @@
             items = $(items).map(function (i, item) {
                 if (typeof item === 'object') {
                     display = isString ? item[that.options.displayField] : that.options.displayField(item);
-                    display = item.Code + " : " + display ;
+                    if (item.Code != undefined){
+                        display = item.Code + " : " + display ;
+                    } 
                     i = $(that.options.item).attr('data-value', item[that.options.valueField]);
                 } else {
                     display = item; 
-                    console.log(display)
                     i = $(that.options.item).attr('data-value', item);
                 }
                 i.find('a').html(that.highlighter(display));
