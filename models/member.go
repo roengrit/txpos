@@ -18,6 +18,7 @@ type Member struct {
 	Contact    string     `orm:"size(255)"`
 	Tel        string     `orm:"size(100)"`
 	MemberType int
+	TaxNo      string `orm:"size(100)"`
 	Level      int
 	Score      int
 	Remark     string    `orm:"size(100)"`
