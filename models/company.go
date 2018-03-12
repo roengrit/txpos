@@ -17,6 +17,7 @@ type Company struct {
 	PostCode    string     `orm:"size(10)"`
 	Contact     string     `orm:"size(255)"`
 	Tel         string     `orm:"size(100)"`
+	TaxNo       string     `orm:"size(100)"`
 	ImageLogo   string     `orm:"size(300)"`
 	ImageBase64 string     `orm:"-"`
 	Remark      string     `orm:"size(100)"`
