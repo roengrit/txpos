@@ -1,0 +1,180 @@
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <style type="text/css">
+        div.title {
+            text-align: center;
+            font-size: 24pt;
+            font-weight: bold
+        }
+
+        hr {
+            border-top: 1px solid #000
+        }
+
+        div.summary {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 20px
+        }
+
+        table.lineItems {
+            width: 100%;
+            margin-top: 20px
+        }
+
+        table.lineItems th {
+            border: 1px solid #000;
+            padding: 5px 10px
+        }
+
+        table.lineItems td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            padding: 5px 10px
+        }
+
+        table.lineItems td.total-label {
+            text-align: right;
+            border-left: none;
+        }
+
+        table.lineItems td.total-amount {
+            border: 1px solid #000;
+            text-align: right
+        }
+
+        table.lineItems td.total-important {
+            font-weight: bold;
+        }
+
+        table.lineItems tr.lastLineItem td {
+            border-bottom: 1px solid #000
+        }
+    </style>
+    <title>Custom sales invoice by lubos</title>
+</head>
+
+<body>
+    <div style="padding: 30px;">
+        <!-- HEADER -->
+        <div class="title">TAX INVOICE</div>
+        <hr>
+        <!-- CUSTOMER & BUSINESS DETAILS -->
+        <div style="margin-top: 20px">
+            <div class="pull-right" style="padding-left: 20px">
+                <div data-bind="text: Seller" style="font-weight: bold">ACME Corporation</div>
+                <div data-bind="foreach: SellerContactDetails">
+                    <div data-bind="text: $data">1313 Webfoot Walk</div>
+
+                    <div data-bind="text: $data">Duckburg</div>
+
+                    <div data-bind="text: $data">Calisota</div>
+                </div>
+            </div>
+            <div class="pull-right" style="padding-right: 20px; border-right: 1px solid #000">
+                <div style="font-weight: bold; text-align: right">Issue Date</div>
+                <div data-bind="text: IssueDate" style="text-align: right; margin-bottom: 10px">27/06/2014</div>
+                <div style="font-weight: bold; text-align: right">Due Date</div>
+                <div data-bind="text: DueDate" style="text-align: right; margin-bottom: 10px">24/07/2014</div>
+                <div style="font-weight: bold; text-align: right">Invoice No.</div>
+                <div data-bind="text: Number" style="text-align: right">1001</div>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold; padding-right: 20px">To</td>
+                        <td data-bind="text: Customer">Brilliant Industries</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div data-bind="foreach: CustomerAddressLines">
+                                <div data-bind="text: $data">1 York Street</div>
+
+                                <div data-bind="text: $data">Metropolis</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="clear: both"></div>
+        </div>
+        <!-- LINE ITEMS -->
+        <div class="summary" data-bind="text: Summary">Professional services</div>
+        <table class="lineItems">
+            <thead>
+                <tr>
+                    <th>Services</th>
+                    <th style="text-align: right; width: 100px">Hourly rate</th>
+                    <th style="text-align: center; width: 60px">Hours</th>
+                    <th style="text-align: center; width: 100px">Discount</th>
+                    <th style="text-align: center; width: 100px">Tax</th>
+                    <th style="text-align: center; width: 100px">Total</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: LineItems">
+                <tr>
+                    <td data-bind="text: Description">Financial planning</td>
+                    <td data-bind="text: UnitPrice" style="text-align: right">100.00</td>
+                    <td data-bind="text: Qty" style="text-align: center">4</td>
+                    <td data-bind="text: Discount" style="text-align: center"></td>
+                    <td data-bind="text: Tax" style="text-align: center">VAT 10%</td>
+                    <td data-bind="text: LineTotal" style="text-align: right">400.00</td>
+                </tr>
+
+                <tr>
+                    <td data-bind="text: Description">Tax consulting</td>
+                    <td data-bind="text: UnitPrice" style="text-align: right">120.00</td>
+                    <td data-bind="text: Qty" style="text-align: center">2</td>
+                    <td data-bind="text: Discount" style="text-align: center"></td>
+                    <td data-bind="text: Tax" style="text-align: center">VAT 10%</td>
+                    <td data-bind="text: LineTotal" style="text-align: right">240.00</td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr class="lastLineItem">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr data-bind="visible: Total != Subtotal">
+                    <td colspan="5" class="total-label">Subtotal</td>
+                    <td class="total-amount" data-bind="text: Subtotal">640.00</td>
+                </tr>
+            </tbody>
+            <tbody data-bind="visible: TaxComponents.length > 0, foreach: TaxComponents">
+                <tr>
+                    <td colspan="5" class="total-label">
+                        <span data-bind="visible: $parent.LineItemsIncludeTax" style="display: none;">Includes </span>
+                        <span data-bind="text: Name">VAT 10%</span>
+                    </td>
+                    <td class="total-amount" data-bind="text: Amount">64.00</td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <td colspan="5" class="total-label total-important">Total</td>
+                    <td class="total-amount total-important" data-bind="text: Total">704.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- NOTES -->
+        <div data-bind="foreach: Notes">
+            <div data-bind="text: $data">Please by due date.</div>
+
+            <div data-bind="text: $data">Thank you for your business.</div>
+        </div>
+    </div>
+</body>
+
+</html>
