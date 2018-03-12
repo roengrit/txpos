@@ -63,6 +63,9 @@ func main() {
 	beego.Router("/pickup/list", &c.PickUpController{}, "get:PickUpList;post:GetPickUpListJSON")
 
 	beego.Router("/receive", &c.ReceiveController{})
+	beego.Router("/receive/cancel", &c.ReceiveController{}, "get:CancelReceive;post:UpdateCancelReceive")
+	beego.Router("/receive/receive", &c.ReceiveController{}, "get:Receive;post:UpdateReceive")
+	beego.Router("/receive/list", &c.ReceiveController{}, "get:ReceiveList;post:GetReceiveListJSON")
 
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("TextThCommaSeperate", h.ThCommaSeperate)

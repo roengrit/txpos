@@ -1,0 +1,1 @@
+INSERT INTO "user"("i_d", "lock", "username", "password", "name", "tel", "facebook", "line", "role_id", "active", "created_at", "edited_at") VALUES (1, 'f', 'Admin', '$2a$10$adKOXX/I9OjHb0c62Qz6XOHyBM9.x2CEg9FzYPXWclqm4PwGxJEdW', 'Admin', '', '', '', 1, 't', '2018-03-01 13:54:40+07', NULL);

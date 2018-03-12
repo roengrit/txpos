@@ -36,6 +36,8 @@
         that.parent = that.options.parent || that.parent;
         that.fixurl = that.options.fixurl || that.fixurl;
         that.valid = that.options.valid || that.valid;
+        that.not_replace_when_is_not_valid = that.options.not_replace_when_is_not_valid || that.not_replace_when_is_not_valid;
+        
 
         if (that.options.ajax) {
             var ajax = that.options.ajax;
@@ -443,7 +445,9 @@
         blur: function (e) {
             this.focused = false
             if($('#' + this.valid).val()==''){
+                if(!this.not_replace_when_is_not_valid){
                 this.$element.val('');
+              }
             }
             if (!this.mousedover && this.shown)
                 this.hide()
@@ -528,7 +532,8 @@
         }    ,
         parent :  ''  ,
         valid :  ''  ,
-        fixurl :  ''   
+        fixurl :  '' ,
+        not_replace_when_is_not_valid : false  
     };
 
     $.fn.typeahead.Constructor = Typeahead;

@@ -15,7 +15,6 @@
 <section class="content">
     <form action="/pickup" autocomplete="off" id="pickup-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
-        
         <input type="hidden" id="currentRow" /> 
         <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" /> 
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
@@ -40,7 +39,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-clock-o"></i>
                                 </span>
-                                 {{if .DocTime}}
+                                {{if .m.DocTime}}
                                 <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{.m.DocTime}}' {{.r }} /> {{else}}
                                 <input type="text" id="DocTime" name="DocTime" class="form-control" value='{{date .CurrentDate "H:i"}}'{{.r }} /> {{end}}
                             </div>

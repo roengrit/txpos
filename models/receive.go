@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"time"
 	"txpos/helpers"
 
@@ -30,10 +31,15 @@ type Receive struct {
 	TotalAmount          float64 `orm:"digits(12);decimals(2)"`
 	TotalAmountExludeVat float64 `orm:"digits(12);decimals(2)"`
 	TotalNetAmount       float64 `orm:"digits(12);decimals(2)"`
+	TotalPay             float64 `orm:"digits(12);decimals(2)"`
 	CreditDay            int
 	CreditDate           time.Time    `form:"-" orm:"type(date)"`
+	ReceiveDate          time.Time    `form:"-" orm:"null;type(datetime)"`
+	ReceiveTime          string       `orm:"size(6)"`
+	ReceiveUser          *User        `orm:"null;rel(fk)"`
 	Remark               string       `orm:"size(300)"`
 	CancelRemark         string       `orm:"size(300)"`
+	ReceiveRemark        string       `orm:"size(300)"`
 	Creator              *User        `orm:"rel(fk)"`
 	CreatedAt            time.Time    `orm:"auto_now_add;type(datetime)"`
 	Editor               *User        `orm:"null;rel(fk)"`
@@ -67,13 +73,21 @@ type ReceiveSub struct {
 	CreatedAt           time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
+//ReceiveJSON ReceiveJSON
+type ReceiveJSON struct {
+	ReceiveList *[]Receive
+	Paging      string
+	Page        uint
+	PerPage     uint
+}
+
 func init() {
 	orm.RegisterModel(new(Receive), new(ReceiveSub)) // Need to register model in init
 }
 
 //CreateReceive _
 func CreateReceive(receive Receive, user User) (retID int64, errRet error) {
-	receive.DocNo = helpers.GetMaxDoc("receive", "REC")
+	receive.DocNo = helpers.GetMaxDoc("receive", "PO")
 	receive.Creator = &user
 	receive.CreatedAt = time.Now()
 	receive.CreditDay = 0
@@ -120,6 +134,7 @@ func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
+	fmt.Println(receive.MemberName)
 	receive.Creator = docCheck.Creator
 	receive.CreatedAt = docCheck.CreatedAt
 	receive.CreditDay = docCheck.CreditDay
@@ -183,24 +198,6 @@ func GetReceive(ID int) (doc *Receive, errRet error) {
 	return doc, errRet
 }
 
-//GetReceiveList _
-func GetReceiveList(term string, limit int, dateBegin, dateEnd string) (sup *[]Receive, rowCount int, errRet error) {
-	receive := &[]Receive{}
-	o := orm.NewOrm()
-	qs := o.QueryTable("receive")
-	condSub1 := orm.NewCondition()
-	condSub2 := orm.NewCondition()
-	cond1 := condSub1.And("doc_date__gte", dateBegin).And("doc_date__lte", dateEnd)
-	qs = qs.SetCond(cond1)
-	if dateBegin != "" && dateEnd != "" {
-		cond2 := condSub2.Or("Member__Name__icontains", term).Or("DocNo__icontains", term).Or("Remark__icontains", term)
-		cond1 = cond1.AndCond(cond2)
-		qs = qs.SetCond(cond1)
-	}
-	qs.RelatedSel().Limit(limit).All(receive)
-	return receive, len(*receive), errRet
-}
-
 //UpdateCancelReceive _
 func UpdateCancelReceive(ID int, remark string, user User) (retID int64, errRet error) {
 	docCheck := &Receive{}
@@ -225,4 +222,69 @@ func UpdateCancelReceive(ID int, remark string, user User) (retID int64, errRet 
 	}
 	errRet = err
 	return retID, errRet
+}
+
+//UpdateReceiveDate _
+func UpdateReceiveDate(ID int, receiveDate time.Time, receiveTime, remark string, user User) (retID int64, errRet error) {
+	docCheck := &Receive{}
+	o := orm.NewOrm()
+	o.QueryTable("receive").Filter("ID", ID).RelatedSel().One(docCheck)
+	if docCheck.ID == 0 {
+		errRet = errors.New("ไม่พบข้อมูล")
+	}
+	docCheck.ReceiveDate = receiveDate
+	docCheck.ReceiveTime = receiveTime
+	docCheck.ReceiveRemark = remark
+	docCheck.ReceiveUser = &user
+	o.Begin()
+	_, err := o.Update(docCheck)
+	if err != nil {
+		o.Rollback()
+	} else {
+		o.Commit()
+	}
+	errRet = err
+	return retID, errRet
+}
+
+//GetReceiveList GetReceiveList
+func GetReceiveList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, receiveState, payState, term string) (num int64, receiveList []Receive, err error) {
+	o := orm.NewOrm()
+	var sql = `SELECT 
+					T0.i_d,
+					T0.doc_no,
+					T0.doc_date,
+					T0.member_name,
+					T0.receive_date,
+					T0.remark,				 
+					T0.active,
+					T0.total_amount,
+					(select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no) as total_pay
+			   FROM receive T0 	   
+			   WHERE (lower(T0.doc_no) like lower(?) or lower(T0.remark) like lower(?) or lower(T0.member_name) like lower(?)) `
+	if txtDateBegin != "" && txtDateEnd != "" {
+		sql += " and date( T0.doc_date) between '" + helpers.ParseDateString(txtDateBegin) + "' and '" + helpers.ParseDateString(txtDateEnd) + "'"
+	}
+	if receiveState == "1" {
+		sql += " and T0.receive_date is not null and T0.active"
+	}
+	if receiveState == "2" {
+		sql += " and T0.receive_date is null and T0.active"
+	}
+	if payState == "1" {
+		sql += " and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no) ) <= 0 and T0.active"
+	}
+	if payState == "2" {
+		sql += ` and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no)) > 0 
+				 and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no)) <> T0.total_amount
+				 and T0.active`
+	}
+	if payState == "3" {
+		sql += " and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no)) = T0.total_amount and T0.active"
+	}
+	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%").QueryRows(&receiveList)
+	sql += " order by T0.doc_no  offset ? limit ?"
+	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&receiveList)
+
+	return num, receiveList, err
 }
