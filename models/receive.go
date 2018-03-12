@@ -24,6 +24,12 @@ type Receive struct {
 	TableNo              string    `orm:"size(300)"`
 	Member               *Member   `orm:"rel(fk)"`
 	MemberName           string    `orm:"size(300)"`
+	Tel                  string    `orm:"size(100)"`
+	Email                string    `orm:"size(100)"`
+	Address              string    `orm:"size(500)"`
+	TaxNo                string    `orm:"size(13)"`
+	BranchNo             string    `orm:"size(25)"`
+	BranchName           string    `orm:"size(200)"`
 	DiscountType         int
 	DiscountWord         string  `orm:"size(300)"`
 	VatVal               float64 `orm:"digits(12);decimals(2)"`

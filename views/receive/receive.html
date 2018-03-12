@@ -51,6 +51,9 @@
                                         <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ผู้จำหน่าย...."
                                             value="{{.m.MemberName}}" 
                                             {{.r }} />
+                                        <span class="input-group-addon" onclick="headerShow()" style="cursor:pointer;" >
+                                                <i class="fa fa-caret-down"></i>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-2">
@@ -65,6 +68,78 @@
                                         <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{end}} {{end}}
                                     </div>
                                 </div>
+                            </div>
+                            <div class="form-group req-box-form head header-hide">
+                                <div class="col-xs-6">
+                                    <label for="req-name">เบอร์โทรศัพท์</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                        <input type="text" id="Tel" name="Tel" tabindex="0" class="form-control" autocomplete="off" placeholder="เบอร์โทรศัพท์...."
+                                            value="{{.m.Tel}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>  
+                                <div class="col-xs-6">
+                                    <label for="req-name">อีเมล</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                            <i class="fa  fa-envelope-o"></i>
+                                        </span>
+                                        <input type="text" id="Email" name="Email" tabindex="0" class="form-control" autocomplete="off" placeholder="อีเมล...."
+                                            value="{{.m.Email}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>                              
+                            </div>
+                            <div class="form-group req-box-form head header-hide">
+                                <div class="col-xs-6">
+                                    <label for="req-name">ที่อยู่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                            <i class="fa fa-home"></i>
+                                        </span>
+                                        <input type="text" id="Address" name="Address" tabindex="0" class="form-control" autocomplete="off" placeholder="ที่อยู่...."
+                                            value="{{.m.Address}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>  
+                                <div class="col-xs-6">
+                                    <label for="req-name">เลขประจำตัวผู้เสียภาษี</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                            <i class="fa  fa-ellipsis-h"></i>
+                                        </span>
+                                        <input type="text" id="TaxNo" name="TaxNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขประจำตัวผู้เสียภาษี...."
+                                            value="{{.m.TaxNo}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>                              
+                            </div>
+                            <div class="form-group req-box-form head header-hide">
+                                <div class="col-xs-6">
+                                    <label for="req-name">เลขที่สาขา</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                            <i class="fa fa-book"></i>
+                                        </span>
+                                        <input type="text" id="BranchNo" name="BranchNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขที่สาขา...."
+                                            value="{{.m.BranchNo}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>  
+                                <div class="col-xs-6">
+                                    <label for="req-name">ชื่อสาขา</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                            <i class="fa  fa-file-text"></i>
+                                        </span>
+                                        <input type="text" id="BranchName" name="BranchName" tabindex="0" class="form-control" autocomplete="off" placeholder="ชื่อสาขา...."
+                                            value="{{.m.BranchName}}" 
+                                            {{.r }} />
+                                    </div>
+                                </div>                              
                             </div>
                             <div class="form-group req-box-form head">
                                 <div class="col-xs-3">
@@ -565,7 +640,7 @@
             </div>
             <div class="col-md-2">
                 <input type="text" id="discount" name="discount" class="form-control" style="text-align: right;" placeholder="ส่วนลด">
-                <button type="button" class="btn btn-success ok-edit-row" style="display:none;">ตกลง</button>
+                <button type="button" class="btn btn-success ok-edit-row" id="ok-edit-row" style="display:none;">ตกลง</button>
             </div>
             <div class="col-md-1" id="totalPrice" style="text-align:right;margin-top:8px;">
                 0.00

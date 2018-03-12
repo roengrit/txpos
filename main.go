@@ -50,6 +50,7 @@ func main() {
 	beego.Router("/member/read/?:id", &c.MemberController{}, "get:CreateMember")
 	beego.Router("/member/list", &c.MemberController{}, "get:MemberList;post:GetMemberListJSON")
 	beego.Router("/member/list/json", &c.MemberController{}, "get:ListMemberJSON")
+	beego.Router("/member/json/?:id", &c.MemberController{}, "get:GetMemberJSON")
 
 	beego.Router("/stock", &c.StockCountController{})
 	beego.Router("/stock/diff", &c.StockCountController{}, "get:StockDiff")

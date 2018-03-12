@@ -209,8 +209,23 @@
                 }
                 
                 $('#MemberID').val(data.value);
+                $.get("/member/json/?id=" + data.value, function (mem) {
+                    if (mem.Data1.Address.indexOf("ต.")!=-1 && mem.Data1.Address.indexOf("อ.")!=-1){
+                        mem.Data1.Address =  mem.Data1.Address + " จ." + mem.Data1.Province.Name  +" " + mem.Data1.PostCode
+                    }else{
+                        mem.Data1.Address =  mem.Data1.Address + " จังหวัด" + mem.Data1.Province.Name +" " + mem.Data1.PostCode
+                    }
+                    $('#Address').val(mem.Data1.Address);
+                    $('#Tel').val(mem.Data1.Tel);
+                    $('#Email').val(mem.Data1.Email);
+                    $('#TaxNo').val(mem.Data1.TaxNo);
+                    $('#BranchNo').val(mem.Data1.BranchNo);
+                    $('#BranchName').val(mem.Data1.BranchName);
+                });
             }
         });
+
+        $(".header-hide").hide();
 
         $('#code').typeahead({
             ajax: '/product/list/json',
@@ -296,6 +311,8 @@
             commitEdit();
             $editOveray.hide();
         });
+
+        
 
         function appendEmptyRow(index) {
 
@@ -468,8 +485,13 @@
             return false;
         }
     });
+
+    function headerShow(){
+            $('.header-hide').toggle();
+    }
+
     function Save() {
-        $(".ok-edit-row").trigger("click");
+        $("#ok-edit-row").trigger("click");
         if($('#MemberID').val()==''){
             $('#MemberID').val(2);
         }

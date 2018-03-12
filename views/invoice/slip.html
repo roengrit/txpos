@@ -6,26 +6,27 @@
       line-height: 1;
       background: #f7f7f7;
     } 
-    @page{
- margin-left: 10px;
-margin-right: 10px; 
-margin-top: 2px;
-margin-bottom: 2px;
-}
     page[size="slip"] {
-      width: 72mm;
+      width: 80mm;
       display: block;
       position: relative;
-      margin: 0 auto;
+      margin: 0 0;
       font-size: 16px;
       color: #000000;
       background: #FFFFFF;
     } 
+    @page{
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    }
     @media print {
+      
       body,
       page[size="slip"]  {
         width: auto;
-        margin: 0;
+        margin: 0 0;
         box-shadow: 0;
       }
       .footer {
@@ -42,7 +43,7 @@ margin-bottom: 2px;
       body,
       page[size="slip"], {
         width: auto;
-        margin: 0;
+        margin: -10 -10;
         box-shadow: 0; 
       }
     }
@@ -155,12 +156,14 @@ margin-bottom: 2px;
               <td align="center" style="text-align:center;font-size:0.75em;margin-top:2px;">ราคาของสินค้าและบริการได้รวมภาษีมูลค่าเพิ่มแล้ว</td>
             </tr>
             <tr>
-                <td align="center" style="text-align:center;font-size:0.75em;margin-top:2px;margin-bottom:15px;">พนักงานขาย: n@m
-                    วันที่: 12/03/2018 15:35:47</td>
-            </tr> 
+              <td align="center" style="text-align:center;font-size:0.75em;margin-top:2px;">พนักงานขาย: n@m วันที่: 12/03/2018 15:35:47</td>
+            </tr>
+            <tr>
+              <td align="center" style="text-align:center;font-size:0.75em;margin-top:2px;"> โทร : 045315480 อีเมล : logon.firstclass@gmail.com
+            </tr>
           </tbody>
         </table>
-        <table width="100%" style=" padding-top:10px;padding-left:1px;padding-left:1px; ">
+        <table width="100%" style="padding-top:25px;padding-left:1px;padding-left:1px; ">
           <tbody>
             <tr style="text-align:center">
               <td>.</td></tr>

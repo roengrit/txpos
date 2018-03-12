@@ -156,3 +156,20 @@ func (c *MemberController) ListMemberJSON() {
 	c.Data["json"] = ret
 	c.ServeJSON()
 }
+
+//GetMemberJSON GetMemberJSON
+func (c *MemberController) GetMemberJSON() {
+	id, _ := strconv.Atoi(strings.TrimSpace(c.GetString("id")))
+	ret := m.RetModel{}
+	mem, err := m.GetMember(id)
+	if err == nil {
+		ret.RetOK = true
+		ret.RetCount = 1
+		ret.Data1 = mem
+	} else {
+		ret.RetOK = false
+		ret.RetData = "ไม่พบข้อมูล"
+	}
+	c.Data["json"] = ret
+	c.ServeJSON()
+}
