@@ -21,10 +21,10 @@ type Receive struct {
 	DocDate              time.Time `form:"-" orm:"null"`
 	DocTime              string    `orm:"size(6)"`
 	DocRefNo             string    `orm:"size(30)"`
-	TableNo              string    `orm:"size(300)"`
 	Member               *Member   `orm:"rel(fk)"`
 	MemberName           string    `orm:"size(300)"`
 	Tel                  string    `orm:"size(100)"`
+	Fax                  string    `orm:"size(100)"`
 	Email                string    `orm:"size(100)"`
 	Address              string    `orm:"size(500)"`
 	TaxNo                string    `orm:"size(13)"`

@@ -2,7 +2,7 @@
 <html moznomarginboxes mozdisallowselectionprint>
 <head>
     <meta charset="utf-8" />
-    <title>ใบรับสินค้า</title>
+    <title>ใบสั่งซื้อสินค้า</title>
     <link rel="shortcut icon" type="image/png" href="/static/image/tx.png" />
     <link rel="stylesheet" href="/static/css/print/bootstrap.css" />
     <script src=/static/js/print/jquery-3.1.1.min.js type="text/javascript"></script>
@@ -317,8 +317,9 @@
                                     </div>
                                     <div class="print-col-right">
                                         <div class="print-doctype" id="headerarea1" style="width:100%;">
-                                            <span style="white-space:nowrap;">ใบรับสินค้า</span>
+                                            <span style="white-space:nowrap;">ใบสั่งซื้อ</span>
                                         </div>
+
                                         <div class="print-date">วันที่ : {{date .m.DocDate "d-m-Y"}}</div>
                                         <div class="print-id">เลขที่เอกสาร: {{.m.DocNo}}</div>
                                     </div>
@@ -474,7 +475,7 @@
                                             <img class="print-signature" src="" style="max-width: 120px;max-height: 120px;" />
                                         </div>
                                     </div>
-                                    <div class="print-sign-person" style="font-size: 9pt;">ผู้รับสินค้า </div>
+                                    <div class="print-sign-person" style="font-size: 9pt;">ผู้อนุมัติ </div>
                                     <div class="print-sign-date" style="font-size: 9pt;">วันที่ .............................. </div>
                                 </div>
                                 <div class="print-sign productreceivesignarea">
@@ -483,7 +484,7 @@
                                                 <img class="print-signature" src="" style="max-width: 120px;max-height: 120px;" />
                                             </div>
                                         </div>
-                                        <div class="print-sign-person" style="font-size: 9pt;">ส่งสินค้า</div>
+                                        <div class="print-sign-person" style="font-size: 9pt;">ผู้สั่งซื้อ</div>
                                         <div class="print-sign-date" style="font-size: 9pt;">วันที่ ..............................</div>
                                     </div>
                             </div>

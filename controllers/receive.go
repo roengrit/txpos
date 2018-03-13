@@ -283,25 +283,22 @@ func (c *ReceiveController) GetReceiveListJSON() {
 //Print _
 func (c *ReceiveController) Print() {
 	docID, _ := strconv.ParseInt(c.Ctx.Request.URL.Query().Get("id"), 10, 32)
-	if strings.Contains(c.Ctx.Request.URL.RequestURI(), "read") {
-		c.Data["r"] = "readonly"
-	}
+
 	doc, _ := m.GetReceive(int(docID))
 	com, _ := m.GetComFirst()
-	if strings.Contains(com.Address, "ต.") || strings.Contains(com.Address, "อ.") {
-		com.Address = com.Address + " จ." + com.Province.Name + " " + com.PostCode
-	} else {
-		com.Address = com.Address + " จังหวัด" + com.Province.Name + " " + com.PostCode
-	}
 	c.Data["m"] = doc
 	c.Data["com"] = com
 	c.Data["RetCount"] = len(doc.ReceiveSub)
-	c.Data["RetPayCount"] = len(doc.Payment)
-	c.Data["OtherCount"] = 12 - len(doc.ReceiveSub)
-	c.Data["lastIndex"] = len(doc.ReceiveSub) - 1
-	c.Data["title"] = "ใบสั่งซื้อสินค้า"
 	c.Data["CurrentDate"] = time.Now()
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
 	c.TplName = "receive/receive-invoice.html"
+	if c.Ctx.Request.URL.Query().Get("po") == "1" {
+		c.TplName = "receive/receive-po-invoice.html"
+		c.Data["title"] = "ใบสั่งซื้อสินค้า"
+		c.Data["remark"] = doc.Remark
+	} else {
+		c.Data["title"] = "ใบรับสินค้า"
+		c.Data["remark"] = doc.ReceiveRemark
+	}
 	c.Render()
 }

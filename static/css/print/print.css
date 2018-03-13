@@ -171,7 +171,7 @@ body {
 }
 
 .table-items .item-id {
-    width: 150px;
+    width: 50px;
 }
 
 .table-items .item-name {
@@ -179,7 +179,7 @@ body {
 }
 
 .table-items .item-value {
-    width: 70px;
+    width: 100px;
     text-align: center;
 }
 
@@ -225,7 +225,6 @@ body {
     min-height: 100pt;
     padding: 10pt 20pt 20pt 20pt;
     text-align: center;
-    font-style: italic;
     font-size: 11pt;
 }
 

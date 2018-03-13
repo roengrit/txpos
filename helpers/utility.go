@@ -69,6 +69,14 @@ func TextThCommaAndPercentSeperate(in string) (out string) {
 	return
 }
 
+//TextNoPercent _
+func TextNoPercent(in string) (out string) {
+	if strings.Contains(in, "%") {
+		out = in
+	}
+	return
+}
+
 var renderFloatPrecisionMultipliers = [10]float64{
 	1,
 	10,

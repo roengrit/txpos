@@ -73,5 +73,6 @@ func main() {
 	beego.AddFuncMap("TextThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("TextThCommaAndPercentSeperate", h.TextThCommaAndPercentSeperate)
 	beego.AddFuncMap("HTMLRowOrder", h.HTMLRowOrder)
+	beego.AddFuncMap("TextNoPercent", h.TextNoPercent)
 	beego.Run()
 }

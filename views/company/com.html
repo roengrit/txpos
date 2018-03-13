@@ -36,13 +36,22 @@
                       </div>
             <div class="box-body">
                 <div class="form-group req-box-form">
-                    <div class="col-xs-12">
+                    <div class="col-xs-8">
                         <label for="req-name">ชื่อ</label>
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="fa fa-user"></i>
                             </span>
                             <input type="text" id="Name" required name="Name" class="form-control" {{.r }} autocomplete="off" placeholder="ชื่อ...." value="{{.m.Name}}">
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <label for="req-date-event">เลขประจำตัวผู้เสียภาษี</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                               TAX
+                            </span>
+                            <input type="text" id="TaxNo" name="TaxNo"  class="form-control"  {{.r }} value="{{.m.TaxNo}}" placeholder="เลขประจำตัวผู้เสียภาษี.."/> 
                         </div>
                     </div>
                 </div>
@@ -59,41 +68,6 @@
                 </div>
                 <div class="form-group req-box-form">
                     <div class="col-xs-6">
-                        <label for="req-sn">จังหวัด</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-location-arrow"></i>
-                            </span>
-                            <select id="ProvinceID" name="Province.ID"  {{.r }} class="form-control province">
-                                    {{range $key, $val := .Province}}
-                                        <option value="{{$val.ID}}" > {{$val.Name}} </option>
-                                    {{end}}   
-                            </select>   
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="req-date-event">รหัสไปรษณีย์</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-location-arrow"></i>
-                            </span>
-                            <input type="text" id="PostCode"  name="PostCode" class="form-control" {{.r }}   maxlength="5"
-                              value="{{.m.PostCode}}"   placeholder="รหัสไปรษณีย์">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group req-box-form">
-                    <div class="col-xs-6">
-                        <label for="req-sn">ผู้ติดต่อ</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-book"></i>
-                            </span>
-                            <input type="text" id="Contact" name="Contact" class="form-control" {{.r }} autocomplete="off"  
-                            value="{{.m.Contact}}"   placeholder="ผู้ติดต่อ">
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
                         <label for="req-date-event">โทรศัพท์</label>
                         <div class="input-group">
                             <span class="input-group-addon">
@@ -101,6 +75,16 @@
                             </span>
                             <input type="text" id="Tel" name="Tel" {{.r }} class="form-control"    
                             value="{{.m.Tel}}"  placeholder="โทรศัพท์">
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <label for="req-date-event">โทรสาร</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-fax"></i>
+                            </span>
+                            <input type="text" id="Fax" name="Fax" {{.r }} class="form-control"    
+                            value="{{.m.Fax}}"  placeholder="โทรสาร">
                         </div>
                     </div>
                 </div>        
@@ -115,18 +99,19 @@
                                 </div>
                         </div>
                         <div class="col-xs-6">
-                            <label for="req-date-event">เลขประจำตัวผู้เสียภาษี</label>
+                            <label for="req-sn">ผู้ติดต่อ</label>
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                   TAX NO
+                                    <i class="fa fa-book"></i>
                                 </span>
-                                <input type="text" id="TaxNo" name="TaxNo"  class="form-control"  {{.r }} value="{{.m.TaxNo}}" placeholder="เลขประจำตัวผู้เสียภาษี.."/> 
+                                <input type="text" id="Contact" name="Contact" class="form-control" {{.r }} autocomplete="off"  
+                                value="{{.m.Contact}}"   placeholder="ผู้ติดต่อ">
                             </div>
-                        </div>
+                        </div>                       
                 </div>
                 <div class="form-group req-box-form head header-hide">
                         <div class="col-xs-6">
-                            <label for="req-name">เลขที่สาขา <span style="font-size:0.8em;color:red"> (*กรณีสำนักงานใหญ่ให้ใส่ 00000)</span></label>
+                            <label for="req-name">เลขที่สาขา <span style="font-size:0.8em;color:red"> (*สำนักงานใหญ่ให้ใส่ 00000)</span></label>
                             <div class="input-group">
                                 <span class="input-group-addon" style="cursor:pointer;"  >
                                     <i class="fa fa-book"></i>

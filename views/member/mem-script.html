@@ -12,10 +12,6 @@ function Save() {
     });
 }
     $(document).ready(function () {
-        $("#ProvinceID").val('{{.m.Province.ID}}'); 
-        if($("#ProvinceID").val()=='' || $("#ProvinceID").val() == null){
-            $("#ProvinceID").val($("#ProvinceID option:first").val());
-        }
         $("#MemberType").val('{{.m.MemberType}}'); 
         if($("#MemberType").val()=='' || $("#MemberType").val() == null){
             $("#MemberType").val($("#MemberType option:first").val());

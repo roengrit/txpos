@@ -11,13 +11,12 @@ import (
 type Member struct {
 	ID         int
 	Lock       bool
-	Name       string     `orm:"size(300)"`
-	Address    string     `orm:"size(300)"`
-	Province   *Provinces `orm:"rel(fk)"`
-	PostCode   string     `orm:"size(10)"`
-	Contact    string     `orm:"size(255)"`
-	Tel        string     `orm:"size(100)"`
-	Email      string     `orm:"size(100)"`
+	Name       string `orm:"size(300)"`
+	Address    string `orm:"size(300)"`
+	Contact    string `orm:"size(255)"`
+	Tel        string `orm:"size(100)"`
+	Fax        string `orm:"size(100)"`
+	Email      string `orm:"size(100)"`
 	MemberType int
 	TaxNo      string `orm:"size(100)"`
 	BranchNo   string `orm:"size(25)"`
@@ -105,7 +104,6 @@ func GetMemberListPaging(currentPage, lineSize uint, term string) (num int64, me
 					T0.i_d,
 					T0.name       ,
 					T0.address    ,
-					T0.post_code    ,
 					T0.contact     ,
 					T0.tel         ,
 					T0.member_type  

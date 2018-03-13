@@ -52,12 +52,12 @@ String.prototype.rpad = function(padString, length) {
                 $('#RetData').append(`
                 <tr>
                                 <th style="width:100px!important;">วันที่</th>
-                                <th style="width:150px!important;">เลขที่</th>
+                                <th style="width:130px!important;">เลขที่</th>
                                 <th>เจ้าหนี้</th>         
-                                <th style="width:150px!important;">สถานะการชำระ</th>                   
+                                <th style="width:100px!important;">การชำระ</th>                   
                                 <th style="width:100px!important;">สถานะ</th>
                                 <th style="width:150px!important; text-align:right ">มูลค่า</th>
-                                <th style="width:150px!important;text-align:center">จัดการข้อมูล</th>
+                                <th style="width:150px!important; text-align:right ">จัดการข้อมูล</th>
                             </tr>
                 `);
                 if(data.ReceiveList == null){
@@ -90,14 +90,22 @@ String.prototype.rpad = function(padString, length) {
                         )
                         + `</td>                       
                         <td style="text-align:right;">`+ addCommas(dat.TotalAmount) + `</td>
-                        <td style="text-align:center;width:150px!important;">
-                            <div class="btn-group">
+                        <td style="text-align:center;">
+                            <div class="btn-group">                                 
                                 <a class="btn btn-sm btn-primary " title="แก้ไข" href="/receive/?id=`+ dat.ID + `">
                                     <i class="fa fa-edit"></i>
-                                </a>
-                                <a class="btn btn-sm btn-danger `+ (!dat.Active ? "disabled" : "") + ` " onclick="cancelDoc(` + dat.ID + `)"  title="ยกเลิก" href="javascript:void(0)">
-                                    <i class="fa fa-ban"></i>
-                                </a>                                 
+                                </a>    
+                                <button type="button" class="btn btn-sm btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                                </button>       
+                                <ul class="dropdown-menu  pull-right" role="menu">
+                                    `+
+                                    (!dat.Active ? "" : `<li style="margin-top: 12px;margin-right: 12px;"> <a onclick="cancelDoc(` + dat.ID + `)"  title="ยกเลิก" href="javascript:void(0)" >ยกเลิก</a> </li>`)
+                                    +`                                    
+                                    <li style="margin-top: 12px;margin-right: 12px;"> <a href="/receive/print/?id=`+ dat.ID + `&po=1" target="_blank" >พิมพ์ใบสั่งซื้อ</a> </li>
+                                    <li style="margin-top: 12px;margin-right: 12px;"> <a  href="/receive/print/?id=`+ dat.ID + `&po=0" target="_blank" >พิมพ์ใบรับ</a> </li> 
+                                </ul>                    
                             </div>
                         </td>
                         </tr> 
