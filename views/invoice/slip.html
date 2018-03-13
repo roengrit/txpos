@@ -7,45 +7,51 @@
       background: #f7f7f7;
     } 
     page[size="slip"] {
+            width: 80mm;
+            /*min-height: 29.7cm;*/            
+            /*min-height: 27.6cm;*/ 
+            display: block;
+            position: relative;
+            margin: 0 auto;
+            font-size: 16px;
+            color: #000000;
+            background: #FFFFFF;
+    }    
+   @page {       
       width: 80mm;
-      display: block;
-      position: relative;
-      margin: 0 0;
-      font-size: 16px;
-      color: #000000;
-      background: #FFFFFF;
-    } 
-    @page{
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 0px;
-    margin-bottom: 0px;
+      margin-left: 4mm;
+      margin-right: 4mm; 
     }
-    @media print {
-      
-      body,
-      page[size="slip"]  {
-        width: auto;
-        margin: 0 0;
-        box-shadow: 0;
-      }
-      .footer {
-        bottom: 0px;
-        width: 100%;
-      }
-      .header {
-        top: 0px;
-        width: 100%;
-      }
+    @media print {      
+            body,
+            page[size="slip"],
+            page[size="slipA4"] {
+                width: 80mm;
+                margin: 0;
+                box-shadow: 0;
+            }      
+            .footer {
+            bottom: 0px;
+            width:100%;
+          } 
+            .header {
+            top: 0px;
+            width:100%;
+          }
     }
 
     @media print and (-webkit-min-device-pixel-ratio:0) {
       body,
-      page[size="slip"], {
-        width: auto;
-        margin: -10 -10;
-        box-shadow: 0; 
-      }
+        page[size="slip"],
+        page[size="slipA4"] {
+            width: 80mm;
+            margin: 0;
+            box-shadow: 0;
+            /*font-size:43px;*/
+        }
+        .slipimg {
+            /*width:125px;*/
+        }   
     }
   </style>
 </head>
@@ -53,7 +59,7 @@
   <div  >
     <page size="slip">
       <!-- content block -->
-      <table border="0" width="100%" style="padding:10px;" class="senderarea">
+      <table border="0" width="100%" style="padding:10px;margin-top30px;" class="senderarea">
         <tbody>
           <tr>
             <td valign="top" style="text-align:center;">
