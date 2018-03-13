@@ -625,10 +625,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                                <a href="/receive/list" style="margin-top:7px;margin-right:5px" ><<<ย้อนกลับ</a>
-                                 {{if .m.DocNo}}
-                                <a href="/receive/print/?id={{.m.ID}}&po=0" target="_blank" class="btn btn-default " style="margin-right:5px;">พิมพ์</a>
-                                {{end}}
+                                <a href="/receive/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
                                 {{if .r}} {{else}}
                                 <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
                                 {{end}}

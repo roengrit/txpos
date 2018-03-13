@@ -295,10 +295,8 @@ func (c *ReceiveController) Print() {
 	if c.Ctx.Request.URL.Query().Get("po") == "1" {
 		c.TplName = "receive/receive-po-invoice.html"
 		c.Data["title"] = "ใบสั่งซื้อสินค้า"
-		c.Data["remark"] = doc.Remark
 	} else {
 		c.Data["title"] = "ใบรับสินค้า"
-		c.Data["remark"] = doc.ReceiveRemark
 	}
 	c.Render()
 }
