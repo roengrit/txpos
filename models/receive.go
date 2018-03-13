@@ -65,6 +65,7 @@ type ReceiveSub struct {
 	DocDate             time.Time `form:"-" orm:"null"`
 	Product             *Product  `orm:"rel(fk)"`
 	ProductName         string    `orm:"size(300)"`
+	ProductDesc         string    `orm:"size(300)"`
 	Unit                *Unit     `orm:"rel(fk)"`
 	Qty                 float64   `orm:"digits(12);decimals(2)"`
 	RemainQty           float64   `orm:"digits(12);decimals(2)"`
