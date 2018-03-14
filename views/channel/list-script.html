@@ -1,0 +1,58 @@
+<script >
+ function Paging(page) {
+        $('#Page').val(page);
+        LoadData();
+    }
+    $('.change-perpage').click(function () {
+        $('#PerPage').val($(this).attr("top"));
+        if($(this).attr("top")=='0'){
+            $('#PerPageLabel').html('ทั้งหมด');
+        }else{
+            $('#PerPageLabel').html($(this).html());
+        }
+        LoadData();
+    });
+    function ReSetForm()
+    {
+        $('#BtnClear').trigger("click");
+        LoadData();
+    } 
+    function LoadData(){            
+            url = $('#ListForm').attr('action');           
+            $('#RetData').fadeOut( 100  );
+            $.post(url,$('#ListForm').serialize(), function( data ) {
+                $('#RetData').html('');
+                $('#RetData').append(`
+                <tr>
+                  <th>ชื่อ</th>
+                  <th style="width:120px;text-align:center;"></th>
+                </tr>
+                `);
+                if(data.ChannelList == null){
+                    $('#RetCount').html('ไม่มีข้อมูลที่ค้นหา'); 
+                    return;
+                }
+                data.ChannelList.forEach(dat => {
+                    $('#RetData').append(`
+                        <tr>
+                        <td>`+ dat.Name + `</td>
+                        <td style="text-align:center;">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-primary " title="แก้ไข" href="/channel/?id=`+ dat.ID + `">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a class="btn btn-sm btn-danger " title="ลบ" onclick='confirmDeleteGlobal(`+dat.ID+`,"/channel")' href="javascript:void(0)">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                        </tr>
+                    `);
+                });
+                $('#RetCount').html('ค้นเจอทั้งหมด '+data.Page+' รายการ');
+                $('#Pagination').html(data.Paging)
+                $('#RetData').fadeIn( 100 );
+            });
+    }
+    LoadData();
+</script>

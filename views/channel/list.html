@@ -1,5 +1,5 @@
 <section class="content">
-    <form action="/category/list"  onsubmit="LoadData();return false;" id="ListForm" method="post">
+    <form action="/channel/list"  onsubmit="LoadData();return false;" id="ListForm" method="post">
       {{ .xsrfdata }}
     <input type="hidden" id="PerPage" name="PerPage" value="{{.PerPage}}" >
     <input type="hidden" id="Page" name="Page" value="{{.Page}}" >
@@ -15,7 +15,7 @@
                   <div class="col-md-12">
                       <div class="form-group">
                           <label for="SearchTxt">คำค้นหา</label>
-                          <input type="text" id="SearchTxt" name="SearchTxt" class="form-control" placeholder="ชื่อหมวดหมู่">
+                          <input type="text" id="SearchTxt" name="SearchTxt" class="form-control" placeholder=".....">
                       </div>
                   </div>                   
               </div>            
@@ -26,7 +26,7 @@
                       <button type="button" id="BtnSubmit" onclick="LoadData()" class="btn btn-primary"><i class="fa fa-filter"></i> ค้นหา</button>
                       <button type="reset"  id="BtnClear"  class="btn btn-default" style="display:none;"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
                       <button type="button" id="BtnReset"  onclick="ReSetForm()" class="btn btn-default"><i class="fa fa-refresh"></i> ล้างคำค้นหา</button>
-                      <a type="button" href="/category"  class="btn btn-success"><i class="fa fa-plus"></i> เพิ่ม</a>
+                      <a type="button" href="/channel"  class="btn btn-success"><i class="fa fa-plus"></i> เพิ่ม</a>
                   </div>
               </div> 
               <hr class="hr-mini">

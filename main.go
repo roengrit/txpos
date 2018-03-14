@@ -46,6 +46,9 @@ func main() {
 	beego.Router("/category/?:id", &c.CategoryController{}, "get:CreateCategory;post:UpdateCategory;delete:DeleteCategory")
 	beego.Router("/category/list", &c.CategoryController{}, "get:CategoryList;post:GetCategoryListJSON")
 
+	beego.Router("/channel/?:id", &c.ChannelController{}, "get:CreateChannel;post:UpdateChannel;delete:DeleteChannel")
+	beego.Router("/channel/list", &c.ChannelController{}, "get:ChannelList;post:GetChannelListJSON")
+
 	beego.Router("/member/?:id", &c.MemberController{}, "get:CreateMember;post:UpdateMember;delete:DeleteMember")
 	beego.Router("/member/read/?:id", &c.MemberController{}, "get:CreateMember")
 	beego.Router("/member/list", &c.MemberController{}, "get:MemberList;post:GetMemberListJSON")
