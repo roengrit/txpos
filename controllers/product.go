@@ -213,6 +213,12 @@ func (c *ProductController) GetProductJSON() {
 	product, err := models.GetProduct(int(ID))
 	if err == nil {
 		ret.RetOK = true
+		product.Unit.Creator = nil
+		product.Unit.Editor = nil
+		product.Category.Creator = nil
+		product.Category.Editor = nil
+		product.Creator = nil
+		product.Editor = nil
 		ret.Data1 = product
 	} else {
 		ret.RetOK = false

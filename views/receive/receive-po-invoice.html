@@ -10,7 +10,7 @@
     <style media="print" type="text/css">
         @page {
             size: A4;
-            margin: 0mm 15mm 0mm 17mm;
+            margin: 0mm 15mm 0mm 15mm;
         }
     </style>
 </head>
@@ -22,7 +22,7 @@
             }
 
             #printArea {
-                top: 30px;
+                top: 20px;
                 bottom: 10px;
                 position: relative;
             }
@@ -341,7 +341,7 @@
                                             </tr>
                                              {{if .m.TaxNo}}
                                             <tr>
-                                                <td class="print-half-front left">
+                                                <td class="print-half-front left" colspan="2">
                                                     <span class="print-bold">เลขประจำตัวผู้เสียภาษี:&nbsp;</span>
                                                     <span>{{.m.TaxNo}}</span>
                                                 </td>
@@ -372,13 +372,14 @@
                                             {{if (.m.Tel) or (.m.Fax)}}
                                                 <tr>
                                                     {{if .m.Tel}}
-                                                    <td class="print-half-front">
+                                                    <td class="print-half-front"
+                                                     {{if not .m.Fax}} colspan="2" {{end}} >
                                                         <span class="print-info-company-phone-col">โทรศัพท์:&nbsp;</span>
                                                         <span class="print-info-company-phone-value">{{.m.Tel}}</span>
                                                     </td>
                                                     {{end}}
                                                     {{if .m.Fax}}
-                                                    <td class="print-half-back">
+                                                    <td class="print-half-back" {{if not .m.Tel}} colspan="2" {{end}} >
                                                         <span class="print-info-company-fax-col">โทรสาร:&nbsp;</span>
                                                         <span class="print-info-company-fax-value">{{.m.Fax}}</span>
                                                     </td>
@@ -501,8 +502,8 @@
     <script>
       $('#thaibaht').html( getBathText( parseFloat( '{{.m.TotalAmount}}')))
       setTimeout(function () {
-                    window.print();
-                    window.close();
+                   // window.print();
+                  //  window.close();
    }, 500);
     </script>
 </body>

@@ -83,6 +83,11 @@
 
         $("#price,#qty,#code,#itemName,#discount").focus(function () {
             $(this).select();
+            $(".help-block").hide();
+        });
+        $(".help-block").hide();
+        $(".help-block").click(function () {
+            $(this).hide(); 
         });
 
         $('#itemName').keyup(function (key) {
@@ -240,7 +245,7 @@
                     $('#itemName').val(product.Data1.Name);
                     $('#unitId').val(product.Data1.Unit.ID);
                     $('#averageCost').val(product.Data1.AverageCost);
-                    $('#price').val(product.Data1.AverageCost);
+                    $('#price').val(product.Data1.PurchasePrice);
                 });
                 $('#qty').focus();
             }
@@ -416,7 +421,7 @@
 
             if (price == 0) {
                 $(".help-block").remove();
-                $("#price").after("<span class='help-block' style='color:red'>ราคา</span>");
+                $("#price").after("<span class='help-block' style='color:red;margin-top:-27px!important;'>กรุณาระบุราคา</span>");
                 $(".price").addClass('has-error');
                 return false;
             } else {
