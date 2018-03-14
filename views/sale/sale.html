@@ -19,7 +19,7 @@
 </section>
 
 <section class="content">
-    <form action="/receive" autocomplete="off" id="receive-form" onsubmit="return false;" method="post">
+    <form action="/sale" autocomplete="off" id="sale-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
         <input type="hidden" id="currentRow" />
         <input type="hidden" id="MemberID" name="Member.ID" 
@@ -33,13 +33,13 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active">
-                    <a href="#tab_1-1" data-toggle="tab" class="head" aria-expanded="true">ซื้อสินค้า</a>
+                    <a href="#tab_1-1" data-toggle="tab" class="head" aria-expanded="true">ขายสินค้า</a>
                 </li>
                 <li class="">
                     <a href="#tab_2-2" data-toggle="tab" class="head" aria-expanded="false">การชำระเงิน</a>
                 </li>
                 <li class="">
-                    <a href="#tab_3-3" data-toggle="tab" class="head" aria-expanded="false">รับสินค้า</a>
+                    <a href="#tab_3-3" data-toggle="tab" class="head" aria-expanded="false">การจัดส่งสินค้า</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -48,12 +48,12 @@
                         <div class="box-body">
                             <div class="form-group req-box-form head">
                                 <div class="col-xs-10">
-                                    <label for="req-name">ผู้จำหน่าย</label>
+                                    <label for="req-name">ลูกค้า</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;" onclick="OTC()">
                                             <i class="fa fa-user"></i>
                                         </span>
-                                        <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ผู้จำหน่าย...."
+                                        <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ลูกค้า...."
                                             value="{{.m.MemberName}}" 
                                             {{.r }} />
                                         <span class="input-group-addon" onclick="headerShow()" style="cursor:pointer;" >
@@ -159,7 +159,7 @@
                             </div>
                             <div class="form-group req-box-form head">
                                 <div class="col-xs-3">
-                                    <label for="req-sn">วันที่ซื้อ</label>
+                                    <label for="req-sn">วันที่ขาย</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa fa-calculator"></i>
@@ -173,7 +173,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
-                                    <label for="req-sn">เวลาที่ซื้อ</label>
+                                    <label for="req-sn">เวลาที่ขาย</label>
                                     <div class="input-group bootstrap-timepicker timepicker">
                                         <span class="input-group-addon">
                                             <i class="fa fa-clock-o"></i>
@@ -196,15 +196,19 @@
                             </div>
                             <div class="form-group req-box-form head">
                                 <div class="col-xs-4">
-                                    <label for="req-sn">ประเภทการซื้อ</label>
+                                    <label for="req-sn">ช่องทาง</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">
                                             <i class="fa  fa-file-text-o"></i>
                                         </span>
-                                        <select id="DocType" name="DocType" class="form-control" {{.r }} autocomplete="off">
-                                            <option value="0">ทั่วไป</option>
-                                            <option value="1">จากการผลิต</option>
-                                        </select>
+                                        <select id="DocType" name="DocType"  style="display:none;"  class="form-control">
+                                               <option value="0" selected="selected" >  </option>
+                                        </select>   
+                                        <select id="Channel" name="Channel.ID"   class="form-control province">
+                                                {{range $key, $val := .Channel}}
+                                                    <option value="{{$val.ID}}" > {{$val.Name}} </option>
+                                                {{end}}   
+                                        </select>   
                                     </div>
                                 </div>
                                 <div class="col-xs-4">
@@ -248,19 +252,19 @@
                                             </tr>
                                         </thead>
                                         <tbody class="table-bordered table-condensed" id="RetData">
-                                            {{if .RetCount}} {{range $key, $val := .m.ReceiveSub}}
+                                            {{if .RetCount}} {{range $key, $val := .m.SaleSub}}
                                             <tr style="cursor: pointer;" index-val="{{$key}}">
-                                                <input type="hidden" class="ProductId" name="ReceiveSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
-                                                <input type="hidden" class="ProductCode" name="ReceiveSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" />
-                                                <input type="hidden" class="ProductName" name="ReceiveSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
-                                                <input type="hidden" class="ProductUnitID" name="ReceiveSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
-                                                <input type="hidden" class="ProductQty" name="ReceiveSub[{{$key}}].Qty" value="{{$val.Qty}}" />
-                                                <input type="hidden" class="ProductPrice" name="ReceiveSub[{{$key}}].Price" value="{{$val.Price}}" />
-                                                <input type="hidden" class="ProductVatVal" name="ReceiveSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
-                                                <input type="hidden" class="ProductDiscount" name="ReceiveSub[{{$key}}].DiscountWord" value="{{$val.DiscountWord}}" />
-                                                <input type="hidden" class="ProductDiscountVal" name="ReceiveSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
-                                                <input type="hidden" class="ProductTotalPrice" name="ReceiveSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
-                                                <input type="hidden" class="ProductTotalPriceExludeVat" name="ReceiveSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}"
+                                                <input type="hidden" class="ProductId" name="SaleSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
+                                                <input type="hidden" class="ProductCode" name="SaleSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" />
+                                                <input type="hidden" class="ProductName" name="SaleSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
+                                                <input type="hidden" class="ProductUnitID" name="SaleSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
+                                                <input type="hidden" class="ProductQty" name="SaleSub[{{$key}}].Qty" value="{{$val.Qty}}" />
+                                                <input type="hidden" class="ProductPrice" name="SaleSub[{{$key}}].Price" value="{{$val.Price}}" />
+                                                <input type="hidden" class="ProductVatVal" name="SaleSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
+                                                <input type="hidden" class="ProductDiscount" name="SaleSub[{{$key}}].DiscountWord" value="{{$val.DiscountWord}}" />
+                                                <input type="hidden" class="ProductDiscountVal" name="SaleSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
+                                                <input type="hidden" class="ProductTotalPrice" name="SaleSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                                <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}"
                                                 />
                                                 <td class="col-md-2 table-td-mid ProductCodeText">{{$val.Product.Code}}</td>
                                                 <td class="col-md-3 table-td-mid ProductNameText">{{$val.Product.Name}}</td>
@@ -361,9 +365,9 @@
                             <button type="submit" onclick="Save()" class="btn btn-primary pull-right">บันทึก</button>
                             {{end}}
                             {{if .m.DocNo}}
-                               <a href="/receive/print/?id={{.m.ID}}&po=1" target="_blank" class="btn btn-default pull-right" style="margin-right:5px;">พิมพ์</a>
+                               <a href="/sale/print/?id={{.m.ID}}&po=1" target="_blank" class="btn btn-default pull-right" style="margin-right:5px;">พิมพ์</a>
                             {{end}}
-                            <a href="/receive/list" style="margin-top:7px;margin-right:5px" class="pull-right"><<<ย้อนกลับ</a>
+                            <a href="/sale/list" style="margin-top:7px;margin-right:5px" class="pull-right"><<<ย้อนกลับ</a>
                         </div>
                     </div>
                 </div>
@@ -579,7 +583,7 @@
 
                         </div>
                         <div class="box-footer">
-                            <a href="/receive/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
+                            <a href="/sale/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
                             {{if .r}} {{else}}
                             <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
                             {{end}}
@@ -596,36 +600,36 @@
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-calculator"></i>
                                         </span>
-                                        {{if .m.ReceiveDate}}
-                                        <input type="text" id="ReceiveDate" data-date-language="th" name="ReceiveDate" tabindex="2" class="form-control" value='{{date .m.ReceiveDate "d-m-Y"}}'
+                                        {{if .m.SendDate}}
+                                        <input type="text" id="SendDate" data-date-language="th" name="SendDate" tabindex="2" class="form-control" value='{{date .m.SendDate "d-m-Y"}}'
                                             {{.r }} placeholder="วันที่...." /> {{else}}
-                                        <input type="text" id="ReceiveDate" data-date-language="th" name="ReceiveDate" tabindex="2" class="form-control" value=""
+                                        <input type="text" id="SendDate" data-date-language="th" name="SendDate" tabindex="2" class="form-control" value=""
                                             {{.r }} placeholder="วันที่...." /> {{end}}
                                     </div>
-                                </div>
+                                </div>   
                                 <div class="col-xs-3">
-                                        <label for="req-sn">เวลาที่รับ</label>
+                                        <label for="req-sn">เวลาที่</label>
                                         <div class="input-group bootstrap-timepicker timepicker">
                                             <span class="input-group-addon">
                                                 <i class="fa fa-clock-o"></i>
                                             </span>
-                                            {{if .m.ReceiveTime}}
-                                            <input type="text" id="ReceiveTime" name="ReceiveTime" class="form-control" value='{{.m.ReceiveTime}}' {{.r }} /> {{else}}
-                                            <input type="text" id="ReceiveTime" name="ReceiveTime" class="form-control" value='' {{.r }} /> {{end}}
+                                            {{if .m.SendTime}}
+                                            <input type="text" id="SendTime" name="SendTime" class="form-control" value='{{.m.SendTime}}' {{.r }} /> {{else}}
+                                            <input type="text" id="SendTime" name="SendTime" class="form-control" value='' {{.r }} /> {{end}}
                                         </div>
-                                </div>
+                                </div>                             
                             </div>
                             <div class="form-group req-box-form">
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label>หมายเหตุ</label>
-                                        <textarea class="form-control" id="ReceiveRemark" name="ReceiveRemark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.ReceiveRemark}}</textarea>
+                                        <textarea class="form-control" id="SendRemark" name="SendRemark" rows="4" placeholder="หมายเหตุ" {{.r }}>{{.m.SendRemark}}</textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="box-footer">
-                                <a href="/receive/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
+                                <a href="/sale/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
                                 {{if .r}} {{else}}
                                 <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
                                 {{end}}

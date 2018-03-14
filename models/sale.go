@@ -8,8 +8,8 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-//Receive _
-type Receive struct {
+//Sale _
+type Sale struct {
 	ID                   int
 	Flag                 int
 	Active               bool
@@ -20,6 +20,7 @@ type Receive struct {
 	DocDate              time.Time `form:"-" orm:"null"`
 	DocTime              string    `orm:"size(6)"`
 	DocRefNo             string    `orm:"size(30)"`
+	Channel              *Channel  `orm:"rel(fk)"`
 	Member               *Member   `orm:"rel(fk)"`
 	MemberName           string    `orm:"size(300)"`
 	Tel                  string    `orm:"size(100)"`
@@ -38,25 +39,25 @@ type Receive struct {
 	TotalNetAmount       float64 `orm:"digits(12);decimals(2)"`
 	TotalPay             float64 `orm:"digits(12);decimals(2)"`
 	CreditDay            int
-	CreditDate           time.Time    `form:"-" orm:"type(date)"`
-	ReceiveDate          time.Time    `form:"-" orm:"null;type(datetime)"`
-	ReceiveTime          string       `orm:"size(6)"`
-	ReceiveUser          *User        `orm:"null;rel(fk)"`
-	Remark               string       `orm:"size(300)"`
-	CancelRemark         string       `orm:"size(300)"`
-	ReceiveRemark        string       `orm:"size(300)"`
-	Creator              *User        `orm:"rel(fk)"`
-	CreatedAt            time.Time    `orm:"auto_now_add;type(datetime)"`
-	Editor               *User        `orm:"null;rel(fk)"`
-	EditedAt             time.Time    `orm:"null;auto_now;type(datetime)"`
-	CancelUser           *User        `orm:"null;rel(fk)"`
-	CancelAt             time.Time    `orm:"null;type(datetime)"`
-	ReceiveSub           []ReceiveSub `orm:"-"`
-	Payment              []Payment    `orm:"-"`
+	CreditDate           time.Time `form:"-" orm:"type(date)"`
+	SendDate             time.Time `form:"-" orm:"null;type(datetime)"`
+	SendTime             string    `orm:"size(6)"`
+	SendUser             *User     `orm:"null;rel(fk)"`
+	Remark               string    `orm:"size(300)"`
+	CancelRemark         string    `orm:"size(300)"`
+	SendRemark           string    `orm:"size(300)"`
+	Creator              *User     `orm:"rel(fk)"`
+	CreatedAt            time.Time `orm:"auto_now_add;type(datetime)"`
+	Editor               *User     `orm:"null;rel(fk)"`
+	EditedAt             time.Time `orm:"null;auto_now;type(datetime)"`
+	CancelUser           *User     `orm:"null;rel(fk)"`
+	CancelAt             time.Time `orm:"null;type(datetime)"`
+	SaleSub              []SaleSub `orm:"-"`
+	Payment              []Payment `orm:"-"`
 }
 
-//ReceiveSub _
-type ReceiveSub struct {
+//SaleSub _
+type SaleSub struct {
 	ID                  int
 	Flag                int
 	Active              bool
@@ -79,49 +80,49 @@ type ReceiveSub struct {
 	CreatedAt           time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
-//ReceiveJSON ReceiveJSON
-type ReceiveJSON struct {
-	ReceiveList *[]Receive
-	Paging      string
-	Page        uint
-	PerPage     uint
+//SaleJSON SaleJSON
+type SaleJSON struct {
+	SaleList *[]Sale
+	Paging   string
+	Page     uint
+	PerPage  uint
 }
 
 func init() {
-	orm.RegisterModel(new(Receive), new(ReceiveSub)) // Need to register model in init
+	orm.RegisterModel(new(Sale), new(SaleSub)) // Need to register model in init
 }
 
-//CreateReceive _
-func CreateReceive(receive Receive, user User) (retID int64, errRet error) {
-	receive.DocNo = helpers.GetMaxDoc("receive", "PO")
-	receive.Creator = &user
-	receive.CreatedAt = time.Now()
-	receive.CreditDay = 0
-	receive.CreditDate = time.Now()
-	receive.Active = true
-	var fullDataSub []ReceiveSub
+//CreateSale _
+func CreateSale(sale Sale, user User) (retID int64, errRet error) {
+	sale.DocNo = helpers.GetMaxDoc("sale", "IV")
+	sale.Creator = &user
+	sale.CreatedAt = time.Now()
+	sale.CreditDay = 0
+	sale.CreditDate = time.Now()
+	sale.Active = true
+	var fullDataSub []SaleSub
 	var fullDataPayment []Payment
-	for _, val := range receive.ReceiveSub {
+	for _, val := range sale.SaleSub {
 		if val.Product.ID != 0 {
 			val.CreatedAt = time.Now()
 			val.Creator = &user
-			val.DocNo = receive.DocNo
-			val.Flag = receive.Flag
+			val.DocNo = sale.DocNo
+			val.Flag = sale.Flag
 			val.Active = true
-			val.DocDate = receive.DocDate
+			val.DocDate = sale.DocDate
 			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
-	for _, val := range receive.Payment {
+	for _, val := range sale.Payment {
 		val.CreatedAt = time.Now()
 		val.Creator = &user
-		val.DocNo = receive.DocNo
+		val.DocNo = sale.DocNo
 		fullDataPayment = append(fullDataPayment, val)
 	}
 	o := orm.NewOrm()
 	o.Begin()
-	id, err := o.Insert(&receive)
+	id, err := o.Insert(&sale)
 	id, err = o.InsertMulti(len(fullDataSub), fullDataSub)
 	id, err = o.InsertMulti(len(fullDataPayment), fullDataPayment)
 	if err == nil {
@@ -134,50 +135,50 @@ func CreateReceive(receive Receive, user User) (retID int64, errRet error) {
 	return retID, errRet
 }
 
-//UpdateReceive _
-func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
-	docCheck, _ := GetReceive(receive.ID)
+//UpdateSale _
+func UpdateSale(sale Sale, user User) (retID int64, errRet error) {
+	docCheck, _ := GetSale(sale.ID)
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
-	receive.Creator = docCheck.Creator
-	receive.CreatedAt = docCheck.CreatedAt
-	receive.CreditDay = docCheck.CreditDay
-	receive.CreditDate = docCheck.CreditDate
-	receive.EditedAt = time.Now()
-	receive.Editor = &user
-	receive.Active = docCheck.Active
-	var fullDataSub []ReceiveSub
+	sale.Creator = docCheck.Creator
+	sale.CreatedAt = docCheck.CreatedAt
+	sale.CreditDay = docCheck.CreditDay
+	sale.CreditDate = docCheck.CreditDate
+	sale.EditedAt = time.Now()
+	sale.Editor = &user
+	sale.Active = docCheck.Active
+	var fullDataSub []SaleSub
 	var fullDataPayment []Payment
-	for _, val := range receive.ReceiveSub {
+	for _, val := range sale.SaleSub {
 		if val.Product.ID != 0 {
 			val.CreatedAt = time.Now()
 			val.Creator = &user
-			val.DocNo = receive.DocNo
-			val.Flag = receive.Flag
-			val.Active = receive.Active
-			val.DocDate = receive.DocDate
+			val.DocNo = sale.DocNo
+			val.Flag = sale.Flag
+			val.Active = sale.Active
+			val.DocDate = sale.DocDate
 			val.ProductName = val.Product.Name
 			fullDataSub = append(fullDataSub, val)
 		}
 	}
-	for _, val := range receive.Payment {
+	for _, val := range sale.Payment {
 		val.CreatedAt = time.Now()
 		val.Creator = &user
-		val.DocNo = receive.DocNo
+		val.DocNo = sale.DocNo
 		fullDataPayment = append(fullDataPayment, val)
 	}
 	o := orm.NewOrm()
 	o.Begin()
-	id, err := o.Update(&receive)
+	id, err := o.Update(&sale)
 	if err == nil {
-		_, err = o.QueryTable("receive_sub").Filter("doc_no", receive.DocNo).Delete()
+		_, err = o.QueryTable("sale_sub").Filter("doc_no", sale.DocNo).Delete()
 	}
 	if err == nil {
 		_, err = o.InsertMulti(len(fullDataSub), fullDataSub)
 	}
 	if err == nil {
-		_, err = o.QueryTable("payment").Filter("doc_no", receive.DocNo).Delete()
+		_, err = o.QueryTable("payment").Filter("doc_no", sale.DocNo).Delete()
 	}
 	if err == nil {
 		_, err = o.InsertMulti(len(fullDataPayment), fullDataPayment)
@@ -192,22 +193,22 @@ func UpdateReceive(receive Receive, user User) (retID int64, errRet error) {
 	return retID, errRet
 }
 
-//GetReceive _
-func GetReceive(ID int) (doc *Receive, errRet error) {
-	receiveDoc := &Receive{}
+//GetSale _
+func GetSale(ID int) (doc *Sale, errRet error) {
+	saleDoc := &Sale{}
 	o := orm.NewOrm()
-	o.QueryTable("receive").Filter("ID", ID).RelatedSel().One(receiveDoc)
-	o.QueryTable("receive_sub").Filter("doc_no", receiveDoc.DocNo).RelatedSel().All(&receiveDoc.ReceiveSub)
-	o.QueryTable("payment").Filter("doc_no", receiveDoc.DocNo).OrderBy("ID").RelatedSel().All(&receiveDoc.Payment)
-	doc = receiveDoc
+	o.QueryTable("sale").Filter("ID", ID).RelatedSel().One(saleDoc)
+	o.QueryTable("sale_sub").Filter("doc_no", saleDoc.DocNo).RelatedSel().All(&saleDoc.SaleSub)
+	o.QueryTable("payment").Filter("doc_no", saleDoc.DocNo).OrderBy("ID").RelatedSel().All(&saleDoc.Payment)
+	doc = saleDoc
 	return doc, errRet
 }
 
-//UpdateCancelReceive _
-func UpdateCancelReceive(ID int, remark string, user User) (retID int64, errRet error) {
-	docCheck := &Receive{}
+//UpdateCancelSale _
+func UpdateCancelSale(ID int, remark string, user User) (retID int64, errRet error) {
+	docCheck := &Sale{}
 	o := orm.NewOrm()
-	o.QueryTable("receive").Filter("ID", ID).RelatedSel().One(docCheck)
+	o.QueryTable("sale").Filter("ID", ID).RelatedSel().One(docCheck)
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
@@ -218,7 +219,7 @@ func UpdateCancelReceive(ID int, remark string, user User) (retID int64, errRet 
 	o.Begin()
 	_, err := o.Update(docCheck)
 	if err == nil {
-		_, err = o.Raw("update receive_sub set active = false where doc_no = ?", docCheck.DocNo).Exec()
+		_, err = o.Raw("update sale_sub set active = false where doc_no = ?", docCheck.DocNo).Exec()
 	}
 	if err != nil {
 		o.Rollback()
@@ -229,18 +230,18 @@ func UpdateCancelReceive(ID int, remark string, user User) (retID int64, errRet 
 	return retID, errRet
 }
 
-//UpdateReceiveDate _
-func UpdateReceiveDate(ID int, receiveDate time.Time, receiveTime, remark string, user User) (retID int64, errRet error) {
-	docCheck := &Receive{}
+//UpdateSendDate _
+func UpdateSendDate(ID int, saleDate time.Time, saleTime, remark string, user User) (retID int64, errRet error) {
+	docCheck := &Sale{}
 	o := orm.NewOrm()
-	o.QueryTable("receive").Filter("ID", ID).RelatedSel().One(docCheck)
+	o.QueryTable("sale").Filter("ID", ID).RelatedSel().One(docCheck)
 	if docCheck.ID == 0 {
 		errRet = errors.New("ไม่พบข้อมูล")
 	}
-	docCheck.ReceiveDate = receiveDate
-	docCheck.ReceiveTime = receiveTime
-	docCheck.ReceiveRemark = remark
-	docCheck.ReceiveUser = &user
+	docCheck.SendDate = saleDate
+	docCheck.SendTime = saleTime
+	docCheck.SendRemark = remark
+	docCheck.SendUser = &user
 	o.Begin()
 	_, err := o.Update(docCheck)
 	if err != nil {
@@ -252,29 +253,29 @@ func UpdateReceiveDate(ID int, receiveDate time.Time, receiveTime, remark string
 	return retID, errRet
 }
 
-//GetReceiveList GetReceiveList
-func GetReceiveList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, receiveState, payState, term string) (num int64, receiveList []Receive, err error) {
+//GetSaleList GetSaleList
+func GetSaleList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, saleState, payState, term string) (num int64, saleList []Sale, err error) {
 	o := orm.NewOrm()
 	var sql = `SELECT 
 					T0.i_d,
 					T0.doc_no,
 					T0.doc_date,
 					T0.member_name,
-					T0.receive_date,
+					T0.sale_date,
 					T0.remark,				 
 					T0.active,
 					T0.total_amount,
 					(select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no) as total_pay
-			   FROM receive T0 	   
+			   FROM sale T0 	   
 			   WHERE (lower(T0.doc_no) like lower(?) or lower(T0.remark) like lower(?) or lower(T0.member_name) like lower(?)) `
 	if txtDateBegin != "" && txtDateEnd != "" {
 		sql += " and date( T0.doc_date) between '" + helpers.ParseDateString(txtDateBegin) + "' and '" + helpers.ParseDateString(txtDateEnd) + "'"
 	}
-	if receiveState == "1" {
-		sql += " and T0.receive_date is not null and T0.active"
+	if saleState == "1" {
+		sql += " and T0.sale_date is not null and T0.active"
 	}
-	if receiveState == "2" {
-		sql += " and T0.receive_date is null and T0.active"
+	if saleState == "2" {
+		sql += " and T0.sale_date is null and T0.active"
 	}
 	if payState == "1" {
 		sql += " and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no) ) <= 0 and T0.active"
@@ -287,9 +288,9 @@ func GetReceiveList(currentPage, lineSize uint, txtDateBegin, txtDateEnd, receiv
 	if payState == "3" {
 		sql += " and (T0.total_amount - (select sum(T1.total_amount) from payment T1 where T1.doc_no = T0.doc_no)) = T0.total_amount and T0.active"
 	}
-	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%").QueryRows(&receiveList)
+	num, _ = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%").QueryRows(&saleList)
 	sql += " order by T0.doc_no  offset ? limit ?"
-	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&receiveList)
+	_, err = o.Raw(sql, "%"+term+"%", "%"+term+"%", "%"+term+"%", currentPage, lineSize).QueryRows(&saleList)
 
-	return num, receiveList, err
+	return num, saleList, err
 }

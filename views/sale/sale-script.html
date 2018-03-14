@@ -1,0 +1,516 @@
+<script src="/static/js/datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/static/js/datepicker/locales/bootstrap-datepicker.th.min.js" charset="UTF-8"></script>
+<script src="/static/js/bootstrap-typeahead.js" charset="UTF-8"></script>
+<script>
+    var globalVatVal = parseFloat('{{.VatVal}}');
+    $(document).ready(function () {
+        $("#DocType").val('{{.m.DocType}}'.trim());
+        if ($("#DocType").val() == '' || $("#DocType").val() == null) {
+            $("#DocType").val($("#DocType option:first").val());
+        }
+
+        $("#Channel").val('{{.m.Channel.ID}}'.trim());
+        if ($("#Channel").val() == '' || $("#Channel").val() == null) {
+            $("#Channel").val($("#Channel option:first").val());
+        }
+
+        $("#VatType").val('{{.m.VatType}}'.trim());
+        if ($("#VatType").val() == '' || $("#VatType").val() == null) {
+            $("#VatType").val($("#VatType option:first").val());
+        }
+
+        if($('#CashPayDate').val()=='01-01-0001'){
+            $('#CashPayDate').val('')
+        }
+        if($('#TransferPayDate').val()=='01-01-0001'){
+            $('#TransferPayDate').val('')
+        }
+        if($('#CreditPayDate').val()=='01-01-0001'){
+            $('#CreditPayDate').val('')
+        }
+        if($('#CreditDate').val()=='01-01-0001'){
+            $('#CreditDate').val('')
+        }
+        if($('#OtherPayDate').val()=='01-01-0001'){
+            $('#OtherPayDate').val('')
+        }
+        if($('#SendDate').val()=='01-01-0001'){
+            $('#SendDate').val('')
+        }
+
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        sumFoorter();
+
+        var $editOveray = $('#editOveray');
+        $('#ret-table').on("click", "tbody > tr", function (index) {
+            commitEdit();
+            var readonly = '{{.r}}';
+            if (readonly)
+                return;
+            var bottomWidth = $(this).css('width');
+            var intWidth = parseInt(bottomWidth.replace("px", ""));
+            var bottomHeight = '40px';
+            var rowPos = $(this).position();
+            bottomTop = rowPos.top;
+            bottomLeft = rowPos.left;
+            eTop = $(this).offset().top + 7;
+            $editOveray.css({
+                position: 'absolute',
+                top: eTop,
+                width: (intWidth - 15) + 'px',
+                height: bottomHeight,
+            });
+            $("#currentRow").val($(this).attr("index-val"));
+            $("#itemId").val($(this).find(".ProductId").val());
+            $("#code").val($(this).find(".ProductCode").val());
+            $("#itemName").val($(this).find(".ProductName").val());
+            $("#unitId").val($(this).find(".ProductUnitID").val());
+            $("#qty").val($(this).find(".ProductQty").val());
+            $("#price").val($(this).find(".ProductPrice").val());
+            $("#discount").val($(this).find(".ProductDiscount").val());
+            $("#discountVal").val($(this).find(".ProductDiscountVal").val());
+            $("#totalPriceExludeVat").val($(this).find(".ProductTotalPriceExludeVat").val());
+            $("#totalPrice").html(addCommas($(this).find(".ProductTotalPrice").val()));
+            $editOveray.show();
+            $('#item-name').focus();
+        });
+
+        $("#price,#qty,#code,#itemName,#discount").focus(function () {
+            $(this).select();
+            $(".help-block").hide();
+        });
+        $(".help-block").hide();
+        $(".help-block").click(function () {
+            $(this).hide(); 
+        });
+
+        $('#itemName').keyup(function (key) {
+            $('#qty').focus();
+        });
+
+        $('#qty,#price,#discount').keyup(function (key) {
+            totalCal = parseFloat($("#qty").val()) * parseFloat($("#price").val());
+            if (totalCal == NaN) {
+                totalCal = 0.00;
+            }
+            $("#totalPrice").html(addCommas(totalCal));
+            if (key.keyCode == 13 && $(this).attr('id') == 'qty') {
+                $('#price').focus();
+            }
+            if (key.keyCode == 13 && $(this).attr('id') == 'price') {
+                $('#discount').focus();
+            }
+            if (key.keyCode == 13 && $(this).attr('id') == 'discount') {
+                commitEdit();
+            }
+        });
+
+        var templateRow = `<tr  style="cursor: pointer;" index-val="@">
+                                <input type="hidden" class="ProductId" name="SaleSub[@].Product.ID" value="{0}" /> 
+                                <input type="hidden" class="ProductCode" name="SaleSub[@].Product.Code" value="{1}" />
+                                <input type="hidden" class="ProductName" name="SaleSub[@].Product.Name" value="{2}" />
+                                <input type="hidden" class="ProductUnitID" name="SaleSub[@].Unit.ID" value="{3}" /> 
+                                <input type="hidden" class="ProductQty" name="SaleSub[@].Qty" value="{4}" />
+                                <input type="hidden" class="ProductPrice" name="SaleSub[@].Price" value="{5}" />
+                                <input type="hidden" class="ProductVatVal" name="SaleSub[@].VatVal" value="0" />
+                                <input type="hidden" class="ProductDiscount" name="SaleSub[@].DiscountWord" value="{6}" />
+                                <input type="hidden" class="ProductDiscountVal" name="SaleSub[@].DiscountVal" value="{7}" />
+                                <input type="hidden" class="ProductTotalPrice" name="SaleSub[@].TotalPrice" value="{8}" />
+                                <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[@].TotalPriceExludeVat" value="{9}" />
+                                <td class="col-md-1 table-td-mid ProductCodeText">{10}</td> 
+                                <td class="col-md-3 table-td-mid ProductNameText">{11}</td> 
+                                <td class="col-md-1 table-td-mid table-td-number ProductQtyText">{12}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductPriceText">{13}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductDiscountText">{14}</td>
+                                <td class="col-md-2 table-td-mid table-td-number ProductTotalPriceText"  >{15}</td>
+                                <td class="col-md-1 table-td-mid table-td-number"  >
+                                    <div class="btn-group">
+                                        <a class="btn btn-danger btn-flat btn-flat btn-sm delete-row">
+                                            <i class="fa  fa-close"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                         </tr>`;
+
+        if ($('#RetData tr').length == 0) {
+            for (i = 0; i <= 3; i++) {
+                appendEmptyRow(i);
+            }
+        }
+
+        $(".cancel-edit-row").click(function (event) {
+            $editOveray.hide();
+        });
+
+        $(".ok-edit-row").click(function (event) {
+            commitEdit();
+        });
+
+        $(".delete-row").click(function (event) {
+            commitEdit();
+            deleteRow($(this));
+            sumFoorter();
+        });
+
+        $(".add-row").click(function (event) {
+            commitEdit();
+            var rowCount = $('#RetData tr').length;
+            appendEmptyRow(rowCount);
+            $(".delete-row").click(function (event) {
+                deleteRow($(this));
+                $editOveray.hide();
+            });
+            $('#RetData tr:last').trigger("click");
+            $('#itemName').focus();
+        });
+
+        $("#price,#qty,#averageCost,#item-name,#discount").focus(function () { $(this).select(); });
+
+        $('#DocDate').datepicker({
+            autoclose: true,
+            language: 'th',
+            todayBtn: true,
+            orientation: "auto",
+            todayHighlight: true,
+            format: 'dd-mm-yyyy',
+        });
+
+        $('#CashPayDate,#TransferPayDate,#CreditPayDate,#CreditDate,#OtherPayDate,#SendDate').datepicker({
+            autoclose: true,
+            language: 'th',
+            todayBtn: true,
+            orientation: "auto",
+            todayHighlight: true,
+            format: 'dd-mm-yyyy',
+        });
+        
+        $('#DocTime,#SendTime').timepicker({
+            minuteStep: 1,
+            disableFocus: true,
+            template: 'dropdown',
+            orientation: "auto",
+            showMeridian: false,
+            defaultTime: ''
+        });
+
+        $('#MemberName').typeahead({
+            ajax: '/member/list/json',
+            display: 'Name',
+            displayField: 'Name',
+            valueField: 'ID',
+            val: 'ID',
+            valid: 'MemberID',
+            not_replace_when_is_not_valid : true,
+            onSelect: function (data) {
+                
+                if (data.value == 0) {
+                    return;
+                }
+                
+                $('#MemberID').val(data.value);
+                $.get("/member/json/?id=" + data.value, function (mem) {
+                    $('#Address').val(mem.Data1.Address);
+                    $('#Tel').val(mem.Data1.Tel);
+                    $('#Fax').val(mem.Data1.Fax);
+                    $('#Email').val(mem.Data1.Email);
+                    $('#TaxNo').val(mem.Data1.TaxNo);
+                    $('#BranchNo').val(mem.Data1.BranchNo);
+                    $('#BranchName').val(mem.Data1.BranchName);
+                });
+            }
+        });
+
+        //$(".header-hide").hide();
+
+        $('#code').typeahead({
+            ajax: '/product/list/json',
+            display: 'Name',
+            displayField: 'Name',
+            valueField: 'ID',
+            val: 'ID',
+            valid: 'item-id',
+            onSelect: function (data) {
+                if (data.value == 0) {
+                    return;
+                }
+                $('#itemId').val(data.value);
+                $.get("/product/json/?id=" + data.value, function (product) {
+                    $('#code').val(product.Data1.Code);
+                    $('#itemName').val(product.Data1.Name);
+                    $('#unitId').val(product.Data1.Unit.ID);
+                    $('#averageCost').val(product.Data1.AverageCost);
+                    $('#price').val(product.Data1.SalePrice);
+                });
+                $('#qty').focus();
+            }
+        });
+
+        $('#DiscountType').change(function () {
+            sumFoorter();
+        })
+
+        $("#DiscountWord").bind('keyup mouseup', function () {
+            sumFoorter();
+        });
+
+        $("#DiscountWord").focusout(function () {
+            if ($(this).val().indexOf("%") == -1) {
+                $(this).val(addCommas($(this).val()));
+            }
+        });
+
+        $("#DiscountWord").focusin(function () {
+            if ($(this).val().indexOf("%") == -1) {
+                $(this).val($(this).val().replace(/,/g, ""));
+            }
+        });
+
+        $('#DiscountWord').change(function () {
+            sumFoorter();
+        })
+
+        $('.footer,.head').click(function () {
+            commitEdit();
+            $editOveray.hide();
+        });
+
+        $('#VatType').change(function () {
+            $("#RetData tr").each(function (index) {
+                if ($(this).find(".ProductId").val() == '0' || $(this).find(".ProductId").val() == '') {
+                    return true;
+                }
+                var price = parseFloat($(this).find(".ProductPrice").val() == '' ? '0' : $(this).find(".ProductPrice").val());
+                var totalPrice = parseFloat($(this).find(".ProductTotalPrice").val() == '' ? '0' : $(this).find(".ProductTotalPrice").val());
+                var vatVal = 0.00;
+                var totalPriceExludeVat = 0.00;
+
+                if ($('#VatType').val() == "1") {
+                    totalPriceExludeVat = (totalPrice * 100) / 107;
+                    vatVal = totalPrice - totalPriceExludeVat;
+                }
+                if ($('#VatType').val() == "2") {
+                    vatVal = (totalPrice * 7) / 100;
+                    totalPriceExludeVat = totalPrice;
+                }
+                if ($('#VatType').val() == "0") {
+                    totalPriceExludeVat = totalPrice;
+                }
+                $('#RetData > tr').eq(index).find(".ProductVatVal").val(vatVal);
+                $('#RetData > tr').eq(index).find(".ProductTotalPriceExludeVat").val(totalPriceExludeVat);
+
+            });
+            sumFoorter();
+        })
+
+        $('#DocDate,#DocTime,#DocRefNo,#DocType,#Remark,#MemberName').focus(function () {
+            commitEdit();
+            $editOveray.hide();
+        });
+
+        
+
+        function appendEmptyRow(index) {
+
+            $('#RetData').append(
+                templateRow.replace(/@/g, index)
+                    .replace(/@/g, index)
+                    .replace('{0}', '')
+                    .replace('{1}', '')
+                    .replace('{2}', '')
+                    .replace('{3}', '')
+                    .replace('{4}', '0.00')
+                    .replace('{5}', '0.00')
+                    .replace('{6}', '')
+                    .replace('{7}', '0.00')
+                    .replace('{8}', '0.00')
+                    .replace('{9}', '0.00')
+                    .replace('{10}', '')
+                    .replace('{11}', '')
+                    .replace('{12}', '0.00')
+                    .replace('{13}', '0.00')
+                    .replace('{14}', '')
+                    .replace('{15}', '0.00')
+            );
+        }
+
+        function deleteRow(buttonRow) {
+            buttonRow.parent().parent().parent().remove();
+            $editOveray.hide();
+            $("#RetData tr").each(function (index) {
+                $(this).attr("index-val", index);
+                $(this).find(".ProductId").attr("name", "SaleSub[" + index + "].Product.ID");
+                $(this).find(".ProductCode").attr("name", "SaleSub[" + index + "].Product.Code");
+                $(this).find(".ProductName").attr("name", "SaleSub[" + index + "].Product.Name");
+                $(this).find(".ProductUnitID").attr("name", "SaleSub[" + index + "].Unit.ID");
+                $(this).find(".ProductQty").attr("name", "SaleSub[" + index + "].Qty");
+                $(this).find(".ProductPrice").attr("name", "SaleSub[" + index + "].Price");
+                $(this).find(".ProductVatVal").attr("name", "SaleSub[" + index + "].VatVal");
+                $(this).find(".ProductDiscount").attr("name", "SaleSub[" + index + "].DiscountWord");
+                $(this).find(".ProductDiscountVal").attr("name", "SaleSub[" + index + "].DiscountVal");
+                $(this).find(".ProductTotalPrice").attr("name", "SaleSub[" + index + "].TotalPrice");
+                $(this).find(".ProductTotalPriceExludeVat").attr("name", "SaleSub[" + index + "].TotalPriceExludeVat");
+            });
+            sumFoorter();
+        }
+        function sumFoorter() {
+            var totalAmount = 0.00;
+            var discountVal = parseFloat($('#DiscountWord').val() == '' ? '0' : $('#DiscountWord').val().replace("%", ""));
+            discountVal = isNaN(discountVal) ? 0.00 : discountVal;
+            var totalDiscountAmount = 0.00;
+            var totalVatDiscountAmount = 0.00;
+            var totalNetAmount = 0.00;
+            var totalAmountExcludeVat = 0.00;
+            var totalVatVal = 0.00;
+
+            $("#RetData tr").each(function (index) {
+                totalAmount += parseFloat($(this).find(".ProductTotalPrice").val());
+                totalAmountExcludeVat += parseFloat($(this).find(".ProductTotalPriceExludeVat").val());
+                totalVatVal += parseFloat($(this).find(".ProductVatVal").val());
+            });
+
+            if ($('#DiscountWord').val().indexOf("%") !== -1) {
+                totalDiscountAmount = (discountVal / 100) * totalAmount;
+                totalVatDiscountAmount = (discountVal / 100) * totalVatVal;
+            } else if ($('#DiscountWord').val() != "") {
+                totalDiscountAmount = discountVal;
+                totalVatDiscountAmount = discountVal;
+            }
+            if (totalDiscountAmount > 0) {
+                totalAmountExcludeVat = totalAmountExcludeVat - totalDiscountAmount;
+                totalVatVal = totalVatVal - totalVatDiscountAmount;
+            }
+
+            if ($('#VatType').val() == "0") {
+                totalVatVal = 0;
+            }
+
+            $('#TotalAmountExcludeVatText').html(addCommas(totalAmountExcludeVat.toFixed(2)))
+            $('#TotalAmountExludeVat').val(totalAmountExcludeVat.toFixed(2))
+            $('#TotalVatValText').html(addCommas(totalVatVal.toFixed(2)))
+            $('#VatVal').val(totalVatVal.toFixed(2));
+            $('#TotalAmount').val((totalAmountExcludeVat + totalVatVal).toFixed(2));
+            $('#TotalAmountText').html(addCommas((totalAmountExcludeVat + totalVatVal).toFixed(2)));
+            $('#TotalDiscount').val(totalDiscountAmount.toFixed(2));
+            $('#TotalDiscountText').html(addCommas(totalDiscountAmount.toFixed(2)));
+        }
+        function commitEdit(forceIndex = -1) {
+
+            var index = $("#currentRow").val();
+
+            if ($("#currentRow").val() == '') {
+                return;
+            }
+
+            if ($('#itemId').val() == '') {
+                return;
+            }
+
+            var qty = parseFloat($('#qty').val() == '' ? '0' : $('#qty').val());
+            var averageCost = parseFloat($('#averageCost').val() == '' ? '0' : $('#averageCost').val());
+            var price = parseFloat($('#price').val() == '' ? '0' : $('#price').val());
+            var totalPrice = parseFloat($('#qty').val() == '' ? '0' : $('#qty').val()) * parseFloat($('#price').val() == '' ? '0' : $('#price').val());
+            var discount = 0.00;
+            var vatVal = 0.00;
+            var totalPriceExludeVat = 0.00;
+
+            if (price == 0) {
+                $(".help-block").remove();
+                $("#price").after("<span class='help-block' style='color:red;margin-top:-27px!important;'>กรุณาระบุราคา</span>");
+                $(".price").addClass('has-error');
+                return false;
+            } else {
+                $(".price").removeClass('has-error');
+                $(".help-block").remove();
+            }
+
+            $('#RetData > tr').eq(index).find(".ProductId").val($('#itemId').val());
+            $('#RetData > tr').eq(index).find(".ProductCode").val($('#code').val());
+            $('#RetData > tr').eq(index).find(".ProductName").val($('#itemName').val());
+            $('#RetData > tr').eq(index).find(".ProductUnitID").val($('#unitId').val());
+            $('#RetData > tr').eq(index).find(".ProductDiscount").val($('#discount').val());
+
+            if ($('#discount').val().indexOf("%") !== -1) {
+                $('#RetData > tr').eq(index).find(".ProductDiscountText").html($('#discount').val());
+                discount = parseFloat($('#discount').val().replace("%", ""));
+                discount = isNaN(discount) ? 0.00 : discount;
+                totalPrice = totalPrice - (totalPrice / 100 * discount)
+                $('#RetData > tr').eq(index).find(".ProductDiscountVal").val((totalPrice / 100 * discount));
+
+            } else {
+                $('#RetData > tr').eq(index).find(".ProductDiscountText").html(addCommas($('#discount').val()));
+                discount = parseFloat($('#discount').val().replace("%", ""));
+                discount = isNaN(discount) ? 0.00 : discount;
+                totalPrice = totalPrice - discount;
+                $('#RetData > tr').eq(index).find(".ProductDiscountVal").val(discount);
+            }
+
+            if ($('#VatType').val() == "1") {
+                totalPriceExludeVat = (totalPrice * 100) / (100+globalVatVal);
+                vatVal = totalPrice - totalPriceExludeVat;
+            }
+            if ($('#VatType').val() == "2") {
+                vatVal = (totalPrice * globalVatVal) / 100;
+                totalPriceExludeVat = totalPrice;
+            }
+            if ($('#VatType').val() == "0") {
+                totalPriceExludeVat = totalPrice;
+            }
+            $('#RetData > tr').eq(index).find(".ProductVatVal").val(vatVal);
+            $('#RetData > tr').eq(index).find(".ProductTotalPriceExludeVat").val(totalPriceExludeVat);
+
+            $('#RetData > tr').eq(index).find(".ProductQty").val(qty);
+            $('#RetData > tr').eq(index).find(".AverageCost").val(averageCost);
+            $('#RetData > tr').eq(index).find(".ProductPrice").val(price);
+            $('#RetData > tr').eq(index).find(".ProductTotalPrice").val(totalPrice);
+            $('#RetData > tr').eq(index).find(".ProductCodeText").html($('#code').val());
+            $('#RetData > tr').eq(index).find(".ProductNameText").html($('#itemName').val());
+
+
+
+            $('#RetData > tr').eq(index).find(".ProductQtyText").html(addCommas(qty));
+            $('#RetData > tr').eq(index).find(".ProductPriceText").html(addCommas(price));
+            $('#RetData > tr').eq(index).find(".ProductTotalPriceText").html(addCommas(totalPrice));
+            $("#currentRow").val('');
+            $('#itemId').val('');
+            sumFoorter();
+            $editOveray.hide();
+            if (index < $('#RetData > tr').length - 1) {
+                $('#RetData > tr').eq(parseInt(index) + 1).trigger("click");
+            }
+            return false;
+        }
+    });
+
+    function headerShow(){
+            $('.header-hide').toggle();
+    }
+
+    function Save() {
+        $("#ok-edit-row").trigger("click");
+        if($('#MemberID').val()==''){
+            $('#MemberID').val(1);
+        }
+        hideTopAlert();
+        url = $('#sale-form').attr('action');
+        $.post(url, $('#sale-form').serialize(), function (data) {
+            if (data.RetOK) {
+                showTopAlert(data.RetData, "success")                
+            } else {
+                showTopAlert(data.RetData, "danger")
+            }
+        });
+    }
+    function OTC() {
+        $('#MemberID').val(2);
+        $('#MemberName').val("เจ้าหนี้ทั่วไป [OTC]");
+    }
+    function GetAllTotalToCash(id){
+        $('#' + id).val($('#TotalAmount').val());
+    }
+</script>

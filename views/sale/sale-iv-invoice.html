@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html moznomarginboxes mozdisallowselectionprint>
+<head>
+    <meta charset="utf-8" />
+    <title>ใบเสร็จรับเงิน/ใบกำกับภาษี</title>
+    <link rel="shortcut icon" type="image/png" href="/static/image/tx.png" />
+    <link rel="stylesheet" href="/static/css/print/bootstrap.css" />
+    <script src=/static/js/print/jquery-3.1.1.min.js type="text/javascript"></script>
+    <link rel="stylesheet" href="/static/css/print/print.css" />
+    <style media="print" type="text/css">
+        @page {
+            size: A4;
+            margin: 0mm 15mm 0mm 15mm;
+        }
+    </style>
+</head>
+<body >
+    <style>
+        @media print {
+            footer {
+                display: none;
+            }
+
+            #printArea {
+                top: 20px;
+                bottom: 10px;
+                position: relative;
+            }
+
+            .noprint {
+                display: none;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            body {
+                display: block;
+                position: relative;
+                margin: 0 auto;
+                font-size: 10pt;
+                line-height: 1.52857143;
+                color: #444;
+
+            }
+
+            .print-page {
+                display: none;
+            }
+
+            .print-footer-section {
+                page-break-after: always;
+            }
+
+            .print-preview {
+                display: block;
+                color: #000000;
+            }
+        }
+    </style>
+    <script>
+        var pageHeight = 1400;
+        $(document).ready(function () {
+            $(document).on('click', '.keep-open', function (e) {
+                e.stopPropagation();
+            });
+            setprintpreview();
+            resize_to_fit("headerarea0", 30);  
+        });
+
+        function setprintpreview() {
+            var pageIndex = 1,
+                pageIndexSrting,
+                pageIndexClass,
+                currentPage;
+            var count = 0;
+            var countpage = 0;
+            for (var a = 0; a < 1; a++) {
+
+                var pagedoc = '.print-page-' + a;
+                var arrItems = [];
+                var rowItems = $(pagedoc + ' .print-table-item'),
+                    rowHeader = $(pagedoc + ' .print-items-header'),
+                    rowFooter = $(pagedoc + ' .print-summary');
+                var printPreview = $('.print-preview');
+                var headerSection = $(pagedoc + ' .print-header-section'),
+                    mainSection = $(pagedoc + ' .print-main-section'),
+                    footerSection = $(pagedoc + ' .print-footer-section'),
+                    tableRow = $(pagedoc + ' .table-items');
+                var header, main, footer;
+                var main = "<div class='print-main-section'>";
+                main += "<div class='print-items'>";
+                main += "<table class='table-items'><tbody></tbody></table></div></div>";
+
+
+                var headerHeight;
+                var infoHeight;
+                var contentHeight; // Table item
+                var footerHeight;
+
+                headerHeight = Math.round($(pagedoc + ' .print-header').outerHeight(true));
+
+                infoHeight = Math.round($(pagedoc + ' .print-info-section').outerHeight(true));
+                footerHeight = Math.round($(pagedoc + ' .print-footer-section').outerHeight(true));
+                contentHeight = pageHeight - (headerHeight + infoHeight + footerHeight);
+                var columnTable;
+                var contentTable = contentHeight;
+                var footerTable;
+                var egdeTable;
+                columnTable = $('#items-column-' + a).outerHeight(true)
+                footerTable = $('#summary-subtotal-' + a).outerHeight(true) + $('#summary-before-tax-' + a).outerHeight(true);
+                footerTable += $('#summary-tax-' + a).outerHeight(true) + $('#summary-total-' + a).outerHeight(true) + $('#summary-shippingamount-' + a).outerHeight(true);
+                contentTable = contentTable - (columnTable + footerTable);
+                egdeTable = contentTable + footerTable;
+                var objRow = $(pagedoc + ' .print-table-item').clone();
+                var rowItems = $(pagedoc + ' .print-table-item');
+                var arrayPages = splitPage(objRow);
+                createPagePreview(arrayPages);
+            }
+            function splitPage(rows) {
+                var pages = [];
+                var rowCountHeight = 0;
+                var flagEgde = 0;
+
+                var row_f = rowFooter.clone();
+                pages.push('page');
+                var emptyheight = 40;
+
+                var rowTemp = rowItems.clone();
+                for (i = 0; i < rowItems.length; i++) {
+
+                    rowCountHeight += rowItems[i].clientHeight;
+
+                    if (rowCountHeight < contentTable) {
+                        pages.push(rowTemp[i]);
+                        if (i == (rowItems.length - 1) && rowCountHeight + emptyheight < contentTable) {
+                            while (rowCountHeight + emptyheight < contentTable) {
+                                var emptyrow = document.createElement("tr");
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-no";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-id productcodearea";
+                                    y.style.display = "";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-name";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-value";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-cost";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-sale";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+
+                                {
+                                    var y = document.createElement("td");
+                                    y.className = "item-total";
+                                    var t = document.createTextNode("\u00A0");
+                                    y.appendChild(t);
+                                    emptyrow.appendChild(y);
+                                }
+                                rowCountHeight += emptyheight;
+                                pages.push(emptyrow);
+                            }
+                        }
+                    } else if ((rowCountHeight > contentTable) && (rowCountHeight < egdeTable)) {
+                        flagEgde++;
+                        if (flagEgde == 1) {
+                            pages.push('egde');
+                            pages.push(rowTemp[i]);
+                        } else {
+                            pages.push(rowTemp[i]);
+                        }
+
+                        // If last item and too height to print slpit to new page
+                        if (i == (rowItems.length - 1)) {
+                            // Replace page to egde
+                            var indexEgde = pages.lastIndexOf('egde');
+                            pages[indexEgde] = 'page';
+                        }
+
+                        // New Page
+                    } else {
+                        flagEgde = 0;
+
+                        // if have egde it mean is a long page
+                        // remove egde fromt arry of pages
+                        var sliceIndex = pages.indexOf('egde');
+                        var arrayPrev = pages.slice(0, sliceIndex - 1);
+                        var arrayNext = pages.slice(sliceIndex + 1, pages.length);
+                        var arrayTemp = arrayPrev.concat(arrayNext);
+
+                        pages = arrayTemp;
+
+                        pages.push('page');
+                        pages.push(rowTemp[i]);
+                        // Reset
+                        rowCountHeight = 0;
+                    }
+                    pages.push(row_f);
+                }
+                return pages;
+            }
+            function createPagePreview(pages) {
+                var startindex = 0;
+                if (count != 0) {
+                    startindex = countpage;
+                }
+                var allpage = 0;
+                for (var c = startindex; c < pages.length; c++) {
+                    if (pages[c] == 'page') {
+                        allpage++;
+                    }
+                }
+                var cpage = 0;
+                for (index = startindex; index < pages.length; index++) {
+
+                    // Initial Page
+                    if (pages[index] == 'page') {
+
+                        pageIndexSrting = "print-preview-page-" + pageIndex;
+                        printPreview.append("<div class='" + pageIndexSrting + "'></div> ");
+                        pageIndex++;
+
+                        // Get Index of Page
+                        currentPage = $('.' + pageIndexSrting);
+
+                        header = headerSection.clone();
+                        row = rowHeader.clone();
+
+                        cpage++;
+                        //currentPage.append("<span class='pull-right'>" + "หน้า" + " " + cpage + "/" + allpage + "</span>");
+                        currentPage.append(header);
+                        currentPage.append(main);
+                        $('.' + pageIndexSrting + ' .table-items tbody').append(row);
+
+                        if (pageIndex != 1) {
+                            footer = footerSection.clone();
+                            currentPage.append(footer);
+                        }
+
+                    } else {
+                        $('.' + pageIndexSrting + ' .table-items tbody').append(pages[index]);
+                    }
+                }
+                countpage += pages.length;
+            }
+        }
+        function resize_to_fit(arr, countfont) {
+            var jEl = $('#' + arr + ' span');
+            var fontsize = jEl.css('font-size');
+            if (fontsize <= 1)
+                return;
+            if (jEl.width() > $('#' + arr).width()) {
+                jEl.css('fontSize', parseFloat(fontsize) - 1);
+                if (countfont > 0)
+                    resize_to_fit(arr, countfont - 1);
+            }
+        }
+    </script>
+    <div id="printArea" class="print-container">
+        <div class="print-page print-page-0">
+            <page size="A4" class="">
+                <table  width="90%" class="documentarea" align="center">
+                    <tr>
+                        <td>
+                            <div class="print-header-section" style="padding-top:5mm;">
+                                <div class="print-header clearfix">
+                                    <div class="print-col-left">
+                                        <div class="print-company-info" style="padding-left: 0px;">
+                                            <div class="print-company-name">{{.com.Name}} 
+                                                <span style="font-size:0.7em;font-weight:normal"> 
+                                                        {{if eq .com.BranchNo "00000"}} สำนักงานใหญ่ {{else if .com.BranchNo}} สาขาที่ {{.com.BranchNo}} {{if .com.BranchName}}
+                                                        {{.com.BranchName}} {{end}} {{else}} &nbsp; {{end}} 
+                                                </span>
+                                            </div>
+                                            <div class="print-company-address">ที่อยู่: 112 ต.ในเมือง อ.เมือง จ.อุบลราชธานี 34000</div>
+                                            <div class="print-company-contact">
+                                                {{if .com.Tel}}  โทรศัพท์: {{.com.Tel}} {{end}}
+                                                {{if .com.Fax}} โทรสาร: {{.com.Fax}}{{end}}
+                                                {{if .com.Email}} อีเมล: {{.com.Email}}{{end}}
+                                            </div>
+                                            {{if .com.TaxNo}}
+                                            <div class="print-company-tax">เลขประจำตัวผู้เสียภาษี:  {{.com.TaxNo}}</div>
+                                            {{end}}                                           
+                                        </div>
+                                    </div>
+                                    <div class="print-col-right">
+                                        <div class="print-doctype" id="headerarea1" style="width:100%;">
+                                            <span style="white-space:nowrap;">ใบเสร็จรับเงิน/ใบกำกับภาษี</span>
+                                        </div>
+
+                                        <div class="print-date">วันที่ : {{date .m.DocDate "d-m-Y"}}</div>
+                                        <div class="print-id">เลขที่เอกสาร: {{.m.DocNo}}</div>
+                                    </div>
+                                </div>
+                                <div class="print-info-section clearfix">
+                                    <div class="print-col-left" style="width:100%;">
+                                        <table class="print-information print-table">
+                                            <tr>
+                                                <td class="print-half-front" colspan="2">
+                                                    <span class="print-info-company-name-col">ชื่อเจ้าหนี้:&nbsp;</span>
+                                                    <span class="print-info-company-name-value">{{.m.MemberName}}
+                                                            {{if .m.BranchNo }}
+                                                                {{if eq .m.BranchNo "00000"}} 
+                                                                  สำนักงานใหญ่
+                                                                {{end}}
+                                                            {{end}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                             {{if .m.TaxNo}}
+                                            <tr>
+                                                <td class="print-half-front left" colspan="2">
+                                                    <span class="print-bold">เลขประจำตัวผู้เสียภาษี:&nbsp;</span>
+                                                    <span>{{.m.TaxNo}}</span>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+
+                                            {{if .m.BranchNo }}
+                                                {{if not (eq .m.BranchNo "00000")}} 
+                                                    <tr>
+                                                        <td class="print-half-front">
+                                                            <span class="print-info-company-branch-col">ชื่อสาขา:&nbsp;</span>
+                                                            <span class="print-info-company-branch-value">{{.m.BranchName}}</span>
+                                                        </td>
+                                                        <td class="print-half-front">
+                                                            <span class="print-info-company-branchnumber-col">สาขาที่:&nbsp;</span>
+                                                            <span class="print-info-company-branchnumber-value">{{.m.BranchNo}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{end}}
+                                            {{end}}
+
+                                            <tr>
+                                                <td class="print-half-front" colspan="2">
+                                                    <span class="print-info-company-address-col">ที่อยู่:&nbsp;</span>
+                                                    <span class="print-info-company-address-value">{{.m.Address}}</span>
+                                                </td>
+                                            </tr>
+                                            {{if (.m.Tel) or (.m.Fax)}}
+                                                <tr>
+                                                    {{if .m.Tel}}
+                                                    <td class="print-half-front"
+                                                     {{if not .m.Fax}} colspan="2" {{end}} >
+                                                        <span class="print-info-company-phone-col">โทรศัพท์:&nbsp;</span>
+                                                        <span class="print-info-company-phone-value">{{.m.Tel}}</span>
+                                                    </td>
+                                                    {{end}}
+                                                    {{if .m.Fax}}
+                                                    <td class="print-half-back" {{if not .m.Tel}} colspan="2" {{end}} >
+                                                        <span class="print-info-company-fax-col">โทรสาร:&nbsp;</span>
+                                                        <span class="print-info-company-fax-value">{{.m.Fax}}</span>
+                                                    </td>
+                                                    {{end}}
+                                                </tr>
+                                            {{end}}
+                                            {{if .m.Email}}
+                                            <tr>
+                                                <td class="print-half-front" colspan="2">
+                                                    <span class="print-info-company-mobile-col">อีเมล:&nbsp;</span>
+                                                    <span class="print-info-company-mobile-value">{{.m.Email}}</span>
+                                                </td>
+                                            </tr>
+                                            {{end}}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="print-main-section">
+                                <div class="print-items">
+                                    <table class="table-items">
+                                        <thead>
+                                            <tr id="items-column-1" class="print-items-header" style="line-height:2;">
+                                                <th class="item-no">#</th>
+                                                <th class="item-id productcodearea">รหัส</th>
+                                                <th class="item-name">ชื่อสินค้า</th>
+                                                <th class="item-value">จำนวน</th>
+                                                <th class="item-cost">ราคา/หน่วย</th>
+                                                <th class="item-sale">ส่วนลด</th>
+                                                <th class="item-total">จำนวนเงิน</th>
+                                            </tr>
+                                        </thead>
+                                        {{if .RetCount}} 
+                                            {{range $key, $val := .m.SaleSub}}
+                                                <tr class="print-table-item">
+                                                    <td class="item-no" valign="top">{{$key | HTMLRowOrder}}</td>
+                                                    <td class="item-id productcodearea" valign="top">{{$val.Product.Code}}</td>
+                                                    <td class="item-name" valign="top">{{$val.ProductName}}</td>
+                                                    <td class="item-value" valign="top"> {{$val.Qty | ThCommaSeperate}} {{$val.Unit.Name}} </td>
+                                                    <td class="item-cost" valign="top">{{$val.Price | ThCommaSeperate}}</td>
+                                                    <td class="item-sale" valign="top">{{$val.DiscountWord | TextThCommaAndPercentSeperate}}</td>
+                                                    <td class="item-total" valign="top">{{$val.TotalPrice | ThCommaSeperate}}</td>
+                                                </tr>
+                                            {{end}} 
+                                        {{end}}
+                                        <tr id="summary-subtotal-1" class="print-summary print-table-footer print-no-even">
+                                            <td class="item-remark footerspan" style="text-align:center;" colspan="4">
+                                                <b id="thaibaht" style="text-align:center;"></b>
+                                            </td>
+                                            <td class="item-summary-label" colspan="2">ส่วนลด {{if .m.DiscountWord}} {{.m.DiscountWord | TextNoPercent}} {{end}}
+
+                                            </td>
+                                            <td class="item-summary-total" colspan="">
+                                                    {{if.m.TotalDiscount }} {{.m.TotalDiscount | ThCommaSeperate}} {{end}}</td>
+                                        </tr>
+                                        <tr id="summary-before-tax-1" class="print-summary print-table-remark print-no-even">
+                                            <td class="item-remark footerspan" colspan="4" rowspan="3">{{.m.Remark}}</td>
+                                            <td class="item-summary-label" colspan="2">มูลค่ารวมก่อนภาษี</td>
+                                            <td class="item-summary-total" colspan="">{{if.m.TotalAmountExludeVat }} {{.m.TotalAmountExludeVat | ThCommaSeperate}} {{else}} 0.00 {{end}}</td>
+                                        </tr>
+                                        <tr id="summary-tax-1" class="print-summary print-no-even">
+                                            <td class="item-summary-label" colspan="2">ภาษีมูลค่าเพิ่ม {{if.VatVal}}({{.VatVal}}%){{end}} </td>
+                                            <td class="item-summary-total" colspan="">{{if.m.VatVal}} {{.m.VatVal | ThCommaSeperate}} {{else}} {{end}}</td>
+                                        </tr>
+                                        <tr id="summary-total-1" class="print-summary print-no-even">
+                                            <!-- <td class="item-remark" colspan="4">1</td> -->
+                                            <td class="item-summary-label item-summary-bg" colspan="2">
+                                                <span class="print-bold">
+                                                    <b>มูลค่ารวมสุทธิ</b>
+                                                </span>
+                                            </td>
+                                            <td class="item-summary-total item-summary-bg" colspan="">
+                                                <span class="print-bold">
+                                                    <b>{{if.m.TotalAmount}} {{.m.TotalAmount | ThCommaSeperate}} {{else}} 0.00 {{end}}</b>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="print-footer-section clearfix">
+                                <div class="print-sign customerstamparea" style="display:none;">
+                                    <div class="print-sign-position stamp-section" style="border-bottom:0px;">
+                                        <img class="print-signature" src="" style="width:130px;" />
+                                    </div>
+                                </div>
+                                <div class="print-sign approvesignarea">
+                                    <div class="print-sign-person" style="font-size: 9pt;"></div>
+                                    <div class="print-sign-date" style="font-size: 9pt;"></div>
+                                </div>
+                                <div class="print-sign paymentsignarea">
+                                    <div class="print-sign-position">
+                                        <div class="imagepaymentsignarea" style="display:none;">
+                                            <img class="print-signature" src="" style="max-width: 120px;max-height: 120px;" />
+                                        </div>
+                                    </div>
+                                    <div class="print-sign-person" style="font-size: 9pt;">ผู้รับสินค้า</div>
+                                    <div class="print-sign-date" style="font-size: 9pt;">วันที่ .............................. </div>
+                                </div>
+                                <div class="print-sign productreceivesignarea">
+                                        <div class="print-sign-position">
+                                            <div class="imageproductreceivesignarea" style="display:none;">
+                                                <img class="print-signature" src="" style="max-width: 120px;max-height: 120px;" />
+                                            </div>
+                                        </div>
+                                        <div class="print-sign-person" style="font-size: 9pt;">ผู้รับเงิน</div>
+                                        <div class="print-sign-date" style="font-size: 9pt;">วันที่ ..............................</div>
+                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </page>
+        </div>
+        <div class="print-preview">
+        </div>
+    </div>
+    <script src="/static/js/print/jquery-2.1.0.min.js"></script>
+    <script src="/static/js/thaibaht.js"></script>
+    <script>
+      $('#thaibaht').html( getBathText( parseFloat( '{{.m.TotalAmount}}')))
+      setTimeout(function () {
+                 window.print();
+                 window.close();
+   }, 500);
+    </script>
+</body>
+</html>

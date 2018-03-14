@@ -72,6 +72,12 @@ func main() {
 	beego.Router("/receive/print", &c.ReceiveController{}, "get:Print")
 	beego.Router("/receive/list", &c.ReceiveController{}, "get:ReceiveList;post:GetReceiveListJSON")
 
+	beego.Router("/sale", &c.SaleController{})
+	beego.Router("/sale/cancel", &c.SaleController{}, "get:CancelSale;post:UpdateCancelSale")
+	beego.Router("/sale/sale", &c.SaleController{}, "get:Sale;post:UpdateSale")
+	beego.Router("/sale/print", &c.SaleController{}, "get:Print")
+	beego.Router("/sale/list", &c.SaleController{}, "get:SaleList;post:GetSaleListJSON")
+
 	beego.AddFuncMap("ThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("TextThCommaSeperate", h.ThCommaSeperate)
 	beego.AddFuncMap("TextThCommaAndPercentSeperate", h.TextThCommaAndPercentSeperate)
