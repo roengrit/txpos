@@ -241,6 +241,9 @@ body.loading {
 body.loading .modal-wait {
     display: block;
 }
+.box-footer{
+    padding: 10px;
+}
  
 
 
