@@ -1,6 +1,19 @@
 <style>
-    .content{
+    .content {
         font-size: 22px !important;
+    }
+
+    .modal-dialog {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .modal-content {
+        height: auto;
+        min-height: 100%;
+        border-radius: 0;
     }
 </style>
 <section class="content">
@@ -14,21 +27,21 @@
                         </div>
                         <div class="col-sm-2 col-xs-4" style="padding:0; margin:0;">
                             <button type="button" id="BtnSearch" class="btn btn-default bg-white btn-lg waves-effect" style="width:100%;">
-                                <i class="fa fa-search"></i> ค้นหา</button>
+                                <i class="fa fa-search"></i> ค้นหา [F2]</button>
                         </div>
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="col-sm-12 no-padding" id="cashPanelSale" style="margin-top:10px;">
-                    <h4 class="pull-left text-size-25">
+                    <h4 class="pull-left">
                         <span id="box-count-items-text" class="text-size-25">5</span> รายการ </h4>
-                    <div class="pull-right">
-                        <button type="button" id="btn-new-customer-sale" class="btn btn-default bg-white btn-sm text-size-19 waves-effect" data-toggle="modal"
-                            data-target="#addcustomerModal">
+                    <div class="pull-right" style="margin-bottom:15px;">
+                        <button type="button" id="btn-new-customer-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;"
+                            data-toggle="modal" data-target="#addcustomerModal">
                             <i class="fa fa-user-plus text-aqua" aria-hidden="true"></i> ลูกค้า</button>
-                        <button type="button" id="btn-hold-sale" class="btn btn-default bg-white btn-sm text-size-19 waves-effect">
+                        <button type="button" id="btn-hold-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;">
                             <i class="fa fa-hourglass-end" aria-hidden="true"></i> พักขาย</button>
-                        <button type="button" id="btn-cancel-sale" class="btn btn-default bg-white btn-sm text-size-19 waves-effect">
+                        <button type="button" id="btn-cancel-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;">
                             <i class="fa fa-ban text-red" aria-hidden="true"></i> ยกเลิก</button>
                     </div>
                     <div class="clearfix"></div>
@@ -42,25 +55,48 @@
                             <a href="javascript:;" class="text-muted pull-right" id="btn-remove-customer-sale" title="Delete">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                             </a>
-                            <span class="pull-right" style="margin:0px 10px 0px 10px;">|</span>
-                            <a href="javascript:;" class="text-muted pull-right" id="btn-shipping-customer-sale" title="จัดส่ง">
-                                <i id="icon-btn-shipping" class="fa fa-truck red" aria-hidden="true"></i>
-                            </a>
                         </div>
                         <div class="box-body">
-                            <div id="box-sale-pos" class="direct-chat-messages product-list-pos" style="height:500px;">
-                                    <table id="tb-data-saleitems" class="table text-size-19">
-                                        <tbody>
-                                            <tr>
+                            <div id="box-sale-pos" class="direct-chat-messages product-list-pos" style="height:700px;">
+                                <table id="RetData" class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td id="tdclick_pos_sale5" width="7%" class="text-center" valign="middle">
+                                                1522001
+                                            </td>
+                                            <td width="63%" valign="middle">
+                                                <span style="cursor:pointer;">ตัวอย่างสินค้า Let's Relax Onsen Thong lor</span>
+                                                <span id="cart-option-overstock5" style="color:#FF0000;"></span>
+                                            </td>
+                                            <td width="5%" class="text-right change-price" valign="middle">
+                                                <span>4,180.00</span>
+                                            </td>
+                                            <td width="15%" class="text-right change-price" valign="middle">
+                                                <span>4,180.00</span>
+                                            </td>
+                                            <td width="5%" class="text-right" style="width:5%;" valign="middle">
+                                                <a href="javascript:;" class="delete-sale-item" data-id="7">
+                                                    <nobr>&nbsp;
+                                                        <i class="fa fa-times" style="color:red;"></i>
+                                                    </nobr>
+                                                </a>
+                                                <input type="hidden" name="sale_product_item[]" value="5" class="sale_product_item">
+                                                <input type="hidden" name="sale_product_amount5" id="sale_product_amount5" value="2">
+                                                <input type="hidden" name="sale_product_price5" id="sale_product_price5" value="4180">
+                                            </td>
+                                        </tr>
+                                        <tr>
                                                 <td id="tdclick_pos_sale5" width="7%" class="text-center" valign="middle">
-                                                    <input id="input_amount_product5" class="input_amount_product" data-product_id="28" data-option_id="5" data-amount="2"
-                                                        value="2" onkeypress="Sale.onlyNumbersEnter(event)" type="number" min="1" style="width:100%; text-align:center;">
+                                                    1522001
                                                 </td>
                                                 <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;" class="btn-click-productname" data-product_id="28" data-option_id="5">ตัวอย่างสินค้า Let's Relax Onsen Thong lor</span>
+                                                    <span style="cursor:pointer;">ตัวอย่างสินค้า Let's Relax Onsen Thong lor</span>
                                                     <span id="cart-option-overstock5" style="color:#FF0000;"></span>
                                                 </td>
-                                                <td width="15%" class="text-right btn-click-change-price" data-product_id="28" data-option_id="5" valign="middle">
+                                                <td width="5%" class="text-right change-price" valign="middle">
+                                                    <span>4,180.00</span>
+                                                </td>
+                                                <td width="15%" class="text-right change-price" valign="middle">
                                                     <span>4,180.00</span>
                                                 </td>
                                                 <td width="5%" class="text-right" style="width:5%;" valign="middle">
@@ -74,224 +110,342 @@
                                                     <input type="hidden" name="sale_product_price5" id="sale_product_price5" value="4180">
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td id="tdclick_pos_sale4" width="7%" class="text-center" valign="middle">
-                                                    <input id="input_amount_product4" class="input_amount_product" data-product_id="26" data-option_id="4" data-amount="1"
-                                                        value="1" onkeypress="Sale.onlyNumbersEnter(event)" type="number" min="1" style="width:100%; text-align:center;">
-                                                </td>
-                                                <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;" class="btn-click-productname" data-product_id="26" data-option_id="4">ตัวอย่างสินค้า รองเท้าวิ่ง Supernova</span>
-                                                    <span id="cart-option-overstock4" style="color:#FF0000;"></span>
-                                                </td>
-                                                <td width="15%" class="text-right btn-click-change-price" data-product_id="26" data-option_id="4" valign="middle">
-                                                    <span>3,290.00</span>
-                                                </td>
-                                                <td width="5%" class="text-right" style="width:5%;" valign="middle">
-                                                    <a href="javascript:;" class="delete-sale-item" data-id="6">
-                                                        <nobr>&nbsp;
-                                                            <i class="fa fa-times" style="color:red;"></i>
-                                                        </nobr>
-                                                    </a>
-                                                    <input type="hidden" name="sale_product_item[]" value="4" class="sale_product_item">
-                                                    <input type="hidden" name="sale_product_amount4" id="sale_product_amount4" value="1">
-                                                    <input type="hidden" name="sale_product_price4" id="sale_product_price4" value="3290">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td id="tdclick_pos_sale3" width="7%" class="text-center" valign="middle">
-                                                    <input id="input_amount_product3" class="input_amount_product" data-product_id="27" data-option_id="3" data-amount="1"
-                                                        value="1" onkeypress="Sale.onlyNumbersEnter(event)" type="number" min="1" style="width:100%; text-align:center;">
-                                                </td>
-                                                <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;" class="btn-click-productname" data-product_id="27" data-option_id="3">ตัวอย่างสินค้า Camouflage Bomber Jacket</span>
-                                                    <span id="cart-option-overstock3" style="color:#FF0000;"></span>
-                                                </td>
-                                                <td width="15%" class="text-right btn-click-change-price" data-product_id="27" data-option_id="3" valign="middle">
-                                                    <span>2,450.00</span>
-                                                </td>
-                                                <td width="5%" class="text-right" style="width:5%;" valign="middle">
-                                                    <a href="javascript:;" class="delete-sale-item" data-id="5">
-                                                        <nobr>&nbsp;
-                                                            <i class="fa fa-times" style="color:red;"></i>
-                                                        </nobr>
-                                                    </a>
-                                                    <input type="hidden" name="sale_product_item[]" value="3" class="sale_product_item">
-                                                    <input type="hidden" name="sale_product_amount3" id="sale_product_amount3" value="1">
-                                                    <input type="hidden" name="sale_product_price3" id="sale_product_price3" value="2450">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td id="tdclick_pos_sale1" width="7%" class="text-center" valign="middle">
-                                                    <input id="input_amount_product1" class="input_amount_product" data-product_id="24" data-option_id="1" data-amount="3"
-                                                        value="3" onkeypress="Sale.onlyNumbersEnter(event)" type="number" min="1" style="width:100%; text-align:center;">
-                                                </td>
-                                                <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;" class="btn-click-productname" data-product_id="24" data-option_id="1">ตัวอย่างสินค้า Apple iPad Pro 256GB</span>
-                                                    <span id="cart-option-overstock1" style="color:#FF0000;"></span>
-                                                </td>
-                                                <td width="15%" class="text-right btn-click-change-price" data-product_id="24" data-option_id="1" valign="middle">
-                                                    <span>87,000.00</span>
-                                                </td>
-                                                <td width="5%" class="text-right" style="width:5%;" valign="middle">
-                                                    <a href="javascript:;" class="delete-sale-item" data-id="4">
-                                                        <nobr>&nbsp;
-                                                            <i class="fa fa-times" style="color:red;"></i>
-                                                        </nobr>
-                                                    </a>
-                                                    <input type="hidden" name="sale_product_item[]" value="1" class="sale_product_item">
-                                                    <input type="hidden" name="sale_product_amount1" id="sale_product_amount1" value="3">
-                                                    <input type="hidden" name="sale_product_price1" id="sale_product_price1" value="87000">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td id="tdclick_pos_sale2" width="7%" class="text-center" valign="middle">
-                                                    <input id="input_amount_product2" class="input_amount_product" data-product_id="25" data-option_id="2" data-amount="2"
-                                                        value="2" onkeypress="Sale.onlyNumbersEnter(event)" type="number" min="1" style="width:100%; text-align:center;">
-                                                </td>
-                                                <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;" class="btn-click-productname" data-product_id="25" data-option_id="2">ตัวอย่างสินค้า Samsung Galaxy S7 Edge</span>
-                                                    <span id="cart-option-overstock2" style="color:#FF0000;"></span>
-                                                </td>
-                                                <td width="15%" class="text-right btn-click-change-price" data-product_id="25" data-option_id="2" valign="middle">
-                                                    <span>51,000.00</span>
-                                                </td>
-                                                <td width="5%" class="text-right" style="width:5%;" valign="middle">
-                                                    <a href="javascript:;" class="delete-sale-item" data-id="3">
-                                                        <nobr>&nbsp;
-                                                            <i class="fa fa-times" style="color:red;"></i>
-                                                        </nobr>
-                                                    </a>
-                                                    <input type="hidden" name="sale_product_item[]" value="2" class="sale_product_item">
-                                                    <input type="hidden" name="sale_product_amount2" id="sale_product_amount2" value="2">
-                                                    <input type="hidden" name="sale_product_price2" id="sale_product_price2" value="51000">
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-4 col-xs-12">
-                    <div class="box box-primary direct-chat direct-chat-primary" id="box-saleList">
-                              
-                            <div class="box-footer" style="font-weight:bold;">
-                               <span>ยอดรวม</span>
-                               <span class="pull-right" id="box-sale-pos-subtotal">147,920.00</span>
-                            </div>
-                            
-                                           <div id="summary_box_burnpoint" class="box-footer" style="display:none;">
-                                 <span>ใช้คะแนน <span id="summary_burn_point">0</span> คะแนน</span>
-                                 <span id="summary_burn_price" class="pull-right">0</span>
-                             </div>
-                                           
-                             
-                            <div class="box-footer">
-                               <span>คูปอง</span>
-                               <span><a href="javascript:;" id="btn-delete-ecoupon" style="display:none; margin-left:10px;"><i class="fa fa-times" style="color:red;"></i></a></span>
-                               <span>
-                               <button type="button" id="btn-search-sale_ecoupon_code" class="btn btn-default bg-white btn-sm pull-right waves-effect" style="width:30px; height:30px; margin-left:-33px;"><i class="fa fa-search"></i></button>
-                               <input type="text" id="sale_ecoupon_code" name="sale_ecoupon_code" class="form-control input-sm pull-right" style="width:130px;">
-                                  </span>
-                             
-                               <div id="sale_ecoupon_text" style="color:#00F;"></div>
-                            </div>
-                            
-                                            
-                            <div class="box-footer">
-                               <span>ส่วนลด</span>
-                               <span class="pull-right" id="box-sale-pos-discount" style="cursor:pointer; border:1px solid #CCC; padding: 0px 8px 0px 8px;">0.00</span>
-                            </div>
-                            
-                            <div id="box-html-sale-pos-shipping" class="box-footer" >
-                               <span>ค่าจัดส่ง</span>
-                               <span class="pull-right" id="box-sale-pos-shipping">150.00</span>
-                            </div>
-                            
-                            <span >
-                            
-                            <div class="box-footer">
-                               <span>ราคาก่อนภาษี</span>
-                               <span class="pull-right" id="box-sale-pos-befortax">138,383.18</span>
-                            </div>
-                            
-                            <div class="box-footer">
-                               <span class="pull-left">
-                                   ภาษีมูลค่าเพิ่ม 
-                                   <span id="sale_vat_tax" style="cursor:pointer;">(7.00%)</span> 
-                                   <span id="sale_vat_tax_change" class="input-group" style="display:none; margin-top:5px;">
-                                   <input type="text" id="sale_change_tax" name="sale_change_tax" class="form-control input-sm" onkeypress="Sale.onlyNumbersEnter(event)" maxlength="2" style="width:50px; text-align:center;">
-                                   <button type="button" id="btn-sale-change-tax" class="btn btn-primary btn-sm waves-effect">บันทึก</button>
-                                   </span>
-                               </span>
-                               <span class="pull-right" id="box-sale-pos-tax">9,686.82</span>
-                            </div>
-                            </span>
-                            
-                            <div class="box-footer" style="font-weight:bold; color:#00F;">
-                               <span>ยอดรวมสุทธิ</span>
-                               <span class="pull-right" id="box-sale-pos-total">148,070.00</span>
-                               <input type="hidden" id="hidden-sale-pos-total" value="148070">
-                            </div>
-                            
-                            <!--Pay-->
-                            <input class="form-control text-right" name="pospaytype" id="pospaytype" value="" type="hidden">
-                             <input class="form-control text-right" name="sale_paymoney" id="sale_paymoney" value="148070" type="hidden">
-                             <input class="form-control text-right" name="sale_taxmoney" id="sale_taxmoney" value="9686.82" type="hidden">
-                             <input class="form-control text-right" name="sale_paymoney_change" id="sale_paymoney_change" value="" type="hidden">
-                             <input class="form-control text-right" id="show-total-sale" style="border-radius:0px; color:#0000FF; height:60px; display:none;" value="" disabled="disabled" type="text">
-                            
-                                                    <div class="box-footer" style="padding-bottom: 5px;">
-                                         <div class="col-xs-4" style="padding:0px; margin:0px;">
-                                             <button type="button" id="btn_paymoney1" class="btn btn-success color-palette btn-block btn-lg no-border text-size-22 btnlabel_payment waves-effect" style="height: 45px; padding:0; cursor:default;">เงินสด</button>
-                                         </div>
-                                         <div class="col-xs-8" style="padding:0px; margin:0px;">
-                                             <span style=" position: absolute; top: 0px; z-index: 100; text-align: center; width: 50px; font-size: 30px; height: 46px; border: 1px solid transparent;color: green;border-left: 0px;cursor: pointer;"><i class="fa  fa-calculator btn-show-calculator-cash" id="1" title="1"></i></span>
-                                             <input class="key_paymoney form-control pull-right text-right text-size-29" name="key_paymoney1" id="key_paymoney1" data-payment_id="1" data-payment_type="1" onkeypress="Sale.keyMoneysale(event,this)" style="border-radius:0px; color:#0000FF; font-weight:bold; width:100%; height:45px;" value="" type="text">
-                                         </div>						  
-                                    </div>
-                                                <div class="box-footer" style="border: 0px; padding: 0px 10px 3px 10px;">
-                            <div class="col-xs-4" style="padding:1px;">
-                                       <button type="button" id="btn_paymoney2" data-payment_id="2" data-payment_type="3" data-paymentpoint="N" class="btn-pay-frm btn btn-success color-palette btn-block btn-lg no-border text-size-22 btnlabel_payment waves-effect" style="height: 45px; padding:0;">บัตรเครดิต</button>
-                                       </div><div class="col-xs-4" style="padding:1px;">
-                                       <button type="button" id="btn_paymoney3" data-payment_id="3" data-payment_type="5" data-paymentpoint="N" class="btn-pay-frm btn btn-success color-palette btn-block btn-lg no-border text-size-22 btnlabel_payment waves-effect" style="height: 45px; padding:0;">โอนเงิน</button>
-                                       </div><div class="col-xs-4" style="padding:1px;">
-                                       <button type="button" id="btn_paymoney4" data-payment_id="4" data-payment_type="6" data-paymentpoint="N" class="btn-pay-frm btn btn-success color-palette btn-block btn-lg no-border text-size-22 btnlabel_payment waves-effect" style="height: 45px; padding:0;">อื่นๆ</button>
-                                       </div>				               </div>
-                                           
-                            <div class="box-footer">
-                               <a href="javascript:;" id="btn-pay-money" style="height: 58px;" class="btn btn-success bg-green color-palette btn-block btn-lg no-border waves-effect">
-                                  <span class="pull-left text-size-29">จ่ายเงิน</span>
-                                  <span class="pull-right text-size-29" id="box-sale-pos-pay">0.00</span>
-                               </a>
-                            </div>
-                             
-                             <div class="box-footer" style="border:0px; padding-top:5px; padding-top: 0px;">
-                                 <div class="col-xs-4" style="padding:0px; margin:0px;">
-                                     <button type="button" class="btn btn-danger color-palette btn-block btn-lg no-border text-size-22 waves-effect" style="height: 45px; cursor: default;">ทอน</button>
-                                 </div>
-                                 <div class="col-xs-8" style="padding:0px; margin:0px;">
-                                     <input class="form-control pull-right text-right text-size-29" id="show-total-change" style="border-radius:0px; color:#F00; font-weight:bold; width:100%; height:45px; " value="0.00" disabled="disabled" type="text">
-                                 </div>						  
-                             </div>
-                             
-                             <div class="box-footer" id="payment-button-detail" style="margin:0; padding: 0px 10px 0px 10px;">
-                                 <div id="payment-button-detail3" style="display:none;"></div>
-                                 <div id="payment-button-detail5" style="display:none;"></div>
-                                 <div id="payment-button-detail6" style="display:none;"></div>
-                                 <div id="payment-button-detailP" style="display:none;"></div>
-                             </div>
-                             
-                             <div class="box-footer" style="border:0px;">
-                               <a href="#" data-toggle="modal" data-target="#addnoteModal" class="text-aqua"><span style="color:#FF0000;">เพิ่มหมายเหตุ</span></a>
-                               <div id="sale_note_text" style="color:#00F;"></div>
-                            </div>
-                            
+                <div class="box box-primary direct-chat direct-chat-primary" id="box-saleList">
+                    <div class="box-footer" style="font-weight:bold;">
+                        <span>ยอดรวม</span>
+                        <span class="pull-right" id="box-sale-pos-subtotal">147,920.00</span>
+                    </div>
+                    <div class="box-footer">
+                        <span>ส่วนลด</span>
+                        <span class="pull-right" id="box-sale-pos-discount" style="cursor:pointer; border:1px solid #CCC; padding: 0px 8px 0px 8px;">0.00</span>
+                    </div>
+                    <span>
+                        <div class="box-footer">
+                            <span>ราคาก่อนภาษี</span>
+                            <span class="pull-right" id="box-sale-pos-befortax">138,383.18</span>
                         </div>
+                        <div class="box-footer">
+                            <span class="pull-left">
+                                ภาษีมูลค่าเพิ่ม
+                                <span id="sale_vat_tax" style="cursor:pointer;">(7.00%)</span>
+                                <span id="sale_vat_tax_change" class="input-group" style="display:none; margin-top:5px;">
+                                    <input type="text" id="sale_change_tax" name="sale_change_tax" class="form-control input-sm" onkeypress="Sale.onlyNumbersEnter(event)"
+                                        maxlength="2" style="width:50px; text-align:center;">
+                                    <button type="button" id="btn-sale-change-tax" class="btn btn-primary btn-sm waves-effect">บันทึก</button>
+                                </span>
+                            </span>
+                            <span class="pull-right" id="box-sale-pos-tax">9,686.82</span>
+                        </div>
+                    </span>
+                    <div class="box-footer" style="font-weight:bold; color:#00F;">
+                        <span>ยอดรวมสุทธิ</span>
+                        <span class="pull-right" id="box-sale-pos-total">148,070.00</span>
+                        <input type="hidden" id="hidden-sale-pos-total" value="148070">
+                    </div>
+
+                    <div class="box-footer">
+                        <div class="col-xs-12" style="padding:0px; margin:0px;">
+                            <span class="pull-left">หมายเหตุ</span>
+                            <textarea class="form-control pull-right" id="Remark" style="border-radius:0px;   font-weight:bold; width:100%; height:45px; "
+                                rows="3" placeholder="หมายเหตุ..."> </textarea>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <a   id="PayMoney" data-toggle="modal" data-target="#modal-default" style="height: 58px;font-weight:bold;padding-top:20px;" class="btn btn-success bg-green color-palette btn-block btn-lg no-border waves-effect">
+                            <span >จ่ายเงิน</span>
+                            <span id="box-sale-pos-pay">[F9]</span>
+                        </a>
+                    </div>
+                </div>
             </div>
+            <div class="modal fade" id="modal-default" tabindex='-1'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">ชำระเงิน [กด Tab เพื่อเลื่อนไปช่องถัดไป]</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
+                                    <label for="req-name">เงินสด</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            F2
+                                        </span>
+                                        <input type="number" id="CashPayment" name="Payment[0].TotalAmount" tabindex="2" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="เงินสด...." {{if .RetPayCount}} value="{{(index .m.Payment 0).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button tabindex="-1" type="button" onclick="GetAllTotalToCash('CashPayment')" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                                <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 0).PayDate}}
+                                        <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" value='{{date (index .m.Payment 0).PayDate "d-m-Y"}}'
+                                            {{.r }} placeholder="วันที่...." /> {{end}} {{else}}
+                                        <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" {{.r}}
+                                           value="{{date .CurrentDate "d-m-Y"}}"  placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
+                                    <label for="req-name">เงินโอน</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            F4
+                                        </span>
+                                        <input type="number" id="TransferPayment" name="Payment[1].TotalAmount" tabindex="2" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="เงินโอน...." {{if .RetPayCount}} value="{{(index .m.Payment 1).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" tabindex="-1" onclick="GetAllTotalToCash('TransferPayment')" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">ธนาคาร</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-bank"></i>
+                                        </span>
+                                        <input type="text" id="Payment[1].Remark" name="Payment[1].Remark" tabindex="3" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Remark}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">เลขที่บัญชี</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-clone"></i>
+                                        </span>
+                                        <input type="text" id="Payment[1].Number" name="Payment[1].Number" tabindex="4" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="เลขที่บัญชี...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Number}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 1).PayDate}}
+                                        <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="5" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 1).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        /> {{end}} {{else}}
+                                        <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="5" class="form-control"
+                                            value="" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
+                                    <label for="req-name">บัตรเครดิต</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                          F7
+                                        </span>
+                                        <input type="number" id="CreditPayment" name="Payment[2].TotalAmount" tabindex="6" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="บัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" tabindex="-1" onclick="GetAllTotalToCash('CreditPayment')" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">ธนาคาร</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-bank"></i>
+                                        </span>
+                                        <input type="text" id="Payment[2].Remark" name="Payment[2].Remark" tabindex="7" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Remark}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">บัตรเครดิต</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-credit-card"></i>
+                                        </span>
+
+                                        <input type="text" id="Payment[2].Number" name="Payment[2].Number" tabindex="8" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="หมายเลขบัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Number}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 2).PayDate}}
+                                        <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="9" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 2).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        /> {{end}} {{else}}
+                                        <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="9" class="form-control"
+                                            value="{{date .CurrentDate "d-m-Y"}}" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
+                                    <label for="req-name">คูปองส่วนลด</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                           F8
+                                        </span>
+                                        <input type="number" id="CouponPayment" name="Payment[3].TotalAmount" tabindex="10" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คูปองส่วนลด...." {{if .RetPayCount}} value="{{(index .m.Payment 3).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" onclick="GetAllTotalToCash('CouponPayment')" tabindex="-1" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">คำอธิบาย</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-file-text-o"></i>
+                                        </span>
+                                        <input type="text" id="Payment[3].Remark" name="Payment[3].Remark" tabindex="11" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Remark}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">รหัส/เลขที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-circle-o"></i>
+                                        </span>
+
+                                        <input type="text" id="Payment[3].Number" name="Payment[3].Number" tabindex="12" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Number}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 3).PayDate}}
+                                        <input type="text" id="CouponPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="13" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 3).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        /> {{end}} {{else}}
+                                        <input type="text" id="CouponPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="13" class="form-control"
+                                            value="{{date .CurrentDate "d-m-Y"}}" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
+                                    <label for="req-name">อื่นๆ</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            F9
+                                        </span>
+                                        <input type="number" id="OtherPayment" name="Payment[4].TotalAmount" tabindex="14" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="อื่นๆ...." {{if .RetPayCount}} value="{{(index .m.Payment 4).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" onclick="GetAllTotalToCash('OtherPayment')" tabindex="-1" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">คำอธิบาย</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-file-text-o"></i>
+                                        </span>
+                                        <input type="text" id="Payment[4].Remark" name="Payment[4].Remark" tabindex="15" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 4).Remark}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">รหัส/เลขที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-circle-o"></i>
+                                        </span>
+
+                                        <input type="text" id="Payment[4].Number" name="Payment[4].Number" tabindex="16" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 4).Number}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 4).PayDate}}
+                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[4].PayDate" tabindex="17" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 4).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        /> {{end}} {{else}}
+                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[4].PayDate" tabindex="17" class="form-control"
+                                            value="{{date .CurrentDate "d-m-Y"}}" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                    <div class="col-xs-12">
+                                            <label for="req-name">รับเงิน</label>
+                                            <div class="input-group">
+                                                    <input type="number"  name="GetMoney" tabindex="0" id="GetMoney" style="text-align:right" class="form-control input-lg" autocomplete="off" placeholder="รับเงิน">
+                                                        <span class="input-group-btn">
+                                                          <button type="button" class="btn btn-info btn-lg">พอดี [SPACE]</button>
+                                                        </span>
+                                                  </div>  
+
+                                            
+                                    </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                    <div class="col-xs-12">
+                                            <label for="req-name">ทอน</label>
+                                            <input type="number" style="text-align:right" name="ChangeMoney" id="ChangeMoney" disabled class="form-control input-lg" autocomplete="off" placeholder="ทอน">
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="text-align:center;">
+                            <button type="button" class="btn btn-default" tabindex="20" data-dismiss="modal">ยกเลิก [ESC]</button>
+                            <button type="button" class="btn btn-primary" id="submit" tabindex="19">บันทึก [ENTER]</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
         </div>
     </form>
 </section>

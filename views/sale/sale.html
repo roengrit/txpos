@@ -6,7 +6,7 @@
 </style>
 {{end}}
 <style>
-  .header-hide{
+    .header-hide {
         display: none;
     }
 </style>
@@ -22,12 +22,8 @@
     <form action="/sale" autocomplete="off" id="sale-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
         <input type="hidden" id="currentRow" />
-        <input type="hidden" id="MemberID" name="Member.ID" 
-        {{if .m.Member.ID}}
-        value="{{.m.Member.ID}}"
-        {{else}}
-        value="2"
-        {{end}} />
+        <input type="hidden" id="MemberID" name="Member.ID" {{if .m.Member.ID}} value="{{.m.Member.ID}}" {{else}} value="2" {{end}}
+        />
         <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
         <div class="nav-tabs-custom">
@@ -54,10 +50,9 @@
                                             <i class="fa fa-user"></i>
                                         </span>
                                         <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ลูกค้า...."
-                                            value="{{.m.MemberName}}" 
-                                            {{.r }} />
-                                        <span class="input-group-addon" onclick="headerShow()" style="cursor:pointer;" >
-                                                <i class="fa fa-caret-down"></i>
+                                            value="{{.m.MemberName}}" {{.r }} />
+                                        <span class="input-group-addon" onclick="headerShow()" style="cursor:pointer;">
+                                            <i class="fa fa-caret-down"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -68,9 +63,14 @@
                                             <i class="fa fa-bell-o"></i>
                                         </span>
                                         {{if .m.Active}}
-                                        <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{else}} {{if .m.DocNo}}
-                                        <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="C" readonly /> {{else}}
-                                        <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> {{end}} {{end}}
+                                             <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> 
+                                        {{else}}
+                                            {{if .m.DocNo}}
+                                              <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="C" readonly /> 
+                                            {{else}}
+                                              <input type="text" id="Active" tabindex="1" class="form-control" autocomplete="off" value="N" readonly /> 
+                                            {{end}} 
+                                        {{end}}
                                     </div>
                                 </div>
                             </div>
@@ -78,84 +78,77 @@
                                 <div class="col-xs-4">
                                     <label for="req-name">เบอร์โทรศัพท์</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-phone"></i>
                                         </span>
                                         <input type="text" id="Tel" name="Tel" tabindex="0" class="form-control" autocomplete="off" placeholder="เบอร์โทรศัพท์...."
-                                            value="{{.m.Tel}}" 
-                                            {{.r }} />
+                                            value="{{.m.Tel}}" {{.r }} />
                                     </div>
-                                </div>  
+                                </div>
                                 <div class="col-xs-4">
                                     <label for="req-name">โทรสาร</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-fax"></i>
                                         </span>
-                                        <input type="text" id="Fax" name="Fax" tabindex="0" class="form-control" autocomplete="off" placeholder="โทรสาร...."
-                                            value="{{.m.Fax}}" 
+                                        <input type="text" id="Fax" name="Fax" tabindex="0" class="form-control" autocomplete="off" placeholder="โทรสาร...." value="{{.m.Fax}}"
                                             {{.r }} />
                                     </div>
-                                </div>  
+                                </div>
                                 <div class="col-xs-4">
                                     <label for="req-name">อีเมล</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa  fa-envelope-o"></i>
                                         </span>
-                                        <input type="text" id="Email" name="Email" tabindex="0" class="form-control" autocomplete="off" placeholder="อีเมล...."
-                                            value="{{.m.Email}}" 
+                                        <input type="text" id="Email" name="Email" tabindex="0" class="form-control" autocomplete="off" placeholder="อีเมล...." value="{{.m.Email}}"
                                             {{.r }} />
                                     </div>
-                                </div>                              
+                                </div>
                             </div>
                             <div class="form-group req-box-form head header-hide">
                                 <div class="col-xs-6">
                                     <label for="req-name">ที่อยู่</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-home"></i>
                                         </span>
                                         <input type="text" id="Address" name="Address" tabindex="0" class="form-control" autocomplete="off" placeholder="ที่อยู่...."
-                                            value="{{.m.Address}}" 
-                                            {{.r }} />
+                                            value="{{.m.Address}}" {{.r }} />
                                     </div>
-                                </div>  
+                                </div>
                                 <div class="col-xs-6">
                                     <label for="req-name">เลขประจำตัวผู้เสียภาษี</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;" >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa  fa-ellipsis-h"></i>
                                         </span>
                                         <input type="text" id="TaxNo" name="TaxNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขประจำตัวผู้เสียภาษี...."
-                                            value="{{.m.TaxNo}}" 
-                                            {{.r }} />
+                                            value="{{.m.TaxNo}}" {{.r }} />
                                     </div>
-                                </div>                              
+                                </div>
                             </div>
                             <div class="form-group req-box-form head header-hide">
                                 <div class="col-xs-6">
                                     <label for="req-name">เลขที่สาขา</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-book"></i>
                                         </span>
                                         <input type="text" id="BranchNo" name="BranchNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขที่สาขา...."
-                                            value="{{.m.BranchNo}}" 
-                                            {{.r }} />
+                                            value="{{.m.BranchNo}}" {{.r }} />
                                     </div>
-                                </div>  
+                                </div>
                                 <div class="col-xs-6">
                                     <label for="req-name">ชื่อสาขา</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" style="cursor:pointer;"  >
+                                        <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa  fa-file-text"></i>
                                         </span>
                                         <input type="text" id="BranchName" name="BranchName" tabindex="0" class="form-control" autocomplete="off" placeholder="ชื่อสาขา...."
-                                            value="{{.m.BranchName}}" 
-                                            {{.r }} />
+                                            value="{{.m.BranchName}}" {{.r }} />
                                     </div>
-                                </div>                              
+                                </div>
                             </div>
                             <div class="form-group req-box-form head">
                                 <div class="col-xs-3">
@@ -201,14 +194,14 @@
                                         <span class="input-group-addon">
                                             <i class="fa  fa-file-text-o"></i>
                                         </span>
-                                        <select id="DocType" name="DocType"  style="display:none;"  class="form-control">
-                                               <option value="0" selected="selected" >  </option>
-                                        </select>   
-                                        <select id="Channel" name="Channel.ID"   class="form-control province">
-                                                {{range $key, $val := .Channel}}
-                                                    <option value="{{$val.ID}}" > {{$val.Name}} </option>
-                                                {{end}}   
-                                        </select>   
+                                        <select id="DocType" name="DocType" style="display:none;" class="form-control">
+                                            <option value="0" selected="selected"> </option>
+                                        </select>
+                                        <select id="Channel" name="Channel.ID" class="form-control province">
+                                            {{range $key, $val := .Channel}}
+                                            <option value="{{$val.ID}}"> {{$val.Name}} </option>
+                                            {{end}}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-xs-4">
@@ -363,11 +356,11 @@
                         <div class="box-footer">
                             {{if .r}} {{else}}
                             <button type="submit" onclick="Save()" class="btn btn-primary pull-right">บันทึก</button>
+                            {{end}} {{if .m.DocNo}}
+                            <a href="/sale/print/?id={{.m.ID}}&po=1" target="_blank" class="btn btn-default pull-right" style="margin-right:5px;">พิมพ์</a>
                             {{end}}
-                            {{if .m.DocNo}}
-                               <a href="/sale/print/?id={{.m.ID}}&po=1" target="_blank" class="btn btn-default pull-right" style="margin-right:5px;">พิมพ์</a>
-                            {{end}}
-                            <a href="/sale/list" style="margin-top:7px;margin-right:5px" class="pull-right"><<<ย้อนกลับ</a>
+                            <a href="/sale/list" style="margin-top:7px;margin-right:5px" class="pull-right">
+                                <<<ย้อนกลับ</a>
                         </div>
                     </div>
                 </div>
@@ -391,46 +384,43 @@
                                 </div>
                             </div>
                             <div class="form-group req-box-form head">
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">เงินสด</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-dollar"></i>
                                         </span>
                                         <input type="number" id="CashPayment" name="Payment[0].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}   placeholder="เงินสด...." {{if .RetPayCount}} value="{{(index .m.Payment 0).TotalAmount}}"
+                                            {{.r }} placeholder="เงินสด...." {{if .RetPayCount}} value="{{(index .m.Payment 0).TotalAmount}}"
                                             {{end}} />
                                         <span class="input-group-btn " style="cursor:pointer;">
-                                            <button type="button"  onclick="GetAllTotalToCash('CashPayment')" class="btn btn-success btn-flat">พอดี</button>
+                                            <button type="button" onclick="GetAllTotalToCash('CashPayment')" class="btn btn-success btn-flat">พอดี</button>
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">วันที่</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-calculator"></i>
                                         </span>
-                                        {{if .RetPayCount}} 
-                                             {{if (index .m.Payment 0).PayDate}}
+                                        {{if .RetPayCount}} {{if (index .m.Payment 0).PayDate}}
                                         <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" value='{{date (index .m.Payment 0).PayDate "d-m-Y"}}'
-                                            {{.r }} placeholder="วันที่...." /> 
-                                            {{end}} 
-                                        {{else}}
-                                        <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" {{.r}} placeholder="วันที่...." /> 
-                                        {{end}}
+                                            {{.r }} placeholder="วันที่...." /> {{end}} {{else}}
+                                        <input type="text" id="CashPayDate" data-date-language="th" name="Payment[0].PayDate" tabindex="2" class="form-control" {{.r}}
+                                            placeholder="วันที่...." /> {{end}}
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group req-box-form head">
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">เงินโอน</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-dollar"></i>
                                         </span>
                                         <input type="number" id="TransferPayment" name="Payment[1].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }} placeholder="เงินโอน...." {{if .RetPayCount}} value="{{(index .m.Payment 1).TotalAmount}}"
+                                            {{.r }} placeholder="เงินโอน...." {{if .RetPayCount}} value="{{(index .m.Payment 1).TotalAmount}}"
                                             {{end}} />
                                         <span class="input-group-btn " style="cursor:pointer;">
                                             <button type="button" onclick="GetAllTotalToCash('TransferPayment')" class="btn btn-success btn-flat">พอดี</button>
@@ -444,22 +434,22 @@
                                             <i class="fa fa-bank"></i>
                                         </span>
                                         <input type="text" id="Payment[1].Remark" name="Payment[1].Remark" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Remark}}"
+                                            {{.r }} placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Remark}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">เลขที่บัญชี</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-clone"></i>
                                         </span>
                                         <input type="text" id="Payment[1].Number" name="Payment[1].Number" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="เลขที่บัญชี...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Number}}"
+                                            {{.r }} placeholder="เลขที่บัญชี...." {{if .RetPayCount}} value="{{(index .m.Payment 1).Number}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">วันที่</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
@@ -467,7 +457,7 @@
                                         </span>
                                         {{if .RetPayCount}} {{if (index .m.Payment 1).PayDate}}
                                         <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="2" class="form-control"
-                                        {{.r }}  value='{{date (index .m.Payment 1).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                            {{.r }} value='{{date (index .m.Payment 1).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
                                         /> {{end}} {{else}}
                                         <input type="text" id="TransferPayDate" data-date-language="th" name="Payment[1].PayDate" tabindex="2" class="form-control"
                                             value="" {{.r }} placeholder="วันที่...." /> {{end}}
@@ -475,14 +465,14 @@
                                 </div>
                             </div>
                             <div class="form-group req-box-form head">
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">บัตรเครดิต</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-dollar"></i>
                                         </span>
                                         <input type="number" id="CreditPayment" name="Payment[2].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="บัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).TotalAmount}}"
+                                            {{.r }} placeholder="บัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).TotalAmount}}"
                                             {{end}} />
                                         <span class="input-group-btn " style="cursor:pointer;">
                                             <button type="button" onclick="GetAllTotalToCash('CreditPayment')" class="btn btn-success btn-flat">พอดี</button>
@@ -496,11 +486,11 @@
                                             <i class="fa fa-bank"></i>
                                         </span>
                                         <input type="text" id="Payment[2].Remark" name="Payment[2].Remark" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}   placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Remark}}"
+                                            {{.r }} placeholder="ธนาคาร...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Remark}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">บัตรเครดิต</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
@@ -508,11 +498,11 @@
                                         </span>
 
                                         <input type="text" id="Payment[2].Number" name="Payment[2].Number" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="หมายเลขบัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Number}}"
+                                            {{.r }} placeholder="หมายเลขบัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).Number}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">วันที่</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
@@ -520,7 +510,7 @@
                                         </span>
                                         {{if .RetPayCount}} {{if (index .m.Payment 2).PayDate}}
                                         <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="2" class="form-control"
-                                        {{.r }}   value='{{date (index .m.Payment 2).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                            {{.r }} value='{{date (index .m.Payment 2).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
                                         /> {{end}} {{else}}
                                         <input type="text" id="CreditPayDate" data-date-language="th" name="Payment[2].PayDate" tabindex="2" class="form-control"
                                             value="" {{.r }} placeholder="วันที่...." /> {{end}}
@@ -528,14 +518,67 @@
                                 </div>
                             </div>
                             <div class="form-group req-box-form head">
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
+                                    <label for="req-name">คูปองส่วนลด</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-dollar"></i>
+                                        </span>
+                                        <input type="number" id="CouponPayment" name="Payment[3].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คูปองส่วนลด...." {{if .RetPayCount}} value="{{(index .m.Payment 3).TotalAmount}}"
+                                            {{end}} />
+                                        <span class="input-group-btn " style="cursor:pointer;">
+                                            <button type="button" onclick="GetAllTotalToCash('CouponPayment')" class="btn btn-success btn-flat">พอดี</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">คำอธิบาย</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-file-text-o"></i>
+                                        </span>
+                                        <input type="text" id="Payment[3].Remark" name="Payment[3].Remark" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Remark}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">รหัส/เลขที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-circle-o"></i>
+                                        </span>
+
+                                        <input type="text" id="Payment[3].Number" name="Payment[3].Number" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Number}}"
+                                            {{end}} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="req-name">วันที่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-calculator"></i>
+                                        </span>
+                                        {{if .RetPayCount}} {{if (index .m.Payment 3).PayDate}}
+                                        <input type="text" id="CouponPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 3).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        /> {{end}} {{else}}
+                                        <input type="text" id="CouponPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
+                                            value="" {{.r }} placeholder="วันที่...." /> {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-3">
                                     <label for="req-name">อื่นๆ</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-dollar"></i>
                                         </span>
-                                        <input type="number" id="OtherPayment" name="Payment[3].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="อื่นๆ...." {{if .RetPayCount}} value="{{(index .m.Payment 3).TotalAmount}}"
+                                        <input type="number" id="OtherPayment" name="Payment[4].TotalAmount" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="อื่นๆ...." {{if .RetPayCount}} value="{{(index .m.Payment 4).TotalAmount}}"
                                             {{end}} />
                                         <span class="input-group-btn " style="cursor:pointer;">
                                             <button type="button" onclick="GetAllTotalToCash('OtherPayment')" class="btn btn-success btn-flat">พอดี</button>
@@ -548,34 +591,34 @@
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa  fa-file-text-o"></i>
                                         </span>
-                                        <input type="text" id="Payment[3].Remark" name="Payment[3].Remark" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}  placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Remark}}"
+                                        <input type="text" id="Payment[4].Remark" name="Payment[4].Remark" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="คำอธิบาย...." {{if .RetPayCount}} value="{{(index .m.Payment 4).Remark}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">รหัส/เลขที่</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa  fa-circle-o"></i>
                                         </span>
 
-                                        <input type="text" id="Payment[3].Number" name="Payment[3].Number" tabindex="0" class="form-control " autocomplete="off"
-                                        {{.r }}   placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 3).Number}}"
+                                        <input type="text" id="Payment[4].Number" name="Payment[4].Number" tabindex="0" class="form-control " autocomplete="off"
+                                            {{.r }} placeholder="รหัส/เลขที่...." {{if .RetPayCount}} value="{{(index .m.Payment 4).Number}}"
                                             {{end}} />
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-3">
                                     <label for="req-name">วันที่</label>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="cursor:pointer;">
                                             <i class="fa fa-calculator"></i>
                                         </span>
-                                        {{if .RetPayCount}} {{if (index .m.Payment 3).PayDate}}
-                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
-                                        {{.r }}  value='{{date (index .m.Payment 3).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
+                                        {{if .RetPayCount}} {{if (index .m.Payment 4).PayDate}}
+                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[4].PayDate" tabindex="2" class="form-control"
+                                            {{.r }} value='{{date (index .m.Payment 4).PayDate "d-m-Y"}}' {{.r }} placeholder="วันที่...."
                                         /> {{end}} {{else}}
-                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[3].PayDate" tabindex="2" class="form-control"
+                                        <input type="text" id="OtherPayDate" data-date-language="th" name="Payment[4].PayDate" tabindex="2" class="form-control"
                                             value="" {{.r }} placeholder="วันที่...." /> {{end}}
                                     </div>
                                 </div>
@@ -603,21 +646,20 @@
                                         {{if .m.SendDate}}
                                         <input type="text" id="SendDate" data-date-language="th" name="SendDate" tabindex="2" class="form-control" value='{{date .m.SendDate "d-m-Y"}}'
                                             {{.r }} placeholder="วันที่...." /> {{else}}
-                                        <input type="text" id="SendDate" data-date-language="th" name="SendDate" tabindex="2" class="form-control" value=""
-                                            {{.r }} placeholder="วันที่...." /> {{end}}
+                                        <input type="text" id="SendDate" data-date-language="th" name="SendDate" tabindex="2" class="form-control" value="" {{.r }} placeholder="วันที่...." /> {{end}}
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="col-xs-3">
-                                        <label for="req-sn">เวลาที่</label>
-                                        <div class="input-group bootstrap-timepicker timepicker">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </span>
-                                            {{if .m.SendTime}}
-                                            <input type="text" id="SendTime" name="SendTime" class="form-control" value='{{.m.SendTime}}' {{.r }} /> {{else}}
-                                            <input type="text" id="SendTime" name="SendTime" class="form-control" value='' {{.r }} /> {{end}}
-                                        </div>
-                                </div>                             
+                                    <label for="req-sn">เวลาที่</label>
+                                    <div class="input-group bootstrap-timepicker timepicker">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </span>
+                                        {{if .m.SendTime}}
+                                        <input type="text" id="SendTime" name="SendTime" class="form-control" value='{{.m.SendTime}}' {{.r }} /> {{else}}
+                                        <input type="text" id="SendTime" name="SendTime" class="form-control" value='' {{.r }} /> {{end}}
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group req-box-form">
                                 <div class="col-xs-12">
@@ -629,10 +671,10 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                                <a href="/sale/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
-                                {{if .r}} {{else}}
-                                <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
-                                {{end}}
+                            <a href="/sale/list" class="btn btn-default" style="margin-right:5px;">ยกเลิก</a>
+                            {{if .r}} {{else}}
+                            <button type="submit" onclick="Save()" class="btn btn-primary">บันทึก</button>
+                            {{end}}
                         </div>
                     </div>
                 </div>

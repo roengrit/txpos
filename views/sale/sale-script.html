@@ -37,6 +37,9 @@
         if($('#SendDate').val()=='01-01-0001'){
             $('#SendDate').val('')
         }
+        if($('#CouponPayDate').val()=='01-01-0001'){
+            $('#CouponPayDate').val('')
+        }
 
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
@@ -181,7 +184,7 @@
             format: 'dd-mm-yyyy',
         });
 
-        $('#CashPayDate,#TransferPayDate,#CreditPayDate,#CreditDate,#OtherPayDate,#SendDate').datepicker({
+        $('#CashPayDate,#TransferPayDate,#CreditPayDate,#CreditDate,#OtherPayDate,#SendDate,#CouponPayDate').datepicker({
             autoclose: true,
             language: 'th',
             todayBtn: true,

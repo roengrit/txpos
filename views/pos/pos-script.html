@@ -1,0 +1,127 @@
+<script src="/static/js/datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/static/js/datepicker/locales/bootstrap-datepicker.th.min.js" charset="UTF-8"></script>
+<script src="/static/js/bootstrap-typeahead.js" charset="UTF-8"></script>
+<script>
+    var globalVatVal = parseFloat('{{.VatVal}}');
+    $(document).ready(function () {
+
+        $("#DocType").val('{{.m.DocType}}'.trim());
+        if ($("#DocType").val() == '' || $("#DocType").val() == null) {
+            $("#DocType").val($("#DocType option:first").val());
+        }
+
+        $("#Channel").val('{{.m.Channel.ID}}'.trim());
+        if ($("#Channel").val() == '' || $("#Channel").val() == null) {
+            $("#Channel").val($("#Channel option:first").val());
+        }
+
+        $("#VatType").val('{{.m.VatType}}'.trim());
+        if ($("#VatType").val() == '' || $("#VatType").val() == null) {
+            $("#VatType").val($("#VatType option:first").val());
+        }
+
+        if ($('#CashPayDate').val() == '01-01-0001') {
+            $('#CashPayDate').val('')
+        }
+        if ($('#TransferPayDate').val() == '01-01-0001') {
+            $('#TransferPayDate').val('')
+        }
+        if ($('#CreditPayDate').val() == '01-01-0001') {
+            $('#CreditPayDate').val('')
+        }
+        if ($('#OtherPayDate').val() == '01-01-0001') {
+            $('#OtherPayDate').val('')
+        }
+        if ($('#CouponPayDate').val() == '01-01-0001') {
+            $('#CouponPayDate').val('')
+        }
+        $('#CashPayDate,#TransferPayDate,#CreditPayDate,#CreditDate,#OtherPayDate,#SendDate,#CouponPayDate').datepicker({
+            autoclose: true,
+            language: 'th',
+            todayBtn: true,
+            orientation: "auto",
+            todayHighlight: true,
+            format: 'dd-mm-yyyy',
+        });
+
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+            if(event.keyCode == 113){ //F2
+                if ($('#modal-default').is(':visible')) {
+                    $('#CashPayment').focus();
+                } else {
+                    $('#Barcode').focus();
+                }
+            }
+            if(event.keyCode == 115){ //F4
+                if ($('#modal-default').is(':visible')) {
+                    $('#TransferPayment').focus();
+                } else {
+                    //สมาชิก
+                }
+            }
+            if(event.keyCode == 118){ //F7
+                if ($('#modal-default').is(':visible')) {
+                    $('#CreditPayment').focus();
+                } else {
+                    //พักบิล
+                }
+            }
+            if(event.keyCode == 119){ //F8
+                if ($('#modal-default').is(':visible')) {
+                    $('#CouponPayment').focus();
+                } else {
+                    //ยกเลิกการขาย
+                }
+            }
+            if(event.keyCode == 120){ //F9
+                if ($('#modal-default').is(':visible')) {
+                    $('#OtherPayment').focus();
+                } else {
+                   ///ส่วนลด
+                }
+            }              
+        });
+
+        $('#Barcode').keydown(function(event){
+            if(event.keyCode == 13){ 
+              if($('#Barcode').val()=="...."){
+                  $('#Remark').focus();
+                  $('#Barcode').val('');
+              }
+              if($('#Barcode').val()=="*99"){
+                  $('#Barcode').val('');
+                  $('#GetMoney').focus();
+                  $('#PayMoney').trigger("click");
+              }
+            } 
+        });
+
+        $( "#modal-default" ).on('shown.bs.modal', function(){
+            $('#GetMoney').focus();
+        });
+
+        $('#GetMoney').keydown(function(event){
+            if(event.keyCode == 32){ 
+                console.log("AAA");
+                $('#GetMoney').val('10000')
+            }
+        });
+
+        $('#PayMoney').click(function(event){
+            $('#GetMoney').focus();
+        });
+
+        $('#modal-default').keydown(function(event){
+            if(event.keyCode == 13){ 
+                console.log("SAVE");
+            }
+        });
+        $('.delete-sale-item').click(function(){
+           $(this).parent().parent().remove();
+        })
+    });
+</script>
