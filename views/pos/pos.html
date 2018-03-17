@@ -15,9 +15,30 @@
         min-height: 100%;
         border-radius: 0;
     }
+    
+    .header-hide,.customer-hide {
+        display: none;
+    }
 </style>
 <section class="content">
     <form action="/pos" autocomplete="off" id="pickup-form" onsubmit="return false;" method="post">
+        {{ .xsrfdata }}
+
+        <input type="hidden" id="currentRow" />
+        <input type="hidden" id="MemberID" name="Member.ID" 
+        {{if .m.Member.ID}} value="{{.m.Member.ID}}" {{else}} value="2" {{end}} />
+        <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
+        <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
+        <input type="hidden" id="DocType" name="DocType"  value="0" />
+        <input type="hidden" id="Channel.ID" name="Channel.ID"  value="1" />
+        <input type="hidden" id="IsPos" name="IsPos"  value="1" />
+        <input type="hidden" id="SaleType" name="SaleType"  value="0" />
+        <input type="hidden" id="VatType" name="VatType"  value="1" />
+        <input type="hidden" name="TotalAmount" id="TotalAmount" value="{{.m.TotalAmount}}" />
+        <input type="hidden" name="TotalDiscount" id="TotalDiscount" value="{{.m.TotalDiscount}}" />
+        <input type="hidden" name="TotalAmountExludeVat" id="TotalAmountExludeVat" value="{{.m.TotalAmountExludeVat}}" />
+        <input type="hidden" name="VatVal" id="VatVal" value="{{.m.VatVal}}" />
+
         <div class="row">
             <div class="col-sm-8 col-xs-12">
                 <div class="col-sm-12 col-xs-12" style="margin:0; padding:0;">
@@ -36,80 +57,60 @@
                     <h4 class="pull-left">
                         <span id="box-count-items-text" class="text-size-25">5</span> รายการ </h4>
                     <div class="pull-right" style="margin-bottom:15px;">
-                        <button type="button" id="btn-new-customer-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;"
-                            data-toggle="modal" data-target="#addcustomerModal">
-                            <i class="fa fa-user-plus text-aqua" aria-hidden="true"></i> ลูกค้า</button>
+                        <button type="button" id="btn-customer-set" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;"
+                            data-toggle="modal" data-target="#modal-customer">
+                            <i class="fa fa-user-plus" aria-hidden="true"></i> ลูกค้า</button>
                         <button type="button" id="btn-hold-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;">
                             <i class="fa fa-hourglass-end" aria-hidden="true"></i> พักขาย</button>
                         <button type="button" id="btn-cancel-sale" class="btn btn-default bg-white btn-sm" style="font-size: 19px !important;">
                             <i class="fa fa-ban text-red" aria-hidden="true"></i> ยกเลิก</button>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="box box-primary direct-chat direct-chat-primary" id="box-saleList">
-                        <div id="box-sale-pos-customer" class="box-header with-border" style="padding-left: 10px; padding-right: 10px; display: block;">
-                            <input type="hidden" id="hid-customer-id" value="1">
+                    <div class="box box-primary direct-chat direct-chat-primary"  >
+                        <div  class="box-header with-border" style="padding-left: 10px; padding-right: 10px; display: block;">
                             <i class="fa fa-user text-muted" aria-hidden="true"></i>
                             <span class="text-green">
-                                <b id="box-sale-pos-customer-name">ROENGRIT MOONCHAI</b>
+                                <b id="customer-name">{{.m.MemberName}}</b>
                             </span>
-                            <a href="javascript:;" class="text-muted pull-right" id="btn-remove-customer-sale" title="Delete">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            <a href="javascript:void(0);" class="text-muted pull-right" id="btn-remove-customer" title="ลบข้อมูลลูกค้าออกจากบิล">
+                                <i class="fa fa-trash"  ></i>
                             </a>
                         </div>
                         <div class="box-body">
-                            <div id="box-sale-pos" class="direct-chat-messages product-list-pos" style="height:700px;">
-                                <table id="RetData" class="table">
-                                    <tbody>
-                                        <tr>
-                                            <td id="tdclick_pos_sale5" width="7%" class="text-center" valign="middle">
-                                                1522001
-                                            </td>
-                                            <td width="63%" valign="middle">
-                                                <span style="cursor:pointer;">ตัวอย่างสินค้า Let's Relax Onsen Thong lor</span>
-                                                <span id="cart-option-overstock5" style="color:#FF0000;"></span>
-                                            </td>
-                                            <td width="5%" class="text-right change-price" valign="middle">
-                                                <span>4,180.00</span>
-                                            </td>
-                                            <td width="15%" class="text-right change-price" valign="middle">
-                                                <span>4,180.00</span>
-                                            </td>
+                            <div  class="direct-chat-messages" style="height:700px;font-size: 16px !important;">
+                                <table class="table">
+                                    <tbody  id="RetData">
+                                        {{if .RetCount}} {{range $key, $val := .m.SaleSub}}
+                                        <tr style="cursor: pointer;" index-val="{{$key}}">
+                                            <input type="hidden" class="ProductId" name="SaleSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
+                                            <input type="hidden" class="ProductCode" name="SaleSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" />
+                                            <input type="hidden" class="ProductName" name="SaleSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />
+                                            <input type="hidden" class="ProductUnitID" name="SaleSub[{{$key}}].Unit.ID" value="{{$val.Unit.ID}}" />
+                                            <input type="hidden" class="ProductQty" name="SaleSub[{{$key}}].Qty" value="{{$val.Qty}}" />
+                                            <input type="hidden" class="ProductPrice" name="SaleSub[{{$key}}].Price" value="{{$val.Price}}" />
+                                            <input type="hidden" class="ProductVatVal" name="SaleSub[{{$key}}].VatVal" value="{{$val.VatVal}}" />
+                                            <input type="hidden" class="ProductDiscount" name="SaleSub[{{$key}}].DiscountWord" value="{{$val.DiscountWord}}" />
+                                            <input type="hidden" class="ProductDiscountVal" name="SaleSub[{{$key}}].DiscountVal" value="{{$val.DiscountVal}}" />
+                                            <input type="hidden" class="ProductTotalPrice" name="SaleSub[{{$key}}].TotalPrice" value="{{$val.TotalPrice}}" />
+                                            <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[{{$key}}].TotalPriceExludeVat" value="{{$val.TotalPriceExludeVat}}"
+                                            />
+                                            <td width="10%" valign="middle" class="ProductCodeText">{{$val.Product.Code}}</td>
+                                            <td width="50%" valign="middle" class="ProductNameText">{{$val.Product.Name}}</td>
+                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductQtyText">{{$val.Qty | ThCommaSeperate }}</td>
+                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductPriceText">{{$val.Price | ThCommaSeperate }}</td>
+                                            <td style="display:none;" class="ProductDiscountText">{{$val.DiscountWord | TextThCommaAndPercentSeperate }}</td>
+                                            <td width="15%" class="text-right change-price" valign="middle" class="ProductTotalPriceText">{{$val.TotalPrice | ThCommaSeperate }}</td>
                                             <td width="5%" class="text-right" style="width:5%;" valign="middle">
-                                                <a href="javascript:;" class="delete-sale-item" data-id="7">
-                                                    <nobr>&nbsp;
-                                                        <i class="fa fa-times" style="color:red;"></i>
-                                                    </nobr>
-                                                </a>
-                                                <input type="hidden" name="sale_product_item[]" value="5" class="sale_product_item">
-                                                <input type="hidden" name="sale_product_amount5" id="sale_product_amount5" value="2">
-                                                <input type="hidden" name="sale_product_price5" id="sale_product_price5" value="4180">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                                <td id="tdclick_pos_sale5" width="7%" class="text-center" valign="middle">
-                                                    1522001
-                                                </td>
-                                                <td width="63%" valign="middle">
-                                                    <span style="cursor:pointer;">ตัวอย่างสินค้า Let's Relax Onsen Thong lor</span>
-                                                    <span id="cart-option-overstock5" style="color:#FF0000;"></span>
-                                                </td>
-                                                <td width="5%" class="text-right change-price" valign="middle">
-                                                    <span>4,180.00</span>
-                                                </td>
-                                                <td width="15%" class="text-right change-price" valign="middle">
-                                                    <span>4,180.00</span>
-                                                </td>
-                                                <td width="5%" class="text-right" style="width:5%;" valign="middle">
                                                     <a href="javascript:;" class="delete-sale-item" data-id="7">
                                                         <nobr>&nbsp;
                                                             <i class="fa fa-times" style="color:red;"></i>
                                                         </nobr>
                                                     </a>
-                                                    <input type="hidden" name="sale_product_item[]" value="5" class="sale_product_item">
-                                                    <input type="hidden" name="sale_product_amount5" id="sale_product_amount5" value="2">
-                                                    <input type="hidden" name="sale_product_price5" id="sale_product_price5" value="4180">
-                                                </td>
-                                            </tr>
+                                            </td>
+                                        </tr>
+                                        {{end}} {{end}}
+
+                                         
                                     </tbody>
                                 </table>
                             </div>
@@ -120,42 +121,38 @@
             <div class="col-sm-4 col-xs-12">
                 <div class="box box-primary direct-chat direct-chat-primary" id="box-saleList">
                     <div class="box-footer" style="font-weight:bold;">
-                        <span>ยอดรวม</span>
-                        <span class="pull-right" id="box-sale-pos-subtotal">147,920.00</span>
+                        
                     </div>
                     <div class="box-footer">
                         <span>ส่วนลด</span>
-                        <span class="pull-right" id="box-sale-pos-discount" style="cursor:pointer; border:1px solid #CCC; padding: 0px 8px 0px 8px;">0.00</span>
+                        <span class="pull-right" id="TotalDiscountText" style="cursor:pointer; border:1px solid #CCC; padding: 0px 8px 0px 8px;">
+                            {{if.m.TotalDiscount}} {{.m.TotalDiscount | ThCommaSeperate}} {{else}} 0.00 {{end}}
+                        </span>
                     </div>
                     <span>
                         <div class="box-footer">
                             <span>ราคาก่อนภาษี</span>
-                            <span class="pull-right" id="box-sale-pos-befortax">138,383.18</span>
+                            <span class="pull-right" id="TotalAmountExcludeVatText">0.00</span>
                         </div>
                         <div class="box-footer">
                             <span class="pull-left">
                                 ภาษีมูลค่าเพิ่ม
-                                <span id="sale_vat_tax" style="cursor:pointer;">(7.00%)</span>
-                                <span id="sale_vat_tax_change" class="input-group" style="display:none; margin-top:5px;">
-                                    <input type="text" id="sale_change_tax" name="sale_change_tax" class="form-control input-sm" onkeypress="Sale.onlyNumbersEnter(event)"
-                                        maxlength="2" style="width:50px; text-align:center;">
-                                    <button type="button" id="btn-sale-change-tax" class="btn btn-primary btn-sm waves-effect">บันทึก</button>
-                                </span>
+                                <span id="sale_vat_tax" style="cursor:pointer;">({{.VatVal}} %)</span>
+                                 
                             </span>
-                            <span class="pull-right" id="box-sale-pos-tax">9,686.82</span>
+                            <span class="pull-right" id="TotalVatValText">0.00</span>
                         </div>
                     </span>
                     <div class="box-footer" style="font-weight:bold; color:#00F;">
                         <span>ยอดรวมสุทธิ</span>
-                        <span class="pull-right" id="box-sale-pos-total">148,070.00</span>
-                        <input type="hidden" id="hidden-sale-pos-total" value="148070">
+                        <span class="pull-right" id="TotalAmountText">0.00</span>
                     </div>
 
                     <div class="box-footer">
                         <div class="col-xs-12" style="padding:0px; margin:0px;">
                             <span class="pull-left">หมายเหตุ</span>
-                            <textarea class="form-control pull-right" id="Remark" style="border-radius:0px;   font-weight:bold; width:100%; height:45px; "
-                                rows="3" placeholder="หมายเหตุ..."> </textarea>
+                            <textarea class="form-control pull-right" id="Remark" name="Remark" style="border-radius:0px;   font-weight:bold; width:100%; height:45px; "
+                                rows="3" placeholder="หมายเหตุ...">{{.m.Remark}}</textarea>
                         </div>
                     </div>
                     <div class="box-footer">
@@ -173,10 +170,10 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">ชำระเงิน [กด Tab เพื่อเลื่อนไปช่องถัดไป]</h4>
+                            <h4 class="modal-title">ชำระเงิน [กด Tab เพื่อเลื่อนไปช่องถัดไป | กด F2 เพื่อแสดงชำระเงินรูปแบบอื่นๆ]  </h4>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form header-hide">
                                 <div class="col-xs-3">
                                     <label for="req-name">เงินสด</label>
                                     <div class="input-group">
@@ -186,9 +183,6 @@
                                         <input type="number" id="CashPayment" name="Payment[0].TotalAmount" tabindex="2" class="form-control " autocomplete="off"
                                             {{.r }} placeholder="เงินสด...." {{if .RetPayCount}} value="{{(index .m.Payment 0).TotalAmount}}"
                                             {{end}} />
-                                        <span class="input-group-btn " style="cursor:pointer;">
-                                            <button tabindex="-1" type="button" onclick="GetAllTotalToCash('CashPayment')" class="btn btn-success btn-flat">พอดี</button>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -205,7 +199,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form header-hide">
                                 <div class="col-xs-3">
                                     <label for="req-name">เงินโอน</label>
                                     <div class="input-group">
@@ -215,9 +209,6 @@
                                         <input type="number" id="TransferPayment" name="Payment[1].TotalAmount" tabindex="2" class="form-control " autocomplete="off"
                                             {{.r }} placeholder="เงินโอน...." {{if .RetPayCount}} value="{{(index .m.Payment 1).TotalAmount}}"
                                             {{end}} />
-                                        <span class="input-group-btn " style="cursor:pointer;">
-                                            <button type="button" tabindex="-1" onclick="GetAllTotalToCash('TransferPayment')" class="btn btn-success btn-flat">พอดี</button>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -257,7 +248,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form header-hide">
                                 <div class="col-xs-3">
                                     <label for="req-name">บัตรเครดิต</label>
                                     <div class="input-group">
@@ -267,9 +258,6 @@
                                         <input type="number" id="CreditPayment" name="Payment[2].TotalAmount" tabindex="6" class="form-control " autocomplete="off"
                                             {{.r }} placeholder="บัตรเครดิต...." {{if .RetPayCount}} value="{{(index .m.Payment 2).TotalAmount}}"
                                             {{end}} />
-                                        <span class="input-group-btn " style="cursor:pointer;">
-                                            <button type="button" tabindex="-1" onclick="GetAllTotalToCash('CreditPayment')" class="btn btn-success btn-flat">พอดี</button>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -310,7 +298,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form header-hide">
                                 <div class="col-xs-3">
                                     <label for="req-name">คูปองส่วนลด</label>
                                     <div class="input-group">
@@ -320,9 +308,6 @@
                                         <input type="number" id="CouponPayment" name="Payment[3].TotalAmount" tabindex="10" class="form-control " autocomplete="off"
                                             {{.r }} placeholder="คูปองส่วนลด...." {{if .RetPayCount}} value="{{(index .m.Payment 3).TotalAmount}}"
                                             {{end}} />
-                                        <span class="input-group-btn " style="cursor:pointer;">
-                                            <button type="button" onclick="GetAllTotalToCash('CouponPayment')" tabindex="-1" class="btn btn-success btn-flat">พอดี</button>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -363,7 +348,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form header-hide">
                                 <div class="col-xs-3">
                                     <label for="req-name">อื่นๆ</label>
                                     <div class="input-group">
@@ -373,9 +358,6 @@
                                         <input type="number" id="OtherPayment" name="Payment[4].TotalAmount" tabindex="14" class="form-control " autocomplete="off"
                                             {{.r }} placeholder="อื่นๆ...." {{if .RetPayCount}} value="{{(index .m.Payment 4).TotalAmount}}"
                                             {{end}} />
-                                        <span class="input-group-btn " style="cursor:pointer;">
-                                            <button type="button" onclick="GetAllTotalToCash('OtherPayment')" tabindex="-1" class="btn btn-success btn-flat">พอดี</button>
-                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -416,11 +398,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form ">
                                     <div class="col-xs-12">
                                             <label for="req-name">รับเงิน</label>
                                             <div class="input-group">
-                                                    <input type="number"  name="GetMoney" tabindex="0" id="GetMoney" style="text-align:right" class="form-control input-lg" autocomplete="off" placeholder="รับเงิน">
+                                                    <input type="number"  name="GetMoney" tabindex="19" id="GetMoney" style="text-align:right" class="form-control input-lg" autocomplete="off" placeholder="รับเงิน">
                                                         <span class="input-group-btn">
                                                           <button type="button" class="btn btn-info btn-lg">พอดี [SPACE]</button>
                                                         </span>
@@ -429,7 +411,7 @@
                                             
                                     </div>
                             </div>
-                            <div class="form-group req-box-form head">
+                            <div class="form-group req-box-form ">
                                     <div class="col-xs-12">
                                             <label for="req-name">ทอน</label>
                                             <input type="number" style="text-align:right" name="ChangeMoney" id="ChangeMoney" disabled class="form-control input-lg" autocomplete="off" placeholder="ทอน">
@@ -437,8 +419,8 @@
                             </div>
                         </div>
                         <div class="modal-footer" style="text-align:center;">
-                            <button type="button" class="btn btn-default" tabindex="20" data-dismiss="modal">ยกเลิก [ESC]</button>
-                            <button type="button" class="btn btn-primary" id="submit" tabindex="19">บันทึก [ENTER]</button>
+                            <button type="button" class="btn btn-default" tabindex="21" data-dismiss="modal">ยกเลิก [ESC]</button>
+                            <button type="button" class="btn btn-primary" id="submit" tabindex="20">บันทึก [ENTER]</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -446,6 +428,149 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
+            <div class="modal fade" id="modal-customer" tabindex='-1'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">ลูกค้า [กด Tab เพื่อเลื่อนไปช่องถัดไป]  | พิมพ์ชื่อลูกค้า หรือกดเลือก จากนั้น กด F2 เพื่อแก้ไขข้อมูลอื่นๆ</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group req-box-form head">
+                                <div class="col-xs-12">
+                                    <label for="req-name">ลูกค้า</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;" onclick="OTC()">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                        <input type="text" id="MemberName" name="MemberName" tabindex="0" class="form-control" autocomplete="off" placeholder="ลูกค้า...."
+                                            value="{{.m.MemberName}}" {{.r }} />
+                                        <span class="input-group-addon" onclick="customerShow()" style="cursor:pointer;">
+                                            <i class="fa fa-caret-down"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form customer-hide ">
+                                <div class="col-xs-4">
+                                    <label for="req-name">เบอร์โทรศัพท์</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                        <input type="text" id="Tel" name="Tel" tabindex="0" class="form-control" autocomplete="off" placeholder="เบอร์โทรศัพท์...."
+                                            value="{{.m.Tel}}" {{.r }} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="req-name">โทรสาร</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-fax"></i>
+                                        </span>
+                                        <input type="text" id="Fax" name="Fax" tabindex="0" class="form-control" autocomplete="off" placeholder="โทรสาร...." value="{{.m.Fax}}"
+                                            {{.r }} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label for="req-name">อีเมล</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-envelope-o"></i>
+                                        </span>
+                                        <input type="text" id="Email" name="Email" tabindex="0" class="form-control" autocomplete="off" placeholder="อีเมล...." value="{{.m.Email}}"
+                                            {{.r }} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form customer-hide ">
+                                <div class="col-xs-6">
+                                    <label for="req-name">ที่อยู่</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-home"></i>
+                                        </span>
+                                        <input type="text" id="Address" name="Address" tabindex="0" class="form-control" autocomplete="off" placeholder="ที่อยู่...."
+                                            value="{{.m.Address}}" {{.r }} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label for="req-name">เลขประจำตัวผู้เสียภาษี</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-ellipsis-h"></i>
+                                        </span>
+                                        <input type="text" id="TaxNo" name="TaxNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขประจำตัวผู้เสียภาษี...."
+                                            value="{{.m.TaxNo}}" {{.r }} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group req-box-form customer-hide ">
+                                <div class="col-xs-6">
+                                    <label for="req-name">เลขที่สาขา</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa fa-book"></i>
+                                        </span>
+                                        <input type="text" id="BranchNo" name="BranchNo" tabindex="0" class="form-control" autocomplete="off" placeholder="เลขที่สาขา...."
+                                            value="{{.m.BranchNo}}" {{.r }} />
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label for="req-name">ชื่อสาขา</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" style="cursor:pointer;">
+                                            <i class="fa  fa-file-text"></i>
+                                        </span>
+                                        <input type="text" id="BranchName" name="BranchName" tabindex="0" class="form-control" autocomplete="off" placeholder="ชื่อสาขา...."
+                                            value="{{.m.BranchName}}" {{.r }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="text-align:center;">
+                            <button type="button" class="btn btn-default" id="removeCustomer" tabindex="20" >ลบลูกค้าออกจากบิล</button>
+                            <button type="button" class="btn btn-primary" id="submitCustomer" tabindex="19">ปิด [ENTER]</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <div class="modal fade" id="modal-discount" tabindex='-1'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">ส่วนลด</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group req-box-form head">
+                                    <div class="col-xs-12">
+                                            <label for="req-name">ส่วนลด</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="cursor:pointer;" >
+                                                    <i class="fa fa-dollar"></i>
+                                                </span>
+                                                <input type="text" class="form-control " id="DiscountWord" value="{{if.m.DiscountWord}}{{.m.DiscountWord | TextThCommaAndPercentSeperate }}{{else}} {{end}}"
+                                                {{.r}}  name="DiscountWord" style="text-align: right;"
+                                                />   
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="text-align:center;"> 
+                            <button type="button" class="btn btn-primary" id="submitDiscount" tabindex="19">ปิด [ENTER]</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
         </div>
     </form>
 </section>

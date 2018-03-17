@@ -291,12 +291,7 @@ func (c *ReceiveController) Print() {
 	c.Data["RetCount"] = len(doc.ReceiveSub)
 	c.Data["CurrentDate"] = time.Now()
 	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
-	c.TplName = "receive/receive-invoice.html"
-	if c.Ctx.Request.URL.Query().Get("po") == "1" {
-		c.TplName = "receive/receive-po-invoice.html"
-		c.Data["title"] = "ใบสั่งซื้อสินค้า"
-	} else {
-		c.Data["title"] = "ใบรับสินค้า"
-	}
+	c.TplName = "receive/receive-po-invoice.html"
+	c.Data["title"] = "ใบสั่งซื้อสินค้า"
 	c.Render()
 }

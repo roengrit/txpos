@@ -10,12 +10,13 @@ import (
 
 //Sale _
 type Sale struct {
-	ID                   int
-	Flag                 int
-	Active               bool
-	DocType              int
-	SaleType             int
-	VatType              int
+	ID       int
+	Flag     int
+	Active   bool
+	DocType  int
+	SaleType int
+	VatType  int
+	IsPos    bool
 	DocNo                string    `orm:"size(30)"`
 	DocDate              time.Time `form:"-" orm:"null"`
 	DocTime              string    `orm:"size(6)"`
@@ -38,6 +39,8 @@ type Sale struct {
 	TotalAmountExludeVat float64 `orm:"digits(12);decimals(2)"`
 	TotalNetAmount       float64 `orm:"digits(12);decimals(2)"`
 	TotalPay             float64 `orm:"digits(12);decimals(2)"`
+	ReceiveMoney         float64 `orm:"digits(12);decimals(2)"`
+	ChangeMoney          float64 `orm:"digits(12);decimals(2)"`
 	CreditDay            int
 	CreditDate           time.Time `form:"-" orm:"type(date)"`
 	SendDate             time.Time `form:"-" orm:"null;type(datetime)"`

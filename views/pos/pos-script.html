@@ -44,27 +44,39 @@
             format: 'dd-mm-yyyy',
         });
 
+         $("#Barcode").focus(function () { $(this).select(); });
+
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
             }
             if(event.keyCode == 113){ //F2
+                if ($('#modal-customer').is(':visible')) {
+                    customerShow(); 
+                    $('#Tel').focus();
+                    return;
+                }
                 if ($('#modal-default').is(':visible')) {
+                    headerShow();
                     $('#CashPayment').focus();
                 } else {
                     $('#Barcode').focus();
+                    $('#Barcode').select();
                 }
             }
             if(event.keyCode == 115){ //F4
                 if ($('#modal-default').is(':visible')) {
+                    headerShow();
                     $('#TransferPayment').focus();
                 } else {
-                    //สมาชิก
+                   
+                    $('#btn-customer-set').trigger('click');    
                 }
             }
             if(event.keyCode == 118){ //F7
                 if ($('#modal-default').is(':visible')) {
+                    headerShow();
                     $('#CreditPayment').focus();
                 } else {
                     //พักบิล
@@ -72,6 +84,7 @@
             }
             if(event.keyCode == 119){ //F8
                 if ($('#modal-default').is(':visible')) {
+                    headerShow();
                     $('#CouponPayment').focus();
                 } else {
                     //ยกเลิกการขาย
@@ -79,9 +92,11 @@
             }
             if(event.keyCode == 120){ //F9
                 if ($('#modal-default').is(':visible')) {
+                    headerShow();
                     $('#OtherPayment').focus();
                 } else {
-                   ///ส่วนลด
+                    $('#GetMoney').focus();
+                    $('#PayMoney').trigger("click");
                 }
             }              
         });
@@ -97,16 +112,30 @@
                   $('#GetMoney').focus();
                   $('#PayMoney').trigger("click");
               }
+              if($('#Barcode').val()=="*-"){
+                $('#TotalDiscountText').trigger("click");
+              }
             } 
         });
 
         $( "#modal-default" ).on('shown.bs.modal', function(){
             $('#GetMoney').focus();
         });
+        $( "#modal-default" ).on('hide.bs.modal', function(){
+            $('.header-hide').hide();
+        });
+        $( "#modal-customer" ).on('shown.bs.modal', function(){
+            $('#MemberName').focus();
+        }); 
+        $( "#modal-customer" ).on('hide.bs.modal', function(){
+            $('.customer-hide').hide();
+        });  
+        $( "#modal-discount" ).on('shown.bs.modal', function(){
+            $('#DiscountWord').focus();
+        });          
 
         $('#GetMoney').keydown(function(event){
             if(event.keyCode == 32){ 
-                console.log("AAA");
                 $('#GetMoney').val('10000')
             }
         });
@@ -118,10 +147,280 @@
         $('#modal-default').keydown(function(event){
             if(event.keyCode == 13){ 
                 console.log("SAVE");
+                $('#modal-default').modal('hide');
+            }
+            if(event.keyCode == 32){ 
+                $('#GetMoney').val('10000')
             }
         });
-        $('.delete-sale-item').click(function(){
-           $(this).parent().parent().remove();
+ 
+
+        $('#modal-customer').keydown(function(event){
+             if(event.keyCode == 13){ 
+                $('#modal-customer').modal('hide')
+            }
+        });
+
+        // $('.delete-sale-item').click(function(){
+        //    $(this).parent().parent().remove();
+        // });
+
+         $('#MemberName').typeahead({
+            ajax: '/member/list/json',
+            display: 'Name',
+            displayField: 'Name',
+            valueField: 'ID',
+            val: 'ID',
+            valid: 'MemberID',
+            items : 2,
+            not_replace_when_is_not_valid : true,
+            onSelect: function (data) {
+                
+                if (data.value == 0) {
+                    return;
+                }
+                
+                $('#MemberID').val(data.value);
+                $.get("/member/json/?id=" + data.value, function (mem) {
+                    $('#Address').val(mem.Data1.Address);
+                    $('#Tel').val(mem.Data1.Tel);
+                    $('#Fax').val(mem.Data1.Fax);
+                    $('#Email').val(mem.Data1.Email);
+                    $('#TaxNo').val(mem.Data1.TaxNo);
+                    $('#BranchNo').val(mem.Data1.BranchNo);
+                    $('#BranchName').val(mem.Data1.BranchName);
+                    $('#customer-name').html(mem.Data1.Name);
+                    $('#submitCustomer').focus();
+                });
+            }
+        });
+        $('#MemberName,#Address,#Tel,#Fax,#Email,#TaxNo,#BranchNo,#BranchName').keydown(function(event){
+            if(event.keyCode == 13){ 
+                $('#modal-customer').modal('hide')
+            }
+            if(event.keyCode == 113){ //F2
+                if ($('#modal-customer').is(':visible')) {
+                    customerShow();
+                    return;
+                }
+            }
+        });
+        $("#removeCustomer,#btn-remove-customer").click(function(){
+            $('#MemberID').val(1);
+            $('#MemberName').val("");
+            $('#Address').val('');
+            $('#Tel').val('');
+            $('#Fax').val('');
+            $('#Email').val('');
+            $('#TaxNo').val('');
+            $('#BranchNo').val('');
+            $('#BranchName').val('');
+            $('#customer-name').html('');
+        });       
+        $('#submitCustomer').click(function () {
+            $('#modal-customer').modal('hide')
+        });
+        $('#submitCustomer').keydown(function (event) {
+            if (event.keyCode == 13) {
+                $('#modal-customer').modal('hide')
+            }
+        });
+        $('#submitDiscount').click(function () {
+            $('#modal-discount').modal('hide')
+        });
+        $('#submitDiscount,#DiscountWord,#modal-discount').keydown(function (event) {
+            if (event.keyCode == 13) {
+                $('#modal-discount').modal('hide')
+            }
+        });
+        $('#TotalDiscountText').click(function(){
+            $('#modal-discount').modal('show')
         })
+
+        var templateRow = `<tr  style="cursor: pointer;" index-val="@">
+                                <input type="hidden" class="ProductId" name="SaleSub[@].Product.ID" value="0" /> 
+                                <input type="hidden" class="ProductCode" name="SaleSub[@].Product.Code" value="" />
+                                <input type="hidden" class="ProductName" name="SaleSub[@].Product.Name" value="" />
+                                <input type="hidden" class="ProductUnitID" name="SaleSub[@].Unit.ID" value="" /> 
+                                <input type="hidden" class="ProductQty" name="SaleSub[@].Qty" value="0" />
+                                <input type="hidden" class="ProductPrice" name="SaleSub[@].Price" value="0" />
+                                <input type="hidden" class="ProductVatVal" name="SaleSub[@].VatVal" value="0" />
+                                <input type="hidden" class="ProductDiscount" name="SaleSub[@].DiscountWord" value="" />
+                                <input type="hidden" class="ProductDiscountVal" name="SaleSub[@].DiscountVal" value="0" />
+                                <input type="hidden" class="ProductTotalPrice" name="SaleSub[@].TotalPrice" value="0" />
+                                <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[@].TotalPriceExludeVat" value="0" />
+                                <td width="10%" valign="middle" class="ProductCodeText">{0}</td>
+                                            <td width="50%" valign="middle" class="ProductNameText">{1}</td>
+                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductQtyText">{2}</td>
+                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductPriceText">{3}</td>
+                                            <td style="display:none;" class="ProductDiscountText">{4}</td>
+                                            <td width="15%" class="text-right change-price" valign="middle" class="ProductTotalPriceText">{5}</td>
+                                            <td width="5%" class="text-right" style="width:5%;" valign="middle">
+                                               <a href="javascript:;" class="delete-sale-item"  >
+                                                        <nobr>&nbsp;
+                                                            <i class="fa fa-times" style="color:red;"></i>
+                                                        </nobr>
+                                               </a>
+                                            </td>
+                         </tr>`;
+        $(".delete-sale-item").click(function (event) {          
+            deleteRow($(this));
+            sumFoorter();
+        });
+        $('#Barcode').typeahead({
+            ajax: '/product/list/json',
+            display: 'Name',
+            displayField: 'Name',
+            valueField: 'ID',
+            val: 'ID',
+            valid: 'item-id',
+            onSelect: function (data) {
+                 
+            }
+        });
+        $('#DiscountType').change(function () {
+            sumFoorter();
+        })
+
+        $("#DiscountWord").bind('keyup mouseup', function () {
+            sumFoorter();
+        });
+
+        $("#DiscountWord").focusout(function () {
+            if ($(this).val().indexOf("%") == -1) {
+                $(this).val(addCommas($(this).val()));
+            }
+        });
+
+        $("#DiscountWord").focusin(function () {
+            if ($(this).val().indexOf("%") == -1) {
+                $(this).val($(this).val().replace(/,/g, ""));
+            }
+        });
+
+        $('#DiscountWord').change(function () {
+            sumFoorter();
+        })
+
+        $('#VatType').change(function () {
+            $("#RetData tr").each(function (index) {
+                if ($(this).find(".ProductId").val() == '0' || $(this).find(".ProductId").val() == '') {
+                    return true;
+                }
+                var price = parseFloat($(this).find(".ProductPrice").val() == '' ? '0' : $(this).find(".ProductPrice").val());
+                var totalPrice = parseFloat($(this).find(".ProductTotalPrice").val() == '' ? '0' : $(this).find(".ProductTotalPrice").val());
+                var vatVal = 0.00;
+                var totalPriceExludeVat = 0.00;
+
+                if ($('#VatType').val() == "1") {
+                    totalPriceExludeVat = (totalPrice * 100) / 107;
+                    vatVal = totalPrice - totalPriceExludeVat;
+                }
+                if ($('#VatType').val() == "2") {
+                    vatVal = (totalPrice * 7) / 100;
+                    totalPriceExludeVat = totalPrice;
+                }
+                if ($('#VatType').val() == "0") {
+                    totalPriceExludeVat = totalPrice;
+                }
+                
+                $('#RetData > tr').eq(index).find(".ProductVatVal").val(vatVal);
+                $('#RetData > tr').eq(index).find(".ProductTotalPriceExludeVat").val(totalPriceExludeVat);
+
+            });
+            if ($("#VatType").val() == '1' || $("#VatType").val() == '2') {
+                $('#VatValText').html('{{.VatVal}} %');
+            }
+            sumFoorter();
+        })
+
+        function appendEmptyRow(index) {
+            $('#RetData').append(
+                templateRow.replace(/@/g, index)
+                    .replace(/@/g, index)
+                    .replace('{2}', '0.00')
+                    .replace('{3}', '0.00')
+                    .replace('{5}', '0.00')
+                     
+            );
+        }
+
+        function deleteRow(buttonRow) {
+            buttonRow.parent().parent().remove();
+            $("#RetData tr").each(function (index) {
+                $(this).attr("index-val", index);
+                $(this).find(".ProductId").attr("name", "SaleSub[" + index + "].Product.ID");
+                $(this).find(".ProductCode").attr("name", "SaleSub[" + index + "].Product.Code");
+                $(this).find(".ProductName").attr("name", "SaleSub[" + index + "].Product.Name");
+                $(this).find(".ProductUnitID").attr("name", "SaleSub[" + index + "].Unit.ID");
+                $(this).find(".ProductQty").attr("name", "SaleSub[" + index + "].Qty");
+                $(this).find(".ProductPrice").attr("name", "SaleSub[" + index + "].Price");
+                $(this).find(".ProductVatVal").attr("name", "SaleSub[" + index + "].VatVal");
+                $(this).find(".ProductDiscount").attr("name", "SaleSub[" + index + "].DiscountWord");
+                $(this).find(".ProductDiscountVal").attr("name", "SaleSub[" + index + "].DiscountVal");
+                $(this).find(".ProductTotalPrice").attr("name", "SaleSub[" + index + "].TotalPrice");
+                $(this).find(".ProductTotalPriceExludeVat").attr("name", "SaleSub[" + index + "].TotalPriceExludeVat");
+            });
+            sumFoorter();
+        }
+        function sumFoorter() {
+            var totalAmount = 0.00;
+            var discountVal = parseFloat($('#DiscountWord').val() == '' ? '0' : $('#DiscountWord').val().replace("%", ""));
+            discountVal = isNaN(discountVal) ? 0.00 : discountVal;
+            var totalDiscountAmount = 0.00;
+            var totalVatDiscountAmount = 0.00;
+            var totalNetAmount = 0.00;
+            var totalAmountExcludeVat = 0.00;
+            var totalVatVal = 0.00;
+
+            $("#RetData tr").each(function (index) {
+                totalAmount += parseFloat($(this).find(".ProductTotalPrice").val());
+                totalAmountExcludeVat += parseFloat($(this).find(".ProductTotalPriceExludeVat").val());
+                totalVatVal += parseFloat($(this).find(".ProductVatVal").val());
+            });
+
+            if ($('#DiscountWord').val().indexOf("%") !== -1) {
+                totalDiscountAmount = (discountVal / 100) * totalAmount;
+                totalVatDiscountAmount = (discountVal / 100) * totalVatVal;
+            } else if ($('#DiscountWord').val() != "") {
+                totalDiscountAmount = discountVal;
+                totalVatDiscountAmount = discountVal;
+            }
+            if (totalDiscountAmount > 0) {
+                totalAmountExcludeVat = totalAmountExcludeVat - totalDiscountAmount;
+                totalVatVal = totalVatVal - totalVatDiscountAmount;
+            }
+
+            if ($('#VatType').val() == "0") {
+                totalVatVal = 0;
+            }
+
+            $('#TotalAmountExcludeVatText').html(addCommas(totalAmountExcludeVat.toFixed(2)))
+            $('#TotalAmountExludeVat').val(totalAmountExcludeVat.toFixed(2))
+            $('#TotalVatValText').html(addCommas(totalVatVal.toFixed(2)))
+            $('#VatVal').val(totalVatVal.toFixed(2));
+            $('#TotalAmount').val((totalAmountExcludeVat + totalVatVal).toFixed(2));
+            $('#TotalAmountText').html(addCommas((totalAmountExcludeVat + totalVatVal).toFixed(2)));
+            $('#TotalDiscount').val(totalDiscountAmount.toFixed(2));
+            $('#TotalDiscountText').html(addCommas(totalDiscountAmount.toFixed(2)));
+        }
+        function addrow(){
+        var rowCount = $('#RetData tr').length;
+            appendEmptyRow(rowCount);
+            $(".delete-sale-item").click(function (event) {
+                deleteRow($(this));                
+            });
+    }
+    addrow();
+    addrow();
     });
+    function headerShow(force){
+        if ($('#modal-default').is(':visible') && !$('.header-hide').is(':visible')){
+            $('.header-hide').toggle();
+        } 
+    }
+    function customerShow(){
+            $('.customer-hide').toggle();
+    }
+    
 </script>

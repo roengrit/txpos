@@ -22,10 +22,11 @@
     <form action="/sale" autocomplete="off" id="sale-form" onsubmit="return false;" method="post">
         {{ .xsrfdata }}
         <input type="hidden" id="currentRow" />
-        <input type="hidden" id="MemberID" name="Member.ID" {{if .m.Member.ID}} value="{{.m.Member.ID}}" {{else}} value="2" {{end}}
-        />
+        <input type="hidden" id="MemberID" name="Member.ID" {{if .m.Member.ID}} 
+        value="{{.m.Member.ID}}" {{else}} value="2" {{end}} />
         <input type="hidden" id="DocNo" name="DocNo" value="{{.m.DocNo}}" />
         <input type="hidden" id="ID" name="ID" value="{{.m.ID}}" />
+        <input type="hidden" id="IsPos" name="IsPos"  value="0" />
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -312,7 +313,7 @@
                                                 <th colspan="4">
                                                 </th>
                                                 <th>
-                                                    <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม</div>
+                                                    <div style="padding-top:5px;height: 34px;float:right;">ภาษีมูลค่าเพิ่ม  <span id="VatValText"></span></div>
                                                 </th>
                                                 <th style="text-align:right;vertical-align: middle;" id="TotalVatValText">
                                                     {{if.m.VatVal}} {{.m.VatVal | ThCommaSeperate}} {{else}} 0.00 {{end}}

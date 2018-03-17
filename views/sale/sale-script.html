@@ -19,6 +19,10 @@
             $("#VatType").val($("#VatType option:first").val());
         }
 
+        if($("#VatType").val()=='1' || $("#VatType").val()=='2'){
+            $('#VatValText').html('{{.VatVal}} %');
+        }
+
         if($('#CashPayDate').val()=='01-01-0001'){
             $('#CashPayDate').val('')
         }
@@ -304,10 +308,14 @@
                 if ($('#VatType').val() == "0") {
                     totalPriceExludeVat = totalPrice;
                 }
+                
                 $('#RetData > tr').eq(index).find(".ProductVatVal").val(vatVal);
                 $('#RetData > tr').eq(index).find(".ProductTotalPriceExludeVat").val(totalPriceExludeVat);
 
             });
+            if ($("#VatType").val() == '1' || $("#VatType").val() == '2') {
+                $('#VatValText').html('{{.VatVal}} %');
+            }
             sumFoorter();
         })
 
@@ -510,8 +518,8 @@
         });
     }
     function OTC() {
-        $('#MemberID').val(2);
-        $('#MemberName').val("เจ้าหนี้ทั่วไป [OTC]");
+        $('#MemberID').val(1);
+        $('#MemberName').val("ลูกหนี้ทั่วไป [OTC]");
     }
     function GetAllTotalToCash(id){
         $('#' + id).val($('#TotalAmount').val());
