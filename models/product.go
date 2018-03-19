@@ -45,6 +45,7 @@ type ProductList struct {
 	Barcode      string
 	AverageCost  float64
 	BalanceQty   float64
+	SalePrice    float64
 	CategoryName string
 	UnitID       int
 	UnitName     string
@@ -74,6 +75,7 @@ func GetProductList(currentPage, lineSize uint, statusTerm string, categoryTerm,
 					T0.active,
 					T0.balance_qty,
 					T0.average_cost,
+					T0.sale_price,
 					T0.barcode,
 					T1.i_d as category_i_d,
 					T1.name as category_name,

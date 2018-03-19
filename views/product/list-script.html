@@ -29,6 +29,7 @@
                   <th style="width:150px;">บาร์โค้ด</th>
                   <th style="width:115px;text-align:right;">จำนวนคงเหลือ</th>
                   <th style="width:115px;text-align:right;">ต้นทุน</th>
+                  <th style="width:115px;text-align:right;">ราคาขาย</th>
                   <th style="width:50px;text-align:center;">สถานะ</th>
                   <th style="width:150px!important;text-align:center">จัดการข้อมูล</th>
                 </tr>
@@ -45,6 +46,7 @@
                         <td>`+ dat.Barcode + `</td>
                         <td style="text-align:right;">`+ addCommas(dat.BalanceQty) + `</td>
                         <td style="text-align:right;">`+ addCommas(dat.AverageCost) + `</td>
+                        <td style="text-align:right;">`+ addCommas(dat.SalePrice) + `</td>
                         <td>` + (dat.Active ? `<span class="label label-success">เปิดใช้งาน</span>` : `<span class="label label-danger">ปิดใช้งาน</span>`) + `</td>
                         <td style="text-align:center;">
                             <div class="btn-group">

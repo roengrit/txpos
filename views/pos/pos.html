@@ -81,7 +81,7 @@
                                 <table class="table">
                                     <tbody  id="RetData">
                                         {{if .RetCount}} {{range $key, $val := .m.SaleSub}}
-                                        <tr style="cursor: pointer;" index-val="{{$key}}">
+                                        <tr style="cursor: pointer;" index-val="{{$key}}" code="{{$val.Product.Code}}" promotion="">
                                             <input type="hidden" class="ProductId" name="SaleSub[{{$key}}].Product.ID" value="{{$val.Product.ID}}" />
                                             <input type="hidden" class="ProductCode" name="SaleSub[{{$key}}].Product.Code" value="{{$val.Product.Code}}" />
                                             <input type="hidden" class="ProductName" name="SaleSub[{{$key}}].Product.Name" value="{{$val.ProductName}}" />

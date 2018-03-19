@@ -237,24 +237,24 @@
             $('#modal-discount').modal('show')
         })
 
-        var templateRow = `<tr  style="cursor: pointer;" index-val="@">
-                                <input type="hidden" class="ProductId" name="SaleSub[@].Product.ID" value="0" /> 
-                                <input type="hidden" class="ProductCode" name="SaleSub[@].Product.Code" value="" />
-                                <input type="hidden" class="ProductName" name="SaleSub[@].Product.Name" value="" />
-                                <input type="hidden" class="ProductUnitID" name="SaleSub[@].Unit.ID" value="" /> 
-                                <input type="hidden" class="ProductQty" name="SaleSub[@].Qty" value="0" />
-                                <input type="hidden" class="ProductPrice" name="SaleSub[@].Price" value="0" />
-                                <input type="hidden" class="ProductVatVal" name="SaleSub[@].VatVal" value="0" />
-                                <input type="hidden" class="ProductDiscount" name="SaleSub[@].DiscountWord" value="" />
-                                <input type="hidden" class="ProductDiscountVal" name="SaleSub[@].DiscountVal" value="0" />
-                                <input type="hidden" class="ProductTotalPrice" name="SaleSub[@].TotalPrice" value="0" />
-                                <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[@].TotalPriceExludeVat" value="0" />
-                                <td width="10%" valign="middle" class="ProductCodeText">{0}</td>
-                                            <td width="50%" valign="middle" class="ProductNameText">{1}</td>
-                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductQtyText">{2}</td>
-                                            <td width="10%" class="text-right change-price" valign="middle" class="ProductPriceText">{3}</td>
-                                            <td style="display:none;" class="ProductDiscountText">{4}</td>
-                                            <td width="15%" class="text-right change-price" valign="middle" class="ProductTotalPriceText">{5}</td>
+        var templateRow = `<tr  style="cursor: pointer;" index-val="@" code="{1}" promotion="">
+                                <input type="hidden" class="ProductId" name="SaleSub[@].Product.ID" value="{0}" /> 
+                                <input type="hidden" class="ProductCode" name="SaleSub[@].Product.Code" value="{1}" />
+                                <input type="hidden" class="ProductName" name="SaleSub[@].Product.Name" value="{2}" />
+                                <input type="hidden" class="ProductUnitID" name="SaleSub[@].Unit.ID" value="{3}" /> 
+                                <input type="hidden" class="ProductQty" name="SaleSub[@].Qty" value="{4}" />
+                                <input type="hidden" class="ProductPrice" name="SaleSub[@].Price" value="{5}" />
+                                <input type="hidden" class="ProductVatVal" name="SaleSub[@].VatVal" value="{6}" />
+                                <input type="hidden" class="ProductDiscount" name="SaleSub[@].DiscountWord" value="{7}" />
+                                <input type="hidden" class="ProductDiscountVal" name="SaleSub[@].DiscountVal" value="{8}" />
+                                <input type="hidden" class="ProductTotalPrice" name="SaleSub[@].TotalPrice" value="{9}" />
+                                <input type="hidden" class="ProductTotalPriceExludeVat" name="SaleSub[@].TotalPriceExludeVat" value="{10}" />
+                                <td width="10%" valign="middle" class="ProductCodeText">{11}</td>
+                                            <td width="50%" valign="middle" class="ProductNameText">{12}</td>
+                                            <td width="10%" valign="middle" class="ProductQtyText">{13}</td>
+                                            <td width="10%" valign="middle" class="ProductPriceText">{14}</td>
+                                            <td style="display:none;" class="ProductDiscountText">{15}</td>
+                                            <td width="15%" valign="middle" class="ProductTotalPriceText">{16}</td>
                                             <td width="5%" class="text-right" style="width:5%;" valign="middle">
                                                <a href="javascript:;" class="delete-sale-item"  >
                                                         <nobr>&nbsp;
@@ -275,7 +275,9 @@
             val: 'ID',
             valid: 'item-id',
             onSelect: function (data) {
-                 
+                $.get("/product/json/?id=" + data.value, function (product) {
+                    addrow(product.Data1);
+                });
             }
         });
         $('#DiscountType').change(function () {
@@ -334,14 +336,28 @@
             sumFoorter();
         })
 
-        function appendEmptyRow(index) {
+        function appendRow(index,product) {
             $('#RetData').append(
                 templateRow.replace(/@/g, index)
                     .replace(/@/g, index)
-                    .replace('{2}', '0.00')
-                    .replace('{3}', '0.00')
-                    .replace('{5}', '0.00')
-                     
+                    .replace('{0}', product.ID )
+                    .replace("{1}", product.Code)
+                    .replace("{1}", product.Code)
+                    .replace('{2}', product.Name)
+                    .replace('{3}', product.Unit.ID)
+                    .replace('{4}', 1)
+                    .replace('{5}', product.SalePrice)
+                    .replace('{6}', '0.00')
+                    .replace('{7}', '')
+                    .replace('{8}', '0.00')
+                    .replace('{9}', product.SalePrice)
+                    .replace('{10}', product.SalePrice)
+                    .replace('{11}', product.Code)
+                    .replace('{12}', product.Name)
+                    .replace('{13}', 1)
+                    .replace('{14}', '')
+                    .replace('{15}', product.SalePrice)
+                    .replace('{16}', product.SalePrice)
             );
         }
 
@@ -404,15 +420,25 @@
             $('#TotalDiscount').val(totalDiscountAmount.toFixed(2));
             $('#TotalDiscountText').html(addCommas(totalDiscountAmount.toFixed(2)));
         }
-        function addrow(){
-        var rowCount = $('#RetData tr').length;
-            appendEmptyRow(rowCount);
-            $(".delete-sale-item").click(function (event) {
-                deleteRow($(this));                
-            });
-    }
-    addrow();
-    addrow();
+        function addrow(product) {
+            var rowCount = $('#RetData tr').length;
+            if (!findProductUpdate(product.Code)) {
+                appendRow(rowCount, product);
+                $(".delete-sale-item").click(function (event) {
+                    deleteRow($(this));
+                });
+            }
+        } 
+        function findProductUpdate(code)
+        {
+            var row = $('tr[code="' + code + '"]')
+            if(undefined == row.find(".ProductCode").val()){
+                return false;
+            }
+            row.find(".ProductQty").val(addCommas(parseFloat(row.find(".ProductQty").val()) + 1));
+            row.find(".ProductQtyText").html(row.find(".ProductQty").val()) ;
+            return true
+        }
     });
     function headerShow(force){
         if ($('#modal-default').is(':visible') && !$('.header-hide').is(':visible')){
@@ -422,5 +448,9 @@
     function customerShow(){
             $('.customer-hide').toggle();
     }
-    
+    function OTC() {
+        $('#MemberID').val(1);
+        $('#MemberName').val("ลูกหนี้ทั่วไป [OTC]");
+        $('#customer-name').html("ลูกหนี้ทั่วไป [OTC]");
+    }
 </script>
